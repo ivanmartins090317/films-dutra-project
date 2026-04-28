@@ -1,0 +1,9 @@
+.next
+node_modules
+out
+build
+coverage
+package-lock.json
+*.min.js
+docs
+films_dutra_PRD.md

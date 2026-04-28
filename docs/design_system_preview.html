@@ -1,0 +1,1950 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Films Dutra — Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── CSS Custom Properties ─────────────────────────────
+       CohereText / Unica77 Cohere Web / CohereMono — fallbacks web até fontes proprietárias estarem disponíveis. */
+    :root {
+      --sage:            #7A8C6E;
+      --sage-light:      #E8EDE4;
+      --slate:           #7B9BAD;
+      --slate-light:     #E4EBF0;
+      --terra:           #A0522D;
+      --terra-light:     #F2E5DC;
+      --tan:             #C8A882;
+      --cream:           #F0E8DE;
+      --charcoal:        #555555;
+      --black:           #1A1A1A;
+      --white:           #FFFFFF;
+      --dark-card:       #2A2A2A;
+
+      --bg:              #F0E8DE;
+      --surface:         #FFFFFF;
+      --text-primary:    #1A1A1A;
+      --text-secondary:  #555555;
+      --text-muted:      #C8A882;
+      --border:          #C8A882;
+      --ring:            #7A8C6E;
+
+      --font-cohere-text: 'CohereText', 'Space Grotesk', Inter, ui-sans-serif, system-ui;
+      --font-unica77:     'Unica77 Cohere Web', Inter, Arial, ui-sans-serif, system-ui;
+      --font-cohere-mono: 'CohereMono', ui-monospace, 'Courier New', monospace;
+
+      --radius-xs:  4px;
+      --radius-sm:  8px;
+      --radius-md:  12px;
+      --radius-lg:  16px;
+      --radius-xl:  24px;
+      --radius-pill:32px;
+      --radius-full:9999px;
+
+      --shadow-card: 0 2px 8px rgba(26,26,26,0.08);
+      /* Neumorphism — superfície dos cards (igual ao card, não à página) */
+      --neo-surface: #ffffff;
+      --neo-raised:
+        10px 10px 24px rgba(90, 78, 62, 0.2),
+        -8px -8px 22px rgba(255, 255, 255, 0.92);
+      --neo-raised-lg:
+        12px 12px 28px rgba(90, 78, 62, 0.22),
+        -10px -10px 26px rgba(255, 255, 255, 0.95);
+      --neo-raised-media:
+        8px 8px 20px rgba(90, 78, 62, 0.16),
+        -6px -6px 18px rgba(255, 255, 255, 0.9);
+      --neo-inset-track:
+        inset 4px 4px 10px rgba(90, 78, 62, 0.18),
+        inset -4px -4px 10px rgba(255, 255, 255, 0.75);
+      /* Cards sobre fundo escuro (dark band / lesson) */
+      --neo-on-dark-raised:
+        10px 10px 22px rgba(0, 0, 0, 0.45),
+        -6px -6px 16px rgba(255, 255, 255, 0.08);
+      --neo-on-olive-raised:
+        8px 8px 18px rgba(0, 0, 0, 0.35),
+        -5px -5px 14px rgba(255, 255, 255, 0.1);
+    }
+
+    /* ── Typography tokens (única escala permitida) ─────── */
+    .typ-hero-display {
+      font-family: var(--font-cohere-text);
+      font-size: 96px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -1.92px;
+    }
+    .typ-product-display {
+      font-family: var(--font-cohere-text);
+      font-size: 72px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -1.44px;
+    }
+    .typ-section-display {
+      font-family: var(--font-unica77);
+      font-size: 60px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -1.2px;
+    }
+    .typ-section-heading {
+      font-family: var(--font-unica77);
+      font-size: 48px;
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -0.48px;
+    }
+    .typ-card-heading {
+      font-family: var(--font-unica77);
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -0.32px;
+    }
+    .typ-feature-heading {
+      font-family: var(--font-unica77);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.3;
+      letter-spacing: 0;
+    }
+    .typ-body-large {
+      font-family: var(--font-unica77);
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+    }
+    .typ-body {
+      font-family: var(--font-unica77);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0;
+    }
+    .typ-button {
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.71;
+      letter-spacing: 0;
+    }
+    .typ-caption {
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+    }
+    .typ-mono-label {
+      font-family: var(--font-cohere-mono);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0.28px;
+    }
+    .typ-micro {
+      font-family: var(--font-unica77);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+    }
+
+    [data-theme="dark"] {
+      --bg:             #1A1A1A;
+      --surface:        #2A2A2A;
+      --text-primary:   #F0E8DE;
+      --text-secondary: #C8A882;
+      --text-muted:     #555555;
+      --border:         #555555;
+      --ring:           #7A8C6E;
+      --shadow-card:    0 2px 8px rgba(0,0,0,0.3);
+      --neo-surface:    #2a2a2a;
+      --neo-raised:
+        10px 10px 24px rgba(0, 0, 0, 0.55),
+        -6px -6px 16px rgba(255, 255, 255, 0.06);
+      --neo-raised-lg:
+        14px 14px 32px rgba(0, 0, 0, 0.6),
+        -8px -8px 20px rgba(255, 255, 255, 0.05);
+      --neo-raised-media:
+        8px 8px 20px rgba(0, 0, 0, 0.5),
+        -5px -5px 14px rgba(255, 255, 255, 0.04);
+      --neo-inset-track:
+        inset 4px 4px 10px rgba(0, 0, 0, 0.45),
+        inset -3px -3px 8px rgba(255, 255, 255, 0.06);
+      --neo-on-dark-raised:
+        10px 10px 24px rgba(0, 0, 0, 0.6),
+        -5px -5px 14px rgba(255, 255, 255, 0.05);
+      --neo-on-olive-raised:
+        8px 8px 18px rgba(0, 0, 0, 0.4),
+        -4px -4px 12px rgba(255, 255, 255, 0.07);
+    }
+
+    /* ── Neumorphism (Soft UI) — paleta cream + sombras Dutra ─ */
+    .neo-demo {
+      background: var(--cream);
+      padding: 56px 24px 64px;
+    }
+    .neo-demo-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      gap: 40px;
+      align-items: start;
+    }
+    @media (min-width: 900px) {
+      .neo-demo-inner { grid-template-columns: 1fr 1fr; }
+    }
+    .neomorphic-card-ui {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 2rem;
+      border-radius: 24px;
+      background: var(--cream);
+      border: none;
+      box-shadow: var(--neo-raised-lg);
+    }
+    .neomorphic-art {
+      aspect-ratio: 1;
+      border-radius: 24px;
+      overflow: hidden;
+      margin-bottom: 1.75rem;
+      border: none;
+      box-shadow: var(--neo-raised-media);
+    }
+    .neomorphic-art img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .neomorphic-track-meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-unica77);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--charcoal);
+      margin-top: 6px;
+    }
+    .neomorphic-progress-track {
+      height: 8px;
+      border-radius: 9999px;
+      margin-top: 1.25rem;
+      box-shadow: var(--neo-inset-track);
+      position: relative;
+      overflow: hidden;
+    }
+    .neomorphic-progress-fill {
+      height: 100%;
+      width: 45%;
+      border-radius: 9999px;
+      background: var(--sage);
+    }
+    .neomorphic-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1.75rem;
+    }
+    .neomorphic-btn-round {
+      width: 64px;
+      height: 64px;
+      border-radius: 9999px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--cream);
+      color: var(--sage);
+      font-size: 1.35rem;
+      line-height: 1;
+      box-shadow: var(--neo-raised);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .neomorphic-btn-round:active {
+      transform: scale(0.96);
+      box-shadow: var(--neo-inset-track);
+    }
+    .neomorphic-btn-play {
+      width: 80px;
+      height: 80px;
+      font-size: 1.75rem;
+      color: var(--sage);
+      box-shadow: var(--neo-raised-lg);
+    }
+    .neo-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .neo-demo .summary-card-value {
+      font-size: 40px;
+      letter-spacing: -0.8px;
+    }
+
+    /* ── Reset & Base ────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: var(--font-unica77);
+      background: var(--bg);
+      color: var(--text-primary);
+      transition: background .25s, color .25s;
+      padding-bottom: 80px;
+    }
+
+    /* ── Announcement Bar ────────────────────────────────── */
+    .announcement-bar {
+      background: var(--black);
+      color: #F0E8DE;
+      font-family: var(--font-unica77);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      text-align: center;
+      padding: 0 16px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .announcement-bar a { color: var(--tan); text-decoration: underline; }
+
+    /* ── Nav ─────────────────────────────────────────────── */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-card);
+      transition: background .25s, border-color .25s;
+    }
+    .nav-logo {
+      font-family: var(--font-unica77);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.3;
+      letter-spacing: 0;
+      color: var(--sage);
+    }
+    .nav-logo span { color: var(--terra); }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.71;
+      letter-spacing: 0;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--sage); }
+    .theme-toggle {
+      background: var(--sage-light);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+    }
+    .theme-toggle:hover { background: var(--tan); }
+
+    /* ── Container ───────────────────────────────────────── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ── Section ─────────────────────────────────────────── */
+    .section {
+      padding: 64px 0 0;
+    }
+    .section-title {
+      font-family: var(--font-unica77);
+      font-size: 48px;
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -0.48px;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .section-desc {
+      font-family: var(--font-unica77);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+    }
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+
+    /* ── Hero ────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, var(--sage) 0%, #5a6e50 100%);
+      color: #fff;
+      padding: 96px 32px;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      font-family: var(--font-cohere-mono);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0.28px;
+      text-transform: uppercase;
+      color: var(--tan);
+      margin-bottom: 16px;
+    }
+    .hero-title {
+      font-family: var(--font-cohere-text);
+      font-size: 96px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -1.92px;
+      margin-bottom: 24px;
+    }
+    .hero-subtitle {
+      font-family: var(--font-unica77);
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: rgba(255,255,255,0.75);
+      max-width: 560px;
+      margin: 0 auto 40px;
+    }
+    .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── Buttons ─────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.71;
+      letter-spacing: 0;
+      border-radius: var(--radius-pill);
+      padding: 12px 24px;
+      border: none;
+      cursor: pointer;
+      transition: opacity .2s, transform .1s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary   { background: var(--sage); color: #fff; }
+    .btn-secondary { background: var(--terra); color: #fff; }
+    .btn-ghost     { background: transparent; color: var(--sage); text-decoration: underline; padding: 12px 8px; }
+    .btn-outline   { background: transparent; border: 1px solid var(--sage); color: var(--sage); }
+    .btn-outline-terra { background: transparent; border: 1px solid var(--terra); color: var(--terra); }
+    .btn-white     { background: #fff; color: var(--black); }
+    .btn:hover:not(.btn-ghost) { opacity: 0.88; }
+    .btn-sm {
+      font-family: var(--font-unica77);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      padding: 8px 16px;
+    }
+    .btn-icon {
+      width: 40px; height: 40px; padding: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-full);
+      background: var(--sage-light);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--sage);
+    }
+
+    /* ── Row helpers ─────────────────────────────────────── */
+    .row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+    .col { display: flex; flex-direction: column; gap: 16px; }
+
+    /* ── Color Palette ───────────────────────────────────── */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .color-swatch {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: none;
+      box-shadow: var(--neo-raised);
+      background: var(--neo-surface);
+    }
+    .color-swatch-block { height: 80px; }
+    .color-swatch-info {
+      padding: 12px;
+      background: var(--neo-surface);
+    }
+    .color-swatch-name {
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: var(--text-primary);
+    }
+    .color-swatch-hex {
+      font-family: var(--font-cohere-mono);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0.28px;
+      color: var(--text-muted);
+    }
+    .color-swatch-desc {
+      font-family: var(--font-unica77);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* ── Typography ──────────────────────────────────────── */
+    .type-scale { display: flex; flex-direction: column; gap: 24px; }
+    .type-row {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .type-label {
+      font-family: var(--font-cohere-mono);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0.28px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      min-width: 140px;
+      flex-shrink: 0;
+    }
+
+    /* ── Cards ───────────────────────────────────────────── */
+    .card {
+      background: var(--neo-surface);
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--neo-raised);
+      transition: background .25s, box-shadow .25s;
+    }
+    .card-sm { padding: 16px; border-radius: var(--radius-sm); }
+    .card-title {
+      font-family: var(--font-unica77);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.3;
+      letter-spacing: 0;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .card-body {
+      font-family: var(--font-unica77);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0;
+      color: var(--text-secondary);
+    }
+
+    /* ── Summary Cards ───────────────────────────────────── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .summary-card {
+      background: var(--neo-surface);
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--neo-raised);
+      transition: background .25s, box-shadow .25s;
+    }
+    .summary-card-icon {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+    .icon-sage  { background: var(--sage-light); }
+    .icon-slate { background: var(--slate-light); }
+    .icon-terra { background: var(--terra-light); }
+    .icon-tan   { background: var(--cream); }
+    .summary-card-value {
+      font-family: var(--font-unica77);
+      font-size: 60px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -1.2px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .summary-card-label {
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: var(--text-secondary);
+    }
+    .summary-card-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font-unica77);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      margin-top: 8px;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+    }
+    .trend-up   { background: var(--sage-light); color: var(--sage); }
+    .trend-warn { background: var(--terra-light); color: var(--terra); }
+    .trend-neutral { background: var(--slate-light); color: var(--slate); }
+
+    /* ── Badges ──────────────────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-unica77);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      border: 1px solid transparent;
+    }
+    .badge-paid    { background: var(--sage-light); color: var(--sage); border-color: var(--sage); }
+    .badge-pending { background: var(--cream); color: var(--tan); border-color: var(--tan); }
+    .badge-overdue { background: var(--terra-light); color: var(--terra); border-color: var(--terra); }
+    .badge-level   { background: var(--slate-light); color: var(--slate); border-color: var(--slate); }
+    .badge-chip    {
+      font-family: var(--font-cohere-mono);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0.28px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+    }
+    .chip-active   { background: var(--sage-light); color: var(--sage); border-color: var(--sage); border: 1px solid; }
+    .chip-inactive { background: transparent; color: var(--charcoal); border: 1px solid var(--border); }
+
+    /* ── Student Card ────────────────────────────────────── */
+    .student-card {
+      background: var(--neo-surface);
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      box-shadow: var(--neo-raised);
+      transition: background .25s, box-shadow .25s;
+    }
+    .avatar {
+      width: 48px; height: 48px;
+      border-radius: var(--radius-full);
+      background: var(--sage-light);
+      border: 2px solid var(--sage);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.71;
+      letter-spacing: 0;
+      color: var(--sage);
+      flex-shrink: 0;
+    }
+    .avatar-lg {
+      width: 64px; height: 64px;
+      font-family: var(--font-unica77);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.3;
+      letter-spacing: 0;
+    }
+    .student-info { flex: 1; min-width: 0; }
+    .student-name {
+      font-family: var(--font-unica77);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.3;
+      letter-spacing: 0;
+      color: var(--text-primary);
+    }
+    .student-meta {
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .student-actions { display: flex; gap: 8px; align-items: center; }
+
+    /* ── Trip Card ───────────────────────────────────────── */
+    .trip-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .trip-card {
+      background: var(--neo-surface);
+      border: none;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--neo-raised);
+      transition: background .25s, box-shadow .25s;
+    }
+    .trip-cover {
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      position: relative;
+    }
+    .trip-cover-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(26,26,26,.6), transparent);
+      padding: 12px;
+    }
+    .trip-cover-label {
+      font-family: var(--font-cohere-mono);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0.28px;
+      color: #fff;
+      text-transform: uppercase;
+    }
+    .trip-body { padding: 16px; }
+    .trip-title {
+      font-family: var(--font-unica77);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.3;
+      letter-spacing: 0;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .trip-meta {
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .trip-spots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .spots-bar {
+      flex: 1;
+      height: 8px;
+      background: var(--bg);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      box-shadow: var(--neo-inset-track);
+    }
+    .spots-fill {
+      height: 100%;
+      background: var(--sage);
+      border-radius: var(--radius-full);
+    }
+    .spots-text {
+      font-family: var(--font-unica77);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    /* ── Dark Feature Band ───────────────────────────────── */
+    .dark-band {
+      background: #3d4f36;
+      color: #fff;
+      padding: 64px 32px;
+      margin-top: 64px;
+    }
+    .dark-band .section-title {
+      color: #fff;
+      font-family: var(--font-cohere-text);
+      font-size: 72px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -1.44px;
+    }
+    .dark-band .section-desc  { color: rgba(255,255,255,0.65); }
+    .dark-band-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .dark-band-card {
+      background: #3a4f34;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--neo-on-olive-raised);
+    }
+    .dark-band-card-icon { font-size: 28px; margin-bottom: 12px; }
+    .dark-band-card-title {
+      font-family: var(--font-unica77);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.3;
+      letter-spacing: 0;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .dark-band-card-body {
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* ── Evolution Table ─────────────────────────────────── */
+    .evo-table {
+      border: none;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--neo-surface);
+      box-shadow: var(--neo-raised);
+    }
+    .evo-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(200, 168, 130, 0.22);
+      background: var(--neo-surface);
+      transition: background .25s;
+    }
+    .evo-row:last-child { border-bottom: none; }
+    .evo-row:hover { background: var(--sage-light); }
+    [data-theme="dark"] .evo-row {
+      border-bottom-color: rgba(255, 255, 255, 0.08);
+    }
+    .evo-date {
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: var(--text-muted);
+      min-width: 90px;
+    }
+    .evo-content {
+      flex: 1;
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: var(--text-primary);
+    }
+    .evo-skills { display: flex; gap: 6px; flex-wrap: wrap; }
+    .skill-chip {
+      font-family: var(--font-unica77);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      padding: 3px 8px;
+      background: var(--slate-light);
+      color: var(--slate);
+      border-radius: var(--radius-full);
+      border: 1px solid var(--slate);
+    }
+
+    /* ── Form ────────────────────────────────────────────── */
+    .form-card {
+      background: var(--neo-surface);
+      border: none;
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      box-shadow: var(--neo-raised-lg);
+      max-width: 480px;
+      transition: background .25s, box-shadow .25s;
+    }
+    .form-title {
+      font-family: var(--font-unica77);
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -0.32px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .form-subtitle {
+      font-family: var(--font-unica77);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+    }
+    .form-row { display: flex; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; flex: 1; margin-bottom: 16px; }
+    .form-label {
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.71;
+      letter-spacing: 0;
+      color: var(--text-primary);
+    }
+    .form-input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-family: var(--font-unica77);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color .2s;
+    }
+    .form-input:focus { border-color: var(--slate); box-shadow: 0 0 0 3px rgba(123,155,173,0.15); }
+    .form-select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-family: var(--font-unica77);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0;
+      color: var(--text-primary);
+      outline: none;
+      width: 100%;
+    }
+    .progress-bar {
+      height: 8px;
+      background: var(--bg);
+      border-radius: var(--radius-full);
+      margin-bottom: 28px;
+      overflow: hidden;
+      box-shadow: var(--neo-inset-track);
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--sage);
+      border-radius: var(--radius-full);
+      width: 60%;
+      transition: width .4s ease;
+    }
+    .step-indicator {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .step-dot {
+      width: 8px; height: 8px;
+      border-radius: var(--radius-full);
+      background: var(--border);
+      transition: background .2s;
+    }
+    .step-dot.active { background: var(--sage); }
+    .step-dot.done   { background: var(--sage); opacity: 0.5; }
+
+    /* ── Lesson Panel ────────────────────────────────────── */
+    .lesson-panel {
+      background: #222222;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      color: #fff;
+      box-shadow: var(--neo-on-dark-raised);
+    }
+    .lesson-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .lesson-panel-title {
+      font-family: var(--font-unica77);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.3;
+      letter-spacing: 0;
+    }
+    .lesson-panel-date  {
+      font-family: var(--font-cohere-mono);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0.28px;
+      color: var(--tan);
+    }
+    .lesson-panel-body  {
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: rgba(255,255,255,.7);
+      margin-bottom: 16px;
+    }
+    .lesson-panel-footer { display: flex; gap: 8px; flex-wrap: wrap; }
+    .lesson-chip {
+      font-family: var(--font-unica77);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.8);
+    }
+    .lesson-chip-sage { border-color: var(--sage); color: var(--sage); }
+
+    /* ── Footer ──────────────────────────────────────────── */
+    .footer {
+      background: var(--black);
+      color: rgba(240,232,222,.7);
+      padding: 56px 32px;
+      margin-top: 80px;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+    }
+    .footer-brand-name {
+      font-family: var(--font-unica77);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.3;
+      letter-spacing: 0;
+      color: var(--tan);
+      margin-bottom: 8px;
+    }
+    .footer-brand-tagline {
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: rgba(240,232,222,.5);
+      margin-bottom: 24px;
+    }
+    .footer-email-row { display: flex; gap: 0; }
+    .footer-email-input {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.15);
+      border-right: none;
+      border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+      padding: 10px 14px;
+      font-family: var(--font-unica77);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0;
+      color: #fff;
+      flex: 1;
+      outline: none;
+    }
+    .footer-email-btn {
+      background: var(--sage);
+      border: none;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 10px 16px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .footer-col-title {
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.71;
+      letter-spacing: 0;
+      color: #fff;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a {
+      font-family: var(--font-unica77);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: rgba(240,232,222,.55);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--tan); }
+
+    /* ── Radius showcase ─────────────────────────────────── */
+    .radius-grid {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+    .radius-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .radius-box {
+      background: var(--sage-light);
+      border: 2px solid var(--sage);
+      width: 60px; height: 60px;
+    }
+    .radius-label {
+      font-family: var(--font-unica77);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* ── Elevation ───────────────────────────────────────── */
+    .elevation-row { display: flex; gap: 24px; flex-wrap: wrap; }
+    .elev-item { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+    .elev-box {
+      width: 100px; height: 80px;
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-unica77);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: var(--text-secondary);
+      text-align: center;
+      padding: 8px;
+    }
+    .elev-flat    { border: none; background: var(--neo-surface); }
+    .elev-border  { border: none; background: var(--bg); box-shadow: var(--neo-inset-track); }
+    .elev-lifted  { border: none; background: var(--neo-surface); box-shadow: var(--neo-raised); }
+    .elev-dark    { background: #3d4f36; color: rgba(255,255,255,.8); box-shadow: var(--neo-on-olive-raised); border: none; }
+
+    /* ── Utilities ───────────────────────────────────────── */
+    .mt-8  { margin-top: 8px; }
+    .mt-16 { margin-top: 16px; }
+    .mt-24 { margin-top: 24px; }
+    .mt-32 { margin-top: 32px; }
+    .gap-8 { gap: 8px; }
+    .gap-12 { gap: 12px; }
+    .text-muted { font-family: var(--font-unica77); font-size: 14px; font-weight: 400; line-height: 1.4; letter-spacing: 0; color: var(--text-muted); }
+    .mono {
+      font-family: var(--font-cohere-mono);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0.28px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 900px) {
+      .summary-grid { grid-template-columns: repeat(2, 1fr); }
+      .trip-grid    { grid-template-columns: repeat(2, 1fr); }
+      .dark-band-grid { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+      .hero-title {
+        font-size: 72px;
+        letter-spacing: -1.44px;
+      }
+    }
+    @media (max-width: 600px) {
+      .hero-title {
+        font-size: 48px;
+        letter-spacing: -0.48px;
+        line-height: 1.2;
+        font-family: var(--font-unica77);
+      }
+      .summary-grid { grid-template-columns: 1fr; }
+      .trip-grid    { grid-template-columns: 1fr; }
+      .form-row { flex-direction: column; }
+      nav .nav-links { display: none; }
+      .footer-inner { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Announcement Bar -->
+  <div class="announcement-bar">
+    🌊 Films Dutra Audiovisual Co. — Dashboard de Gestão de Alunos de Surf &nbsp;
+    <a href="#">Ver PRD →</a>
+  </div>
+
+  <!-- Nav -->
+  <nav>
+    <div class="nav-logo">Films <span>Dutra</span></div>
+    <ul class="nav-links">
+      <li><a href="#colors">Cores</a></li>
+      <li><a href="#typography">Tipografia</a></li>
+      <li><a href="#components">Componentes</a></li>
+      <li><a href="#forms">Formulários</a></li>
+      <li><a href="#elevation">Elevação</a></li>
+      <li><a href="#neumorphism">Neumorphism</a></li>
+    </ul>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Alternar tema">☀️</button>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <p class="hero-eyebrow">Films Dutra · Design System v1.0</p>
+    <h1 class="hero-title">Ride your<br/>own wave.</h1>
+    <p class="hero-subtitle">Identidade visual do Dashboard de Gestão de Alunos. Vintage, terroso e com personalidade — sem abrir mão da funcionalidade.</p>
+    <div class="hero-actions">
+      <button class="btn btn-white">Explorar Componentes</button>
+      <button class="btn btn-outline" style="border-color:#fff;color:#fff;">Ver PRD Completo</button>
+    </div>
+  </section>
+
+  <!-- Neumorphism — referência visual + paridade com React (21st MCP) -->
+  <section class="neo-demo" id="neumorphism" aria-labelledby="neo-demo-title">
+    <div class="neo-demo-inner">
+      <div>
+        <h2 id="neo-demo-title" class="section-title" style="font-size:36px;letter-spacing:-0.36px;">Neumorphism (Soft UI)</h2>
+        <p class="section-desc">Sombras duplas sobre <strong>cream</strong> (#F0E8DE): relevo para cards e botões, poço <em>inset</em> para progresso. Implementação React em <code style="font-family:var(--font-cohere-mono);font-size:13px;">components/ui/neumorphism-player.tsx</code> (MCP 21st.dev + paleta Dutra + lucide-react).</p>
+        <div class="neo-summary-grid" style="margin-top:24px;">
+          <div class="summary-card">
+            <div class="summary-card-icon icon-sage">🏄</div>
+            <div class="summary-card-value">24</div>
+            <div class="summary-card-label">Alunos ativos</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-card-icon icon-slate">📅</div>
+            <div class="summary-card-value">6</div>
+            <div class="summary-card-label">Aulas hoje</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="neomorphic-card-ui">
+          <div class="neomorphic-art">
+            <img src="https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800&amp;q=80" width="400" height="400" alt="Capa — surf" loading="lazy" />
+          </div>
+          <div class="text-center">
+            <h2 class="typ-feature-heading" style="color:var(--black);margin-bottom:4px;">Ride your own wave</h2>
+            <p class="typ-caption" style="color:var(--charcoal);">Films Dutra · referência estática</p>
+          </div>
+          <div>
+            <div class="neomorphic-progress-track" aria-hidden="true">
+              <div class="neomorphic-progress-fill"></div>
+            </div>
+            <div class="neomorphic-track-meta">
+              <span>1:23</span>
+              <span>3:45</span>
+            </div>
+          </div>
+          <div class="neomorphic-controls">
+            <button type="button" class="neomorphic-btn-round" aria-label="Faixa anterior">⏮</button>
+            <button type="button" class="neomorphic-btn-round neomorphic-btn-play" aria-label="Reproduzir">▶</button>
+            <button type="button" class="neomorphic-btn-round" aria-label="Próxima faixa">⏭</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Summary Cards -->
+  <div class="container">
+    <div class="section" id="dashboard">
+      <p class="section-title">Dashboard — Cards de Resumo</p>
+      <p class="section-desc">Visão rápida de métricas do administrador na home do dashboard.</p>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-card-icon icon-sage">🏄</div>
+          <div class="summary-card-value">24</div>
+          <div class="summary-card-label">Alunos Ativos</div>
+          <span class="summary-card-trend trend-up">↑ 3 este mês</span>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-icon icon-slate">📅</div>
+          <div class="summary-card-value">6</div>
+          <div class="summary-card-label">Aulas Hoje</div>
+          <span class="summary-card-trend trend-neutral">2 restantes</span>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-icon icon-terra">💰</div>
+          <div class="summary-card-value">3</div>
+          <div class="summary-card-label">Pag. Pendentes</div>
+          <span class="summary-card-trend trend-warn">R$ 840 vencidos</span>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-icon icon-tan">🌊</div>
+          <div class="summary-card-value">2</div>
+          <div class="summary-card-label">Trips Abertas</div>
+          <span class="summary-card-trend trend-neutral">14 vagas livres</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Colors -->
+  <div class="container">
+    <div class="section" id="colors">
+      <p class="section-title">Paleta de Cores</p>
+      <p class="section-desc">Derivada diretamente da identidade visual da Films Dutra — estilo vintage, terroso e costeiro.</p>
+      <hr class="section-divider" />
+
+      <p class="typ-button" style="color:var(--text-secondary);text-transform:uppercase;margin-bottom:16px;">Brand & Accent</p>
+      <div class="color-grid" style="margin-bottom:32px;">
+        <div class="color-swatch">
+          <div class="color-swatch-block" style="background:#7A8C6E;"></div>
+          <div class="color-swatch-info">
+            <div class="color-swatch-name">Sage</div>
+            <div class="color-swatch-hex">#7A8C6E</div>
+            <div class="color-swatch-desc">Primária — CTAs, headings</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-swatch-block" style="background:#7B9BAD;"></div>
+          <div class="color-swatch-info">
+            <div class="color-swatch-name">Slate</div>
+            <div class="color-swatch-hex">#7B9BAD</div>
+            <div class="color-swatch-desc">Secundária — hover, links</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-swatch-block" style="background:#A0522D;"></div>
+          <div class="color-swatch-info">
+            <div class="color-swatch-name">Terra</div>
+            <div class="color-swatch-hex">#A0522D</div>
+            <div class="color-swatch-desc">Acento — alertas, tags</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-swatch-block" style="background:#C8A882;"></div>
+          <div class="color-swatch-info">
+            <div class="color-swatch-name">Tan</div>
+            <div class="color-swatch-hex">#C8A882</div>
+            <div class="color-swatch-desc">Suporte — bordas, muted</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="typ-button" style="color:var(--text-secondary);text-transform:uppercase;margin-bottom:16px;">Surface & Background</p>
+      <div class="color-grid" style="margin-bottom:32px;">
+        <div class="color-swatch">
+          <div class="color-swatch-block" style="background:#F0E8DE;border-bottom:1px solid #C8A882;"></div>
+          <div class="color-swatch-info">
+            <div class="color-swatch-name">Cream</div>
+            <div class="color-swatch-hex">#F0E8DE</div>
+            <div class="color-swatch-desc">Background tema claro</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-swatch-block" style="background:#FFFFFF;border-bottom:1px solid #C8A882;"></div>
+          <div class="color-swatch-info">
+            <div class="color-swatch-name">White</div>
+            <div class="color-swatch-hex">#FFFFFF</div>
+            <div class="color-swatch-desc">Superfícies, cards</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-swatch-block" style="background:#E8EDE4;"></div>
+          <div class="color-swatch-info">
+            <div class="color-swatch-name">Sage Light</div>
+            <div class="color-swatch-hex">#E8EDE4</div>
+            <div class="color-swatch-desc">Cards de suporte verde</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-swatch-block" style="background:#E4EBF0;"></div>
+          <div class="color-swatch-info">
+            <div class="color-swatch-name">Slate Light</div>
+            <div class="color-swatch-hex">#E4EBF0</div>
+            <div class="color-swatch-desc">Superfície CTA informativa</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-swatch-block" style="background:#F2E5DC;"></div>
+          <div class="color-swatch-info">
+            <div class="color-swatch-name">Terra Light</div>
+            <div class="color-swatch-hex">#F2E5DC</div>
+            <div class="color-swatch-desc">Chips de acento, notificações</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-swatch-block" style="background:#1A1A1A;"></div>
+          <div class="color-swatch-info">
+            <div class="color-swatch-name">Black</div>
+            <div class="color-swatch-hex">#1A1A1A</div>
+            <div class="color-swatch-desc">Background dark, texto</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-swatch-block" style="background:#2A2A2A;"></div>
+          <div class="color-swatch-info">
+            <div class="color-swatch-name">Dark Card</div>
+            <div class="color-swatch-hex">#2A2A2A</div>
+            <div class="color-swatch-desc">Cards no tema escuro</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-swatch-block" style="background:#555555;"></div>
+          <div class="color-swatch-info">
+            <div class="color-swatch-name">Charcoal</div>
+            <div class="color-swatch-hex">#555555</div>
+            <div class="color-swatch-desc">Texto secundário, bordas dark</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="typ-button" style="color:var(--text-secondary);text-transform:uppercase;margin-bottom:16px;">Semântica de Status</p>
+      <div class="row" style="margin-bottom:16px;">
+        <span class="badge badge-paid">● Pago</span>
+        <span class="badge badge-pending">● Pendente</span>
+        <span class="badge badge-overdue">● Vencido</span>
+        <span class="badge badge-level">🏄 Intermediário</span>
+        <span class="badge chip-active badge-chip">Ativo</span>
+        <span class="badge chip-inactive badge-chip">Inativo</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Typography -->
+  <div class="container">
+    <div class="section" id="typography">
+      <p class="section-title">Tipografia</p>
+      <p class="section-desc">CohereText (hero / product) · Unica77 Cohere Web (UI e corpo) · CohereMono (mono-label). No preview, fallbacks: Space Grotesk + Inter.</p>
+      <hr class="section-divider" />
+      <div class="type-scale">
+        <div class="type-row">
+          <span class="type-label">Hero Display<br/>CohereText 96/400</span>
+          <span class="typ-hero-display" style="color:var(--text-primary);">Ride the Wave</span>
+        </div>
+        <div class="type-row">
+          <span class="type-label">Product Display<br/>CohereText 72/400</span>
+          <span class="typ-product-display" style="color:var(--text-primary);">Surf Dashboard</span>
+        </div>
+        <div class="type-row">
+          <span class="type-label">Section Display<br/>Unica77 60/400</span>
+          <span class="typ-section-display" style="color:var(--text-primary);">Módulo de Alunos</span>
+        </div>
+        <div class="type-row">
+          <span class="type-label">Section Heading<br/>Unica77 48/400</span>
+          <span class="typ-section-heading" style="color:var(--text-primary);">Próximas Aulas</span>
+        </div>
+        <div class="type-row">
+          <span class="type-label">Card Heading<br/>Unica77 32/400</span>
+          <span class="typ-card-heading" style="color:var(--text-primary);">Evolução do Aluno</span>
+        </div>
+        <div class="type-row">
+          <span class="type-label">Feature Heading<br/>Unica77 24/400</span>
+          <span class="typ-feature-heading" style="color:var(--text-primary);">Configurações da Conta</span>
+        </div>
+        <div class="type-row">
+          <span class="type-label">Body Large<br/>Unica77 18/400</span>
+          <span class="typ-body-large" style="color:var(--text-primary);">Texto de lead para descrições de módulo e subtítulos de seção.</span>
+        </div>
+        <div class="type-row">
+          <span class="type-label">Body<br/>Unica77 16/400</span>
+          <span class="typ-body" style="color:var(--text-primary);">Texto padrão para cópia de dashboard e links de navegação.</span>
+        </div>
+        <div class="type-row">
+          <span class="type-label">Button<br/>Unica77 14/500</span>
+          <span class="typ-button" style="color:var(--text-primary);">Agendar Aula · Salvar Aluno · Nova Trip</span>
+        </div>
+        <div class="type-row">
+          <span class="type-label">Caption<br/>Unica77 14/400</span>
+          <span class="typ-caption" style="color:var(--text-secondary);">Última aula: 22 abr 2026 · Status: Pago</span>
+        </div>
+        <div class="type-row">
+          <span class="type-label">Mono Label<br/>CohereMono 14/400</span>
+          <span class="typ-mono-label" style="text-transform:uppercase;color:var(--text-muted);">ID: FD-2024-0042 · NÍVEL: INTERMEDIÁRIO</span>
+        </div>
+        <div class="type-row" style="border-bottom:none;">
+          <span class="type-label">Micro<br/>Unica77 12/400</span>
+          <span class="typ-micro" style="color:var(--text-secondary);">© 2026 Films Dutra · Todos os direitos reservados · Política de Privacidade</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Components -->
+  <div class="container">
+    <div class="section" id="components">
+      <p class="section-title">Componentes</p>
+      <p class="section-desc">Biblioteca de componentes para o dashboard de gestão.</p>
+      <hr class="section-divider" />
+
+      <!-- Buttons -->
+      <p class="card-title">Botões</p>
+      <p class="card-body" style="margin-bottom:20px;">CTAs pill, actions ghost e pills de filtro.</p>
+      <div class="row gap-8 mt-16">
+        <button class="btn btn-primary">Agendar Aula</button>
+        <button class="btn btn-secondary">Nova Trip</button>
+        <button class="btn btn-outline">Ver Perfil</button>
+        <button class="btn btn-outline-terra">Cancelar Aula</button>
+        <button class="btn btn-ghost">Explorar Módulos</button>
+        <button class="btn btn-primary btn-sm">+ Aluno</button>
+        <button class="btn-icon" title="Alternar tema">🔔</button>
+      </div>
+      <div class="row gap-8 mt-16">
+        <span class="badge chip-active badge-chip">Todos</span>
+        <span class="badge chip-inactive badge-chip">Ativos</span>
+        <span class="badge chip-inactive badge-chip">Inativos</span>
+        <span class="badge chip-inactive badge-chip">Iniciante</span>
+        <span class="badge chip-active badge-chip" style="background:var(--slate-light);color:var(--slate);border-color:var(--slate);">Intermediário</span>
+        <span class="badge chip-inactive badge-chip">Avançado</span>
+      </div>
+
+      <!-- Students -->
+      <p class="card-title mt-32">Cards de Aluno</p>
+      <div class="col mt-16" style="max-width:520px;">
+        <div class="student-card">
+          <div class="avatar">MR</div>
+          <div class="student-info">
+            <div class="student-name">Marina Rodrigues</div>
+            <div class="student-meta">Última aula: 25 abr · Intermediário</div>
+          </div>
+          <div class="student-actions">
+            <span class="badge badge-paid">Pago</span>
+            <button class="btn btn-outline btn-sm">Ver</button>
+          </div>
+        </div>
+        <div class="student-card">
+          <div class="avatar" style="background:var(--terra-light);border-color:var(--terra);color:var(--terra);">JP</div>
+          <div class="student-info">
+            <div class="student-name">João Pedro Alves</div>
+            <div class="student-meta">Última aula: 18 abr · Iniciante</div>
+          </div>
+          <div class="student-actions">
+            <span class="badge badge-overdue">Vencido</span>
+            <button class="btn btn-outline btn-sm">Ver</button>
+          </div>
+        </div>
+        <div class="student-card">
+          <div class="avatar" style="background:var(--slate-light);border-color:var(--slate);color:var(--slate);">CA</div>
+          <div class="student-info">
+            <div class="student-name">Carla Andrade</div>
+            <div class="student-meta">Última aula: 22 abr · Avançado</div>
+          </div>
+          <div class="student-actions">
+            <span class="badge badge-pending">Pendente</span>
+            <button class="btn btn-outline btn-sm">Ver</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lesson Panel -->
+      <p class="card-title mt-32">Painel de Aula (Lesson Panel)</p>
+      <div style="max-width:480px; margin-top:16px;">
+        <div class="lesson-panel">
+          <div class="lesson-panel-header">
+            <span class="lesson-panel-title">Marina Rodrigues</span>
+            <span class="lesson-panel-date">26 ABR 2026 · 07:30</span>
+          </div>
+          <p class="lesson-panel-body">Aula focada em manobras de cutback. Marina demonstrou boa leitura de onda e melhorou o timing na subida. Próxima aula: explorar floater básico.</p>
+          <div class="lesson-panel-footer">
+            <span class="lesson-chip lesson-chip-sage">✓ Cutback</span>
+            <span class="lesson-chip">Leitura de onda</span>
+            <span class="lesson-chip">Equilíbrio</span>
+            <span class="lesson-chip" style="background:rgba(160,82,45,0.2);border-color:var(--terra);color:var(--terra);">60 min</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trips Section -->
+  <div class="container">
+    <div class="section" id="trips">
+      <p class="section-title">Surf Trips</p>
+      <p class="section-desc">Cards de surf trips com imagem de capa, vagas e ação de inscrição.</p>
+      <hr class="section-divider" />
+      <div class="trip-grid">
+        <div class="trip-card">
+          <div class="trip-cover" style="background:linear-gradient(135deg,#7A8C6E,#3d4f36);">
+            🌊
+            <div class="trip-cover-overlay">
+              <span class="trip-cover-label">Confirmada</span>
+            </div>
+          </div>
+          <div class="trip-body">
+            <div class="trip-title">Fernando de Noronha</div>
+            <div class="trip-meta">📍 Noronha, PE · 📅 15–22 Jul 2026</div>
+            <div class="trip-spots">
+              <div class="spots-bar"><div class="spots-fill" style="width:70%"></div></div>
+              <span class="spots-text">7/10 vagas</span>
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;">Confirmar Vaga</button>
+          </div>
+        </div>
+        <div class="trip-card">
+          <div class="trip-cover" style="background:linear-gradient(135deg,#7B9BAD,#4a6b7d);">
+            🏄
+            <div class="trip-cover-overlay">
+              <span class="trip-cover-label">Vagas Disponíveis</span>
+            </div>
+          </div>
+          <div class="trip-body">
+            <div class="trip-title">Florianópolis</div>
+            <div class="trip-meta">📍 Floripa, SC · 📅 10–13 Set 2026</div>
+            <div class="trip-spots">
+              <div class="spots-bar"><div class="spots-fill" style="width:30%;background:var(--slate)"></div></div>
+              <span class="spots-text">3/10 vagas</span>
+            </div>
+            <button class="btn btn-outline" style="width:100%;justify-content:center;">Tenho Interesse</button>
+          </div>
+        </div>
+        <div class="trip-card">
+          <div class="trip-cover" style="background:linear-gradient(135deg,#A0522D,#7a3d20);">
+            🔥
+            <div class="trip-cover-overlay">
+              <span class="trip-cover-label">Últimas Vagas</span>
+            </div>
+          </div>
+          <div class="trip-body">
+            <div class="trip-title">Jericoacoara</div>
+            <div class="trip-meta">📍 Jeri, CE · 📅 5–10 Nov 2026</div>
+            <div class="trip-spots">
+              <div class="spots-bar"><div class="spots-fill" style="width:90%;background:var(--terra)"></div></div>
+              <span class="spots-text">9/10 vagas</span>
+            </div>
+            <button class="btn btn-secondary" style="width:100%;justify-content:center;">Garantir Vaga</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Evolution Table -->
+  <div class="container">
+    <div class="section" id="evolution">
+      <p class="section-title">Evolução — Timeline do Aluno</p>
+      <p class="section-desc">Lista de entradas separadas por régulas com date, conteúdo e chips de habilidade.</p>
+      <hr class="section-divider" />
+      <div class="evo-table">
+        <div class="evo-row">
+          <span class="evo-date">26 ABR 2026</span>
+          <span class="evo-content">Melhorou o timing no takeoff. Primeiro cutback limpo na direita.</span>
+          <div class="evo-skills">
+            <span class="skill-chip">Cutback</span>
+            <span class="skill-chip">Takeoff</span>
+          </div>
+        </div>
+        <div class="evo-row">
+          <span class="evo-date">19 ABR 2026</span>
+          <span class="evo-content">Trabalhou equilíbrio e leitura de onda. Excelente progresso na remada.</span>
+          <div class="evo-skills">
+            <span class="skill-chip">Remada</span>
+            <span class="skill-chip">Equilíbrio</span>
+            <span class="skill-chip">Leitura</span>
+          </div>
+        </div>
+        <div class="evo-row">
+          <span class="evo-date">12 ABR 2026</span>
+          <span class="evo-content">Primeira aula em onda maior. Demonstrou confiança e boa postura.</span>
+          <div class="evo-skills">
+            <span class="skill-chip">Postura</span>
+            <span class="skill-chip">Confiança</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forms -->
+  <div class="container">
+    <div class="section" id="forms">
+      <p class="section-title">Formulários</p>
+      <p class="section-desc">Formulário de onboarding multi-step com barra de progresso e campos de input.</p>
+      <hr class="section-divider" />
+      <div class="row" style="gap:40px;align-items:flex-start;flex-wrap:wrap;">
+        <div class="form-card">
+          <div class="step-indicator">
+            <div class="step-dot done"></div>
+            <div class="step-dot done"></div>
+            <div class="step-dot active"></div>
+            <div class="step-dot"></div>
+            <div class="step-dot"></div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill"></div></div>
+          <div class="form-title">Dados de Surf</div>
+          <p class="form-subtitle">Etapa 2 de 5 — Conte-nos sobre sua experiência no surf.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nível de Surf *</label>
+              <select class="form-select">
+                <option>Iniciante</option>
+                <option selected>Intermediário</option>
+                <option>Avançado</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tempo de Prática</label>
+              <input class="form-input" type="text" placeholder="Ex: 2 anos" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Objetivo no Surf *</label>
+            <input class="form-input" type="text" placeholder="Descreva seu objetivo..." />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Modelo da Prancha</label>
+            <input class="form-input" type="text" placeholder="Ex: Longboard 9'0" />
+          </div>
+          <div class="row" style="gap:12px;margin-top:8px;">
+            <button class="btn btn-ghost">← Anterior</button>
+            <button class="btn btn-primary" style="flex:1;justify-content:center;">Próximo →</button>
+          </div>
+        </div>
+
+        <div class="col" style="flex:1;min-width:260px;gap:16px;">
+          <div class="card">
+            <p class="card-title">Input States</p>
+            <div class="col mt-16" style="gap:12px;">
+              <input class="form-input" type="text" placeholder="Normal — placeholder" />
+              <input class="form-input" type="text" value="Focado — borda slate" style="border-color:var(--slate);box-shadow:0 0 0 3px rgba(123,155,173,0.15);" />
+              <input class="form-input" type="text" value="Preenchido — valor inserido" />
+              <input class="form-input" type="text" value="Erro — campo obrigatório" style="border-color:var(--terra);box-shadow:0 0 0 3px rgba(160,82,45,0.15);" />
+            </div>
+          </div>
+          <div class="card">
+            <p class="card-title">Badges — Todos os Status</p>
+            <div class="row gap-8 mt-16" style="flex-wrap:wrap;">
+              <span class="badge badge-paid">🟢 Pago</span>
+              <span class="badge badge-pending">🟡 Pendente</span>
+              <span class="badge badge-overdue">🔴 Vencido</span>
+              <span class="badge badge-level">🏄 Nível</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dark Feature Band -->
+  <div class="dark-band" id="features">
+    <div style="max-width:1100px;margin:0 auto;">
+      <p class="typ-mono-label" style="text-transform:uppercase;color:var(--tan);margin-bottom:12px;">Funcionalidades do MVP</p>
+      <p class="section-title">Tudo que você precisa para<br/>gerenciar sua escola de surf.</p>
+      <p class="section-desc">Dashboard completo para professor e área pessoal para cada aluno.</p>
+      <div class="dark-band-grid">
+        <div class="dark-band-card">
+          <div class="dark-band-card-icon">📅</div>
+          <div class="dark-band-card-title">Agenda de Aulas</div>
+          <div class="dark-band-card-body">Visualização mensal, semanal e diária. Agendamento rápido com status por aula e anotações pós-aula.</div>
+        </div>
+        <div class="dark-band-card">
+          <div class="dark-band-card-icon">📈</div>
+          <div class="dark-band-card-title">Evolução do Aluno</div>
+          <div class="dark-band-card-body">Timeline de evolução com tags de habilidade, anotações do professor e gráfico de progresso por período.</div>
+        </div>
+        <div class="dark-band-card">
+          <div class="dark-band-card-icon">💰</div>
+          <div class="dark-band-card-title">Controle Financeiro</div>
+          <div class="dark-band-card-body">Registro de mensalidades e pacotes. Status visual de pagamento com visão consolidada de receita mensal.</div>
+        </div>
+        <div class="dark-band-card">
+          <div class="dark-band-card-icon">🌊</div>
+          <div class="dark-band-card-title">Surf Trips</div>
+          <div class="dark-band-card-body">Calendário anual de trips. Inscrição de alunos, controle de vagas em tempo real e imagem de capa.</div>
+        </div>
+        <div class="dark-band-card">
+          <div class="dark-band-card-icon">👤</div>
+          <div class="dark-band-card-title">Área do Aluno</div>
+          <div class="dark-band-card-body">Acesso restrito por aluno via magic link. Visualização de aulas, evolução e trips disponíveis.</div>
+        </div>
+        <div class="dark-band-card">
+          <div class="dark-band-card-icon">🔒</div>
+          <div class="dark-band-card-title">Segurança & LGPD</div>
+          <div class="dark-band-card-body">Row Level Security no Supabase. Dados sensíveis em tabela separada. Termo de consentimento obrigatório.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevation & Shapes -->
+  <div class="container">
+    <div class="section" id="elevation">
+      <p class="section-title">Elevação & Shapes</p>
+      <p class="section-desc">Sistema de profundidade flat com alternância de superfícies e bordas finas.</p>
+      <hr class="section-divider" />
+
+      <p class="card-title">Níveis de Elevação</p>
+      <div class="elevation-row mt-16">
+        <div class="elev-item">
+          <div class="elev-box elev-flat">Flat<br/>sem sombra</div>
+          <span class="mono">flat</span>
+        </div>
+        <div class="elev-item">
+          <div class="elev-box elev-border">Inset<br/>neo track</div>
+          <span class="mono">border</span>
+        </div>
+        <div class="elev-item">
+          <div class="elev-box elev-lifted">Card<br/>neo raised</div>
+          <span class="mono">lifted</span>
+        </div>
+        <div class="elev-item">
+          <div class="elev-box elev-dark">Dark Band<br/>verde musgo</div>
+          <span class="mono">dark</span>
+        </div>
+      </div>
+
+      <p class="card-title mt-32">Escala de Border Radius</p>
+      <div class="radius-grid mt-16">
+        <div class="radius-item">
+          <div class="radius-box" style="border-radius:4px;"></div>
+          <span class="radius-label">xs · 4px<br/>inputs, thumbs</span>
+        </div>
+        <div class="radius-item">
+          <div class="radius-box" style="border-radius:8px;"></div>
+          <span class="radius-label">sm · 8px<br/>chips, dialogs</span>
+        </div>
+        <div class="radius-item">
+          <div class="radius-box" style="border-radius:12px;"></div>
+          <span class="radius-label">md · 12px<br/>cards aluno</span>
+        </div>
+        <div class="radius-item">
+          <div class="radius-box" style="border-radius:16px;"></div>
+          <span class="radius-label">lg · 16px<br/>cards mídia</span>
+        </div>
+        <div class="radius-item">
+          <div class="radius-box" style="border-radius:24px;"></div>
+          <span class="radius-label">xl · 24px<br/>formulários</span>
+        </div>
+        <div class="radius-item">
+          <div class="radius-box" style="border-radius:32px;width:80px;height:40px;"></div>
+          <span class="radius-label">pill · 32px<br/>botões CTA</span>
+        </div>
+        <div class="radius-item">
+          <div class="radius-box" style="border-radius:9999px;width:60px;height:60px;"></div>
+          <span class="radius-label">full · 9999px<br/>avatares</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-name">Films Dutra</div>
+        <div class="footer-brand-tagline">Audiovisual Co. · Escola de Surf</div>
+        <div class="footer-email-row">
+          <input class="footer-email-input" type="email" placeholder="seu@email.com" />
+          <button class="footer-email-btn">→</button>
+        </div>
+        <p class="typ-micro" style="color:rgba(240,232,222,.35);margin-top:10px;">Ao inscrever-se você aceita nossa Política de Privacidade.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Plataforma</div>
+        <ul class="footer-links">
+          <li><a href="#">Dashboard</a></li>
+          <li><a href="#">Agenda</a></li>
+          <li><a href="#">Evolução</a></li>
+          <li><a href="#">Financeiro</a></li>
+          <li><a href="#">Surf Trips</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Aluno</div>
+        <ul class="footer-links">
+          <li><a href="#">Meu Perfil</a></li>
+          <li><a href="#">Minhas Aulas</a></li>
+          <li><a href="#">Minha Evolução</a></li>
+          <li><a href="#">Trips Disponíveis</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Legal</div>
+        <ul class="footer-links">
+          <li><a href="#">Privacidade</a></li>
+          <li><a href="#">LGPD</a></li>
+          <li><a href="#">Termos de Uso</a></li>
+          <li><a href="#">Contato</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="typ-micro" style="max-width:1100px;margin:40px auto 0;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center;color:rgba(240,232,222,.35);">
+      <span>© 2026 Films Dutra Audiovisual Co. Todos os direitos reservados.</span>
+      <span class="typ-feature-heading" style="color:var(--tan);">Ride your own wave 🌊</span>
+    </div>
+  </footer>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const btn  = document.querySelector('.theme-toggle');
+      if (html.getAttribute('data-theme') === 'dark') {
+        html.setAttribute('data-theme', 'light');
+        btn.textContent = '☀️';
+      } else {
+        html.setAttribute('data-theme', 'dark');
+        btn.textContent = '🌙';
+      }
+    }
+  </script>
+</body>
+</html>
