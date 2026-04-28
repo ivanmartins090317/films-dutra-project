@@ -1,0 +1,19 @@
+---
+description: Padrões do repositório films-dutra-dashboard (Next 14, TypeScript, Supabase)
+alwaysApply: true
+---
+
+# Núcleo do projeto
+
+- Responda em **pt-BR** nas interações com o time, a menos que o contrário seja pedido.
+- Stack: **Next.js 14** (App Router), **React 18**, **TypeScript**, **Tailwind CSS**, **Radix** (`@radix-ui/react-slot`), **Supabase** (`@supabase/supabase-js`), validação com **Zod** e formulários com **react-hook-form** + **@hookform/resolvers**.
+- **Testes:** Vitest + Testing Library; prefira testes próximos ao código ou em `__tests__`. Não use mocks em fluxos de dev/prod — apenas em testes.
+- **Design system:** use tokens e padrões de `docs/design_system.md` (e preview em `docs/design_system_preview.html` como referência visual), mantendo consistência com o que já existe na UI.
+- **Alterações:** escopo mínimo necessário; evite refatorações não solicitadas. Não sobrescreva `.env` sem confirmação explícita.
+- **Arquivos longos:** prefira dividir acima de ~300 linhas por domínio/feature, não por preferência pessoal isolada.
+
+## Código
+
+- Componentes funcionais; prefira **exportações nomeadas**.
+- Diretórios em **kebab-case** (ex.: `components/auth-wizard`).
+- Dados reais em dev; fixtures apenas em testes.
