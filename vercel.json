@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/design-system",
+      "destination": "/design-system-preview.html"
+    },
+    {
+      "source": "/design-system/",
+      "destination": "/design-system-preview.html"
+    }
+  ]
+}
