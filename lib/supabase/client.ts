@@ -1,5 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
+import type { Database } from "@/types/database";
+
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 /** Anon ou publishable (novo painel Supabase); mesma função no client. */
 const supabaseAnonKey =
@@ -12,5 +14,5 @@ const supabaseAnonKey =
  * Sem URL/chave válidos, o client não consegue falar com o backend — esperado em dev puro.
  */
 export function createBrowserSupabaseClient() {
-  return createClient(supabaseUrl, supabaseAnonKey);
+  return createClient<Database>(supabaseUrl, supabaseAnonKey);
 }

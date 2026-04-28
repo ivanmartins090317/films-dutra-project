@@ -11,7 +11,9 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "db:types": "npx supabase gen types typescript --schema public --linked > types/database.ts",
+    "db:push": "npx supabase db push"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

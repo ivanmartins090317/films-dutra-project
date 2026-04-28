@@ -1,6 +1,8 @@
 /**
- * Tipos compartilhados. Tipos gerados do Supabase irão em `types/database.ts` (Fase 2).
+ * Tipos compartilhados. Tipos do schema Supabase: `types/database.ts` (regenerar com CLI quando o schema mudar).
  */
 export interface AppMetadata {
   name: "Films Dutra Dashboard";
 }
+
+export type { Database, Json, PublicEnums } from "./database";
