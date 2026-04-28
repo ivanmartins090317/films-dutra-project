@@ -2,7 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Pause, Play, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import {
+  Pause,
+  Play,
+  SkipBack,
+  SkipForward,
+  SpeakerHigh,
+} from "@phosphor-icons/react";
 
 export interface NeumorphismTrack {
   title: string;
@@ -143,7 +149,7 @@ export function NeumorphicMusicPlayer({
             style={{ backgroundColor: neo.base, ...btn, color: neo.accent }}
             aria-label="Voltar 10 segundos"
           >
-            <SkipBack size={20} />
+            <SkipBack size={20} weight="regular" color={neo.accent} />
           </button>
           <button
             type="button"
@@ -157,9 +163,9 @@ export function NeumorphicMusicPlayer({
             aria-label={isPlaying ? "Pausar" : "Reproduzir"}
           >
             {isPlaying ? (
-              <Pause size={28} fill={neo.accent} />
+              <Pause size={28} weight="fill" color={neo.accent} />
             ) : (
-              <Play size={28} fill={neo.accent} className="ml-0.5" />
+              <Play size={28} weight="fill" color={neo.accent} className="ml-0.5" />
             )}
           </button>
           <button
@@ -169,12 +175,12 @@ export function NeumorphicMusicPlayer({
             style={{ backgroundColor: neo.base, ...btn, color: neo.accent }}
             aria-label="Avançar 10 segundos"
           >
-            <SkipForward size={20} />
+            <SkipForward size={20} weight="regular" color={neo.accent} />
           </button>
         </div>
 
         <div className="flex items-center gap-4">
-          <Volume2 size={20} style={{ color: neo.accent }} aria-hidden />
+          <SpeakerHigh size={20} weight="regular" color={neo.accent} aria-hidden />
           <div className="relative h-2 flex-1 rounded-full" style={inset}>
             <input
               type="range"

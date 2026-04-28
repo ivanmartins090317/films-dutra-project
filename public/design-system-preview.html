@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <!-- Phosphor Icons (regular) — preview estático; app usa @phosphor-icons/react -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
   <style>
     /* ── CSS Custom Properties ─────────────────────────────
        CohereText / Unica77 Cohere Web / CohereMono — fallbacks web até fontes proprietárias estarem disponíveis. */
@@ -751,7 +753,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 48px;
       position: relative;
     }
     .trip-cover-overlay {
@@ -1209,6 +1210,100 @@
       color: var(--text-muted);
     }
 
+    /* ── Phosphor Icons — harmonia com paleta Dutra ─────── */
+    .ph {
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .announcement-bar .ph-announce {
+      font-size: 1.125rem;
+      color: var(--tan);
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+    }
+    .theme-toggle .ph {
+      font-size: 1.3rem;
+      color: var(--sage);
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+    .theme-toggle:hover .ph { color: var(--terra); }
+    [data-theme="dark"] .theme-toggle .ph {
+      color: var(--tan);
+      filter: drop-shadow(0 0 12px rgba(200, 168, 130, 0.25));
+    }
+    .summary-card-icon .ph {
+      font-size: 1.375rem;
+    }
+    .summary-card-icon.icon-sage .ph { color: #5f7154; }
+    .summary-card-icon.icon-slate .ph { color: #5d7a8c; }
+    .summary-card-icon.icon-terra .ph { color: #8b4528; }
+    .summary-card-icon.icon-tan .ph { color: #8b7355; }
+    [data-theme="dark"] .summary-card-icon.icon-sage .ph { color: var(--sage); }
+    [data-theme="dark"] .summary-card-icon.icon-slate .ph { color: var(--slate); }
+    [data-theme="dark"] .summary-card-icon.icon-terra .ph { color: #c96b45; }
+    [data-theme="dark"] .summary-card-icon.icon-tan .ph { color: var(--tan); }
+    .summary-card-trend .ph {
+      font-size: 0.875rem;
+      opacity: 0.95;
+    }
+    .neomorphic-btn-round .ph {
+      font-size: 1.35rem;
+      color: inherit;
+    }
+    .neomorphic-btn-play .ph { font-size: 1.65rem; }
+    .btn-icon .ph {
+      font-size: 1.15rem;
+      color: inherit;
+    }
+    .trip-cover-icon-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .trip-cover-icon-wrap .ph {
+      font-size: 3rem;
+      color: rgba(255, 255, 255, 0.93);
+      filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.35));
+    }
+    .trip-meta .ph-trip-meta {
+      font-size: 1rem;
+      color: var(--slate);
+      margin-right: 4px;
+      vertical-align: -3px;
+      opacity: 0.92;
+    }
+    .dark-band-card-icon .ph {
+      font-size: 1.75rem;
+      color: var(--tan);
+      filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.35));
+    }
+    .badge .ph-badge-lead {
+      font-size: 0.95rem;
+      margin-right: 5px;
+      vertical-align: -2px;
+    }
+    .badge-paid .ph-badge-lead { color: var(--sage); }
+    .badge-pending .ph-badge-lead { color: #b8926a; }
+    .badge-overdue .ph-badge-lead { color: var(--terra); }
+    .badge-level .ph-badge-lead { color: var(--slate); }
+    .lesson-chip .ph-lesson-check {
+      font-size: 0.95rem;
+      color: var(--sage);
+      margin-right: 6px;
+      vertical-align: -2px;
+    }
+    .footer-email-btn .ph {
+      font-size: 1.125rem;
+      vertical-align: middle;
+    }
+    .footer-wave-lockup .ph {
+      font-size: 1.25rem;
+      color: var(--tan);
+      margin-left: 6px;
+      vertical-align: -3px;
+      opacity: 0.9;
+    }
+
     @media (max-width: 900px) {
       .summary-grid { grid-template-columns: repeat(2, 1fr); }
       .trip-grid    { grid-template-columns: repeat(2, 1fr); }
@@ -1238,7 +1333,8 @@
 
   <!-- Announcement Bar -->
   <div class="announcement-bar">
-    🌊 Films Dutra Audiovisual Co. — Dashboard de Gestão de Alunos de Surf &nbsp;
+    <i class="ph ph-waves ph-announce" aria-hidden="true"></i>
+    <span>Films Dutra Audiovisual Co. — Dashboard de Gestão de Alunos de Surf</span>&nbsp;
     <a href="#">Ver PRD →</a>
   </div>
 
@@ -1253,7 +1349,9 @@
       <li><a href="#elevation">Elevação</a></li>
       <li><a href="#neumorphism">Neumorphism</a></li>
     </ul>
-    <button class="theme-toggle" onclick="toggleTheme()" title="Alternar tema">☀️</button>
+    <button type="button" class="theme-toggle" onclick="toggleTheme()" title="Alternar tema" aria-label="Alternar tema claro ou escuro">
+      <i id="theme-toggle-icon" class="ph ph-sun" aria-hidden="true"></i>
+    </button>
   </nav>
 
   <!-- Hero -->
@@ -1272,15 +1370,15 @@
     <div class="neo-demo-inner">
       <div>
         <h2 id="neo-demo-title" class="section-title" style="font-size:36px;letter-spacing:-0.36px;">Neumorphism (Soft UI)</h2>
-        <p class="section-desc">Sombras duplas sobre <strong>cream</strong> (#F0E8DE): relevo para cards e botões, poço <em>inset</em> para progresso. Implementação React em <code style="font-family:var(--font-cohere-mono);font-size:13px;">components/ui/neumorphism-player.tsx</code> (MCP 21st.dev + paleta Dutra + lucide-react).</p>
+        <p class="section-desc">Sombras duplas sobre <strong>cream</strong> (#F0E8DE): relevo para cards e botões, poço <em>inset</em> para progresso. Implementação React em <code style="font-family:var(--font-cohere-mono);font-size:13px;">components/ui/neumorphism-player.tsx</code> (paleta Dutra + <strong>Phosphor Icons</strong>).</p>
         <div class="neo-summary-grid" style="margin-top:24px;">
           <div class="summary-card">
-            <div class="summary-card-icon icon-sage">🏄</div>
+            <div class="summary-card-icon icon-sage"><i class="ph ph-surfboard" aria-hidden="true"></i></div>
             <div class="summary-card-value">24</div>
             <div class="summary-card-label">Alunos ativos</div>
           </div>
           <div class="summary-card">
-            <div class="summary-card-icon icon-slate">📅</div>
+            <div class="summary-card-icon icon-slate"><i class="ph ph-calendar-blank" aria-hidden="true"></i></div>
             <div class="summary-card-value">6</div>
             <div class="summary-card-label">Aulas hoje</div>
           </div>
@@ -1305,9 +1403,9 @@
             </div>
           </div>
           <div class="neomorphic-controls">
-            <button type="button" class="neomorphic-btn-round" aria-label="Faixa anterior">⏮</button>
-            <button type="button" class="neomorphic-btn-round neomorphic-btn-play" aria-label="Reproduzir">▶</button>
-            <button type="button" class="neomorphic-btn-round" aria-label="Próxima faixa">⏭</button>
+            <button type="button" class="neomorphic-btn-round" aria-label="Faixa anterior"><i class="ph ph-skip-back" aria-hidden="true"></i></button>
+            <button type="button" class="neomorphic-btn-round neomorphic-btn-play" aria-label="Reproduzir"><i class="ph ph-play" aria-hidden="true"></i></button>
+            <button type="button" class="neomorphic-btn-round" aria-label="Próxima faixa"><i class="ph ph-skip-forward" aria-hidden="true"></i></button>
           </div>
         </div>
       </div>
@@ -1321,28 +1419,28 @@
       <p class="section-desc">Visão rápida de métricas do administrador na home do dashboard.</p>
       <div class="summary-grid">
         <div class="summary-card">
-          <div class="summary-card-icon icon-sage">🏄</div>
+          <div class="summary-card-icon icon-sage"><i class="ph ph-surfboard" aria-hidden="true"></i></div>
           <div class="summary-card-value">24</div>
           <div class="summary-card-label">Alunos Ativos</div>
-          <span class="summary-card-trend trend-up">↑ 3 este mês</span>
+          <span class="summary-card-trend trend-up"><i class="ph ph-trend-up" aria-hidden="true"></i> 3 este mês</span>
         </div>
         <div class="summary-card">
-          <div class="summary-card-icon icon-slate">📅</div>
+          <div class="summary-card-icon icon-slate"><i class="ph ph-calendar-blank" aria-hidden="true"></i></div>
           <div class="summary-card-value">6</div>
           <div class="summary-card-label">Aulas Hoje</div>
-          <span class="summary-card-trend trend-neutral">2 restantes</span>
+          <span class="summary-card-trend trend-neutral"><i class="ph ph-clock" aria-hidden="true"></i> 2 restantes</span>
         </div>
         <div class="summary-card">
-          <div class="summary-card-icon icon-terra">💰</div>
+          <div class="summary-card-icon icon-terra"><i class="ph ph-currency-dollar" aria-hidden="true"></i></div>
           <div class="summary-card-value">3</div>
           <div class="summary-card-label">Pag. Pendentes</div>
-          <span class="summary-card-trend trend-warn">R$ 840 vencidos</span>
+          <span class="summary-card-trend trend-warn"><i class="ph ph-warning" aria-hidden="true"></i> R$ 840 vencidos</span>
         </div>
         <div class="summary-card">
-          <div class="summary-card-icon icon-tan">🌊</div>
+          <div class="summary-card-icon icon-tan"><i class="ph ph-waves" aria-hidden="true"></i></div>
           <div class="summary-card-value">2</div>
           <div class="summary-card-label">Trips Abertas</div>
-          <span class="summary-card-trend trend-neutral">14 vagas livres</span>
+          <span class="summary-card-trend trend-neutral"><i class="ph ph-users-three" aria-hidden="true"></i> 14 vagas livres</span>
         </div>
       </div>
     </div>
@@ -1461,10 +1559,10 @@
 
       <p class="typ-button" style="color:var(--text-secondary);text-transform:uppercase;margin-bottom:16px;">Semântica de Status</p>
       <div class="row" style="margin-bottom:16px;">
-        <span class="badge badge-paid">● Pago</span>
-        <span class="badge badge-pending">● Pendente</span>
-        <span class="badge badge-overdue">● Vencido</span>
-        <span class="badge badge-level">🏄 Intermediário</span>
+        <span class="badge badge-paid"><i class="ph ph-check-circle ph-badge-lead" aria-hidden="true"></i> Pago</span>
+        <span class="badge badge-pending"><i class="ph ph-clock ph-badge-lead" aria-hidden="true"></i> Pendente</span>
+        <span class="badge badge-overdue"><i class="ph ph-x-circle ph-badge-lead" aria-hidden="true"></i> Vencido</span>
+        <span class="badge badge-level"><i class="ph ph-surfboard ph-badge-lead" aria-hidden="true"></i> Intermediário</span>
         <span class="badge chip-active badge-chip">Ativo</span>
         <span class="badge chip-inactive badge-chip">Inativo</span>
       </div>
@@ -1547,7 +1645,7 @@
         <button class="btn btn-outline-terra">Cancelar Aula</button>
         <button class="btn btn-ghost">Explorar Módulos</button>
         <button class="btn btn-primary btn-sm">+ Aluno</button>
-        <button class="btn-icon" title="Alternar tema">🔔</button>
+        <button type="button" class="btn-icon" title="Notificações" aria-label="Notificações"><i class="ph ph-bell" aria-hidden="true"></i></button>
       </div>
       <div class="row gap-8 mt-16">
         <span class="badge chip-active badge-chip">Todos</span>
@@ -1606,7 +1704,7 @@
           </div>
           <p class="lesson-panel-body">Aula focada em manobras de cutback. Marina demonstrou boa leitura de onda e melhorou o timing na subida. Próxima aula: explorar floater básico.</p>
           <div class="lesson-panel-footer">
-            <span class="lesson-chip lesson-chip-sage">✓ Cutback</span>
+            <span class="lesson-chip lesson-chip-sage"><i class="ph ph-check ph-lesson-check" aria-hidden="true"></i>Cutback</span>
             <span class="lesson-chip">Leitura de onda</span>
             <span class="lesson-chip">Equilíbrio</span>
             <span class="lesson-chip" style="background:rgba(160,82,45,0.2);border-color:var(--terra);color:var(--terra);">60 min</span>
@@ -1625,14 +1723,14 @@
       <div class="trip-grid">
         <div class="trip-card">
           <div class="trip-cover" style="background:linear-gradient(135deg,#7A8C6E,#3d4f36);">
-            🌊
+            <div class="trip-cover-icon-wrap"><i class="ph ph-waves" aria-hidden="true"></i></div>
             <div class="trip-cover-overlay">
               <span class="trip-cover-label">Confirmada</span>
             </div>
           </div>
           <div class="trip-body">
             <div class="trip-title">Fernando de Noronha</div>
-            <div class="trip-meta">📍 Noronha, PE · 📅 15–22 Jul 2026</div>
+            <div class="trip-meta"><i class="ph ph-map-pin ph-trip-meta" aria-hidden="true"></i> Noronha, PE · <i class="ph ph-calendar-blank ph-trip-meta" aria-hidden="true"></i> 15–22 Jul 2026</div>
             <div class="trip-spots">
               <div class="spots-bar"><div class="spots-fill" style="width:70%"></div></div>
               <span class="spots-text">7/10 vagas</span>
@@ -1642,14 +1740,14 @@
         </div>
         <div class="trip-card">
           <div class="trip-cover" style="background:linear-gradient(135deg,#7B9BAD,#4a6b7d);">
-            🏄
+            <div class="trip-cover-icon-wrap"><i class="ph ph-surfboard" aria-hidden="true"></i></div>
             <div class="trip-cover-overlay">
               <span class="trip-cover-label">Vagas Disponíveis</span>
             </div>
           </div>
           <div class="trip-body">
             <div class="trip-title">Florianópolis</div>
-            <div class="trip-meta">📍 Floripa, SC · 📅 10–13 Set 2026</div>
+            <div class="trip-meta"><i class="ph ph-map-pin ph-trip-meta" aria-hidden="true"></i> Floripa, SC · <i class="ph ph-calendar-blank ph-trip-meta" aria-hidden="true"></i> 10–13 Set 2026</div>
             <div class="trip-spots">
               <div class="spots-bar"><div class="spots-fill" style="width:30%;background:var(--slate)"></div></div>
               <span class="spots-text">3/10 vagas</span>
@@ -1659,14 +1757,14 @@
         </div>
         <div class="trip-card">
           <div class="trip-cover" style="background:linear-gradient(135deg,#A0522D,#7a3d20);">
-            🔥
+            <div class="trip-cover-icon-wrap"><i class="ph ph-fire" aria-hidden="true"></i></div>
             <div class="trip-cover-overlay">
               <span class="trip-cover-label">Últimas Vagas</span>
             </div>
           </div>
           <div class="trip-body">
             <div class="trip-title">Jericoacoara</div>
-            <div class="trip-meta">📍 Jeri, CE · 📅 5–10 Nov 2026</div>
+            <div class="trip-meta"><i class="ph ph-map-pin ph-trip-meta" aria-hidden="true"></i> Jeri, CE · <i class="ph ph-calendar-blank ph-trip-meta" aria-hidden="true"></i> 5–10 Nov 2026</div>
             <div class="trip-spots">
               <div class="spots-bar"><div class="spots-fill" style="width:90%;background:var(--terra)"></div></div>
               <span class="spots-text">9/10 vagas</span>
@@ -1773,10 +1871,10 @@
           <div class="card">
             <p class="card-title">Badges — Todos os Status</p>
             <div class="row gap-8 mt-16" style="flex-wrap:wrap;">
-              <span class="badge badge-paid">🟢 Pago</span>
-              <span class="badge badge-pending">🟡 Pendente</span>
-              <span class="badge badge-overdue">🔴 Vencido</span>
-              <span class="badge badge-level">🏄 Nível</span>
+              <span class="badge badge-paid"><i class="ph ph-check-circle ph-badge-lead" aria-hidden="true"></i> Pago</span>
+              <span class="badge badge-pending"><i class="ph ph-clock ph-badge-lead" aria-hidden="true"></i> Pendente</span>
+              <span class="badge badge-overdue"><i class="ph ph-x-circle ph-badge-lead" aria-hidden="true"></i> Vencido</span>
+              <span class="badge badge-level"><i class="ph ph-surfboard ph-badge-lead" aria-hidden="true"></i> Nível</span>
             </div>
           </div>
         </div>
@@ -1792,32 +1890,32 @@
       <p class="section-desc">Dashboard completo para professor e área pessoal para cada aluno.</p>
       <div class="dark-band-grid">
         <div class="dark-band-card">
-          <div class="dark-band-card-icon">📅</div>
+          <div class="dark-band-card-icon"><i class="ph ph-calendar-blank" aria-hidden="true"></i></div>
           <div class="dark-band-card-title">Agenda de Aulas</div>
           <div class="dark-band-card-body">Visualização mensal, semanal e diária. Agendamento rápido com status por aula e anotações pós-aula.</div>
         </div>
         <div class="dark-band-card">
-          <div class="dark-band-card-icon">📈</div>
+          <div class="dark-band-card-icon"><i class="ph ph-chart-line-up" aria-hidden="true"></i></div>
           <div class="dark-band-card-title">Evolução do Aluno</div>
           <div class="dark-band-card-body">Timeline de evolução com tags de habilidade, anotações do professor e gráfico de progresso por período.</div>
         </div>
         <div class="dark-band-card">
-          <div class="dark-band-card-icon">💰</div>
+          <div class="dark-band-card-icon"><i class="ph ph-currency-dollar" aria-hidden="true"></i></div>
           <div class="dark-band-card-title">Controle Financeiro</div>
           <div class="dark-band-card-body">Registro de mensalidades e pacotes. Status visual de pagamento com visão consolidada de receita mensal.</div>
         </div>
         <div class="dark-band-card">
-          <div class="dark-band-card-icon">🌊</div>
+          <div class="dark-band-card-icon"><i class="ph ph-waves" aria-hidden="true"></i></div>
           <div class="dark-band-card-title">Surf Trips</div>
           <div class="dark-band-card-body">Calendário anual de trips. Inscrição de alunos, controle de vagas em tempo real e imagem de capa.</div>
         </div>
         <div class="dark-band-card">
-          <div class="dark-band-card-icon">👤</div>
+          <div class="dark-band-card-icon"><i class="ph ph-user-circle" aria-hidden="true"></i></div>
           <div class="dark-band-card-title">Área do Aluno</div>
           <div class="dark-band-card-body">Acesso restrito por aluno via magic link. Visualização de aulas, evolução e trips disponíveis.</div>
         </div>
         <div class="dark-band-card">
-          <div class="dark-band-card-icon">🔒</div>
+          <div class="dark-band-card-icon"><i class="ph ph-lock-key" aria-hidden="true"></i></div>
           <div class="dark-band-card-title">Segurança & LGPD</div>
           <div class="dark-band-card-body">Row Level Security no Supabase. Dados sensíveis em tabela separada. Termo de consentimento obrigatório.</div>
         </div>
@@ -1894,7 +1992,7 @@
         <div class="footer-brand-tagline">Audiovisual Co. · Escola de Surf</div>
         <div class="footer-email-row">
           <input class="footer-email-input" type="email" placeholder="seu@email.com" />
-          <button class="footer-email-btn">→</button>
+          <button type="button" class="footer-email-btn" aria-label="Enviar"><i class="ph ph-arrow-right" aria-hidden="true"></i></button>
         </div>
         <p class="typ-micro" style="color:rgba(240,232,222,.35);margin-top:10px;">Ao inscrever-se você aceita nossa Política de Privacidade.</p>
       </div>
@@ -1929,20 +2027,21 @@
     </div>
     <div class="typ-micro" style="max-width:1100px;margin:40px auto 0;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center;color:rgba(240,232,222,.35);">
       <span>© 2026 Films Dutra Audiovisual Co. Todos os direitos reservados.</span>
-      <span class="typ-feature-heading" style="color:var(--tan);">Ride your own wave 🌊</span>
+      <span class="typ-feature-heading footer-wave-lockup" style="color:var(--tan);">Ride your own wave <i class="ph ph-waves" aria-hidden="true"></i></span>
     </div>
   </footer>
 
   <script>
     function toggleTheme() {
       const html = document.documentElement;
-      const btn  = document.querySelector('.theme-toggle');
+      const icon = document.getElementById('theme-toggle-icon');
+      if (!icon) return;
       if (html.getAttribute('data-theme') === 'dark') {
         html.setAttribute('data-theme', 'light');
-        btn.textContent = '☀️';
+        icon.className = 'ph ph-sun';
       } else {
         html.setAttribute('data-theme', 'dark');
-        btn.textContent = '🌙';
+        icon.className = 'ph ph-moon';
       }
     }
   </script>

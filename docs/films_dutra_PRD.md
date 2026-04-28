@@ -175,13 +175,13 @@ export default config;
 
 ### 4.4 Toggle de Tema
 
-Implementar com `next-themes`. O toggle deve aparecer no **Header/Navbar** de todas as telas (admin e aluno). Usar ícones `Sun` / `Moon` do Lucide React. Estado persistido em `localStorage`.
+Implementar com `next-themes`. O toggle deve aparecer no **Header/Navbar** de todas as telas (admin e aluno). Usar ícones `Sun` / `Moon` do Phosphor Icons. Estado persistido em `localStorage`.
 
 ```tsx
 // components/shared/ThemeToggle.tsx
 "use client";
 import { useTheme } from "next-themes";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 
 export function ThemeToggle() {

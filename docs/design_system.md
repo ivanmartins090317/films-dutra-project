@@ -61,7 +61,7 @@ A Films Dutra não usa gradientes genéricos como preenchimento de UI. Gradiente
 - **Display (hero / product)**: `CohereText`, fallback `Space Grotesk`, `Inter`, `ui-sans-serif`, `system-ui`.
 - **Body / UI**: `Unica77 Cohere Web`, fallback `Inter`, `Arial`, `ui-sans-serif`, `system-ui`.
 - **Labels técnicos / mono**: `CohereMono`, fallback `Arial`, `ui-monospace`, `Courier New`, `monospace`.
-- **Ícones**: Lucide React — ícones de linha fina e consistente.
+- **Ícones**: Phosphor Icons (`@phosphor-icons/react`) — pesos regulares/fill; preview estático em `public/design-system-preview.html` via `@phosphor-icons/web` (CDN).
 
 ### Tokens (fonte de verdade)
 
@@ -209,9 +209,9 @@ Inspirado no padrão **neumorphism** (superfície única + sombras duplas “ext
 | **Raised** (card / botão) | `box-shadow`: sombra escura ↘ + sombra clara ↖ | Cartões principais, botões circulares de mídia |
 | **Inset** | `box-shadow: inset …` | Trilha de progresso, poços de slider, campos “embutidos” |
 
-**Implementação no repositório:** componente React `components/ui/neumorphism-player.tsx` (client component: play/pause, seek, volume; ícones **lucide-react**; capa padrão Unsplash surf). Dependência: `lucide-react`. Caminho `@/components/ui` alinhado ao **shadcn/ui** — ao criar o app Next.js, rode `npx shadcn@latest init` e mantenha `components/ui` para componentes compartilhados e CLI do shadcn.
+**Implementação no repositório:** componente React `components/ui/neumorphism-player.tsx` (client component: play/pause, seek, volume; ícones **Phosphor** — `Play`, `Pause`, `SkipBack`, `SkipForward`, `SpeakerHigh`; capa padrão Unsplash surf). Dependência: `@phosphor-icons/react`. Caminho `@/components/ui` alinhado ao **shadcn/ui** — ao criar o app Next.js, rode `npx shadcn@latest init` e mantenha `components/ui` para componentes compartilhados e CLI do shadcn.
 
-**Setup quando o projeto Next + Tailwind existir:** `npm install lucide-react` e import `{ NeumorphicMusicPlayer } from "@/components/ui/neumorphism-player"`. Estilos neo usam `style={{ boxShadow: … }}` com tokens hex/rgba da marca para não depender de `tailwind.config` extra até você externalizar para `@layer utilities`.
+**Setup:** `npm install @phosphor-icons/react` e import `{ NeumorphicMusicPlayer } from "@/components/ui/neumorphism-player"`. Estilos neo usam `style={{ boxShadow: … }}` com tokens hex/rgba da marca para não depender de `tailwind.config` extra até você externalizar para `@layer utilities`.
 
 **Boas práticas:** use neumorphism com moderação (1 bloco por tela ou módulo de mídia); contraste WCAG do texto sobre `cream` deve permanecer com **ink** `#1A1A1A` ou **charcoal** `#555555`; no **tema escuro** o soft UI perde legibilidade — prefira elevação flat/bordered documentada acima ou redefine sombras com base `#2A2A2A` e teste manual.
 
@@ -253,7 +253,7 @@ Pill com preenchimento transparente, borda 1px verde musgo ou terracota, raio 32
 
 ### **`neumorphism-player`**
 
-Player de mídia em **soft UI** (sombras duplas, trilha inset, botões circulares em relevo) sobre fundo **cream**, acento **sage**. Implementação: `components/ui/neumorphism-player.tsx` — props opcionais `track` (título, artista, duração em segundos, `coverUrl`), `autoPlay`, `className`. Ícones **lucide-react** (`Play`, `Pause`, `SkipBack`, `SkipForward`, `Volume2`). Capa padrão: imagem Unsplash de surf.
+Player de mídia em **soft UI** (sombras duplas, trilha inset, botões circulares em relevo) sobre fundo **cream**, acento **sage**. Implementação: `components/ui/neumorphism-player.tsx` — props opcionais `track` (título, artista, duração em segundos, `coverUrl`), `autoPlay`, `className`. Ícones **Phosphor** (`Play`, `Pause`, `SkipBack`, `SkipForward`, `SpeakerHigh`). Capa padrão: imagem Unsplash de surf.
 
 ### **`announcement-bar`**
 
@@ -265,7 +265,7 @@ Card de aluno com avatar circular, nome, data da última aula e badge de status 
 
 ### **`summary-card`**
 
-Card de dashboard com ícone Lucide, número grande em **product-display** ou **section-display** (CohereText / Unica77 conforme hierarquia da tela), label em **caption** (14px) e indicador de tendência. Quatro por linha em desktop. Superfície branca com borda `#C8A882`.
+Card de dashboard com ícone Phosphor, número grande em **product-display** ou **section-display** (CohereText / Unica77 conforme hierarquia da tela), label em **caption** (14px) e indicador de tendência. Quatro por linha em desktop. Superfície branca com borda `#C8A882`.
 
 ### **`agent-console-card` / `lesson-panel`**
 
@@ -277,7 +277,7 @@ Equivalente ao strip de conquistas/stats: alinhamento horizontal de métricas-ch
 
 ### **`capability-card`**
 
-Bloco de conteúdo com ícone Lucide de linha fina, heading em **feature-heading** (24px), texto em **body** e link de texto. Em fundos claros, cards têm apenas bordas top ou uma relação sutil imagem/card.
+Bloco de conteúdo com ícone Phosphor de linha fina, heading em **feature-heading** (24px), texto em **body** e link de texto. Em fundos claros, cards têm apenas bordas top ou uma relação sutil imagem/card.
 
 ### **`dark-feature-band`**
 
