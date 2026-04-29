@@ -8,7 +8,9 @@ alwaysApply: true
 - Responda em **pt-BR** nas interações com o time, a menos que o contrário seja pedido.
 - Stack: **Next.js 14** (App Router), **React 18**, **TypeScript**, **Tailwind CSS**, **Radix** (`@radix-ui/react-slot`), **Supabase** (`@supabase/supabase-js`), validação com **Zod** e formulários com **react-hook-form** + **@hookform/resolvers**.
 - **Testes:** Vitest + Testing Library; prefira testes próximos ao código ou em `__tests__`. Não use mocks em fluxos de dev/prod — apenas em testes.
-- **Design system:** use tokens e padrões de `docs/design_system.md` (preview visual em `public/design-system-preview.html`; em produção na Vercel também em `/design-system`), mantendo consistência com o que já existe na UI.
+- **Design system:** use **sempre** `docs/design_system.md` como fonte de verdade para qualquer implementação de front-end (preview estático em `public/design-system-preview.html`; em produção na Vercel também em `/design-system`), mantendo consistência com o que já existe na UI.
+- **Front-end — imagens:** prefira ativos em `public/` (logos, marcas, ilustrações) quando a tela exigir mídia; evite URLs hardcoded de terceiros exceto quando o design system documentar (ex. placeholders de capa no player).
+- **Front-end — Neumorphism (Soft UI):** sobre fundo **cream** `#F0E8DE`, prefira **sombras duplas** para relevo em **cards** e **botões**, e sombra **inset** para trilhas de **progresso** / poços — ver tokens neo no `design_system.md` e no HTML de preview. Referência de implementação React: `components/ui/neumorphism-player.tsx` (paleta Dutra + **Phosphor Icons** `@phosphor-icons/react`). Use neumorphism com moderação (ex.: um bloco de destaque por módulo), como descrito no doc de design.
 - **Alterações:** escopo mínimo necessário; evite refatorações não solicitadas. Não sobrescreva `.env` sem confirmação explícita.
 - **Arquivos longos:** prefira dividir acima de ~300 linhas por domínio/feature, não por preferência pessoal isolada.
 

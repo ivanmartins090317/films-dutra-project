@@ -5,4 +5,4 @@ export interface AppMetadata {
   name: "Films Dutra Dashboard";
 }
 
-export type { Database, Json, PublicEnums } from "./database";
+export type { Database, Json, PublicEnums, ProfileRow } from "./database";

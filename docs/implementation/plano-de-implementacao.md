@@ -4,6 +4,46 @@ Documento derivado do [films_dutra_PRD.md](../../films_dutra_PRD.md). Organiza o
 
 **Escopo alvo:** MVP v1 conforme seção 10 do PRD (onboarding, perfis, dashboard admin completo, área do aluno em leitura, tema claro/escuro, sem upload de mídia na evolução na v1).
 
+**Última revisão do status:** abril de 2026 (alinhado a [docs/state/estado-atual.md](../state/estado-atual.md)).
+
+---
+
+## Diretrizes de front-end (todas as fases com UI)
+
+Toda implementação de interface deve obedecer ao **[design_system.md](../design_system.md)** (tokens de cor, tipografia, componentes, acessibilidade).
+
+| Tema | Regra |
+|------|--------|
+| Documentação | `docs/design_system.md` é a referência obrigatória; preview visual em `public/design-system-preview.html`. |
+| Imagens | Preferir arquivos em **`public/`** (marca, ícones exportados, ilustrações). Evitar dependência de assets externos salvo casos já previstos no design system. |
+| Neumorphism (Soft UI) | Sobre **cream** `#F0E8DE`: **sombras duplas** para relevo em cards e botões; **sombra inset** para trilha de progresso / “poço”. Não exagerar: um bloco neo principal por tela ou módulo, conforme o doc. |
+| Implementação de referência | Componente **`components/ui/neumorphism-player.tsx`** — paleta Dutra + ícones **Phosphor** (`@phosphor-icons/react`). Serve de modelo para sombras e hierarquia soft UI no React. |
+
+---
+
+## Progresso por fase
+
+| Fase | Nome resumido | Status | Observação |
+|------|---------------|--------|------------|
+| 0 | Fundação do repositório | **Concluída** | Next.js 14, estrutura, variáveis documentadas |
+| 1 | Design system e shell | **Concluída** | Tema, layout público, conforme evolução do repo |
+| 2 | Supabase: schema, RLS, Storage | **Concluída (infra + app parcial)** | Migração aplicada no projeto **films_dutra_bd**; `lib/supabase/client.ts`, `types/database.ts`, scripts `db:push` / `db:types`. **Pendente:** validação manual RLS com usuários admin + aluno (critério do plano) |
+| 3 | Autenticação e rotas | **Concluída** | `lib/supabase/server.ts`, `middleware.ts`, `/login`, `/admin`, `/student`, callback e recuperação de senha — detalhes em [estado-atual §4 e §8](../state/estado-atual.md) |
+| 4 | Onboarding público | **Próxima** | Depende da Fase 3 (sessão e perfis) |
+| 5–12 | Demais fases | **Não iniciadas** | Conforme dependências do plano |
+
+---
+
+## Próximos passos imediatos (Fase 4)
+
+A Fase 3 está **entregue no repositório** (ver [estado-atual](../state/estado-atual.md)). Próximo foco:
+
+1. **`/onboarding/[token]`** — validação do token (tabela ou JWT), formulário multi-step, Zod em `lib/validations/onboarding.ts`.
+2. **Persistência** em `profiles` + `student_details` sem violar RLS (RPC `SECURITY DEFINER` ou fluxo com **service role** onde o PRD exigir escrita fora do papel admin).
+3. **Convite / primeiro acesso do aluno** — alinhar com produto (link enviado pelo professor).
+
+Contexto RLS: [estado-atual §3.5](../state/estado-atual.md).
+
 ---
 
 ## Visão das fases
@@ -43,17 +83,19 @@ Documento derivado do [films_dutra_PRD.md](../../films_dutra_PRD.md). Organiza o
 
 ## Fase 1 — Design system e shell da aplicação
 
-**Objetivo:** Identidade visual e tema (PRD seção 4).
+**Objetivo:** Identidade visual e tema (PRD seção 4), em sincronia permanente com **[design_system.md](../design_system.md)**.
 
 **Entregas:**
 
-- Tokens em `globals.css` (light/dark) e extensão de cores em `tailwind.config`.
-- Tipografia: Playfair (display) + Inter ou DM Sans (corpo), conforme PRD.
+- Tokens em `globals.css` (light/dark) e extensão de cores em `tailwind.config`, alinhados à paleta Dutra do design system (creme, sage, tan, terracota, etc.).
+- Tipografia e escala: conforme **design_system.md** (display com fallback Space Grotesk; corpo/UI Unica77 com fallback Inter — até fontes proprietárias estarem disponíveis).
+- Superfícies **Neumorphism (Soft UI)** quando fizer sentido: fundo cream `#F0E8DE`, sombras duplas para relevo em cards/botões, trilha inset para progresso; referência React em **`components/ui/neumorphism-player.tsx`** (Phosphor Icons).
+- Imagens da marca e ícones exportados em **`public/`**, consumidos pelas páginas conforme o doc.
 - Componentes compartilhados: `ThemeToggle`, esqueleto de `Navbar` / layout público.
 - `Providers` com `ThemeProvider` (`next-themes`).
 - Landing `/` ou redirect acordado para `/login`.
 
-**Critérios de conclusão:** Toggle de tema visível e persistente; páginas públicas com aparência da marca.
+**Critérios de conclusão:** Toggle de tema visível e persistente; páginas públicas com aparência da marca; novas telas respeitam as [Diretrizes de front-end](#diretrizes-de-front-end-todas-as-fases-com-ui).
 
 ---
 
@@ -72,11 +114,15 @@ Documento derivado do [films_dutra_PRD.md](../../films_dutra_PRD.md). Organiza o
 
 **Critérios de conclusão:** Políticas testadas com dois usuários de teste (admin e aluno); nenhum vazamento de linhas entre alunos.
 
+**Status repositório (abril/2026):** Migração `supabase/migrations/20260428100000_initial_schema.sql` aplicada no projeto Supabase; app com `lib/supabase/client.ts`, `types/database.ts` e scripts `db:push` / `db:types`. O critério de teste manual com admin + aluno ainda pode ser executado em paralelo à Fase 3. Resumo: [estado-atual.md](../state/estado-atual.md).
+
 ---
 
 ## Fase 3 — Autenticação, perfis e middleware
 
 **Objetivo:** Login e separação Admin / Aluno (PRD seções 2, 6.1, 7).
+
+**Onde começar (ordem de implementação):** [Próximos passos imediatos (Fase 4)](#próximos-passos-imediatos-fase-4) no início deste documento.
 
 **Entregas:**
 
@@ -236,7 +282,7 @@ Documento derivado do [films_dutra_PRD.md](../../films_dutra_PRD.md). Organiza o
 
 | Tópico PRD | Fases principais |
 |------------|------------------|
-| Design system (§4) | 1 |
+| Design system / Neumorphism / `public` (§4 + [diretrizes](#diretrizes-de-front-end-todas-as-fases-com-ui)) | 1 e todas as fases com UI |
 | Modelagem e RLS (§5, §9) | 2 |
 | Auth (§6.1) | 3 |
 | Onboarding (§6.2) | 4 |
@@ -256,4 +302,4 @@ Documento derivado do [films_dutra_PRD.md](../../films_dutra_PRD.md). Organiza o
 
 ---
 
-*Documento vivo: atualizar datas e status de fase à medida que o projeto avança.*
+*Documento vivo: a tabela [Progresso por fase](#progresso-por-fase) e a seção [Próximos passos imediatos (Fase 4)](#próximos-passos-imediatos-fase-4) devem ser revisadas a cada marco; manter alinhamento com [estado-atual.md](../state/estado-atual.md).*

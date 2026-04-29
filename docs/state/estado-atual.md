@@ -15,6 +15,7 @@ Documento de referência do que já foi implementado até aqui (ambiente, Supaba
 | Projeto Supabase | **films_dutra_bd** no ambiente **main / PRODUCTION** |
 | Schema `public` | Tabelas, enums, RLS, Storage e triggers conforme PRD §5 e plano Fase 2 |
 | Dados | Tabelas criadas; **sem registros de negócio** ainda (ex.: `lessons` vazia) |
+| **Fase 3 (auth)** | **Implementada:** middleware, login, áreas `/admin` e `/student`, callback de recuperação de senha; favicon em `public/favicon.ico` |
 
 ---
 
@@ -22,10 +23,11 @@ Documento de referência do que já foi implementado até aqui (ambiente, Supaba
 
 O trabalho segue o [plano de implementação](../implementation/plano-de-implementacao.md), derivado do [PRD](../films_dutra_PRD.md).
 
-- **Fase 0** (fundação do repo) e **Fase 1** (design system / shell) — consideradas alinhadas ao plano (home, tema, etc., conforme evolução do repositório).
-- **Fase 2 (Supabase: schema, RLS, Storage, tipos)** — **executada** no banco: migração aplicada; integração no app com cliente browser e tipos.
+- **Fase 0** (fundação do repo) e **Fase 1** (design system / shell) — alinhadas ao plano.
+- **Fase 2** (Supabase: schema, RLS, Storage, tipos) — **executada** no banco e com tipos versionados.
+- **Fase 3** (autenticação, middleware, `/login`, proteção de rotas) — **executada no código** (ver seções 4 e [§8](#8-fase-3--como-funciona-na-prática)).
 
-A **Fase 3** (autenticação, middleware, `/login`, proteção de rotas) é o próximo bloco lógico.
+O **próximo bloco lógico** é a **Fase 4** (onboarding público com token, formulário multi-step e persistência alinhada ao RLS).
 
 ---
 
@@ -35,7 +37,9 @@ A **Fase 3** (autenticação, middleware, `/login`, proteção de rotas) é o pr
 - Variáveis usadas pelo app:
   - `NEXT_PUBLIC_SUPABASE_URL` — URL do projeto (ex.: `https://<ref>.supabase.co`).
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` — chave anônima / publishable (o código também aceita `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` como alias).
-- Modelo documentado: **`.env.example`**, incluindo comentários para **Supabase CLI** (`SUPABASE_ACCESS_TOKEN`, senha do banco) usados em `link` e `db push`, sem commitar valores reais.
+  - **`NEXT_PUBLIC_SITE_URL`** (recomendado em produção) — base usada em links de e-mail (recuperação de senha). Em dev costuma ser `http://localhost:3000`. Na Vercel pode omitir se `VERCEL_URL` atender.
+- **Supabase Auth — Redirect URLs** (Dashboard → Authentication → URL Configuration): incluir `http://localhost:3000/auth/callback` e o equivalente em produção; sem isso, magic link / PKCE após o e-mail pode falhar.
+- Modelo documentado: **`.env.example`** (inclui lembrete das Redirect URLs), comentários para **Supabase CLI** (`SUPABASE_ACCESS_TOKEN`, senha do banco) para `link` e `db push`, sem commitar valores reais.
 
 ---
 
@@ -94,40 +98,123 @@ Buckets previstos na migração:
 
 ---
 
-## 4. Código no repositório (integração Supabase)
+## 4. Código no repositório (integração Supabase e Fase 3)
+
+### 4.1 Clientes e ambiente
 
 | Caminho | Descrição |
 |---------|-----------|
-| `lib/supabase/client.ts` | `createBrowserSupabaseClient()` usando `@supabase/supabase-js` e tipo genérico `Database` |
-| `types/database.ts` | Tipagem do schema `public` (Enums + `Tables`); pode ser **regenerada** com `npm run db:types` após `supabase login` + `supabase link` |
-| `types/index.ts` | Reexporta `Database`, `Json`, `PublicEnums` |
-| `package.json` | Scripts `db:push` e `db:types` |
+| `lib/supabase/env.ts` | `getSupabaseEnv()`, `getSiteUrl()` — URL/chave e origem para redirects de auth |
+| `lib/supabase/client.ts` | `createBrowserSupabaseClient()` — uso no browser (login recovery, update password) |
+| `lib/supabase/server.ts` | `createServerSupabaseClient()` — Server Actions, Route Handlers, RSC (`@supabase/ssr` + cookies) |
+| `lib/supabase/middleware.ts` | `updateSession()` — refresh de sessão + regras de rota por `profiles.role` |
+| `middleware.ts` (raiz) | Chama `updateSession`; matcher exclui estáticos conhecidos |
+
+### 4.2 Autenticação e rotas
+
+| Caminho | Descrição |
+|---------|-----------|
+| `lib/auth/actions.ts` | Server Actions: `loginAction`, `logoutAction`, `requestPasswordResetAction` |
+| `lib/validations/auth.ts` | Zod `loginSchema` |
+| `app/login/page.tsx` | Página de login; query `next`, `error`; bloco “esqueci a senha” |
+| `components/auth/login-form.tsx` | Formulário cliente com `useFormState` |
+| `components/auth/logout-button.tsx` | Botão “Sair” (server action) |
+| `app/auth/callback/route.ts` | Troca `code` PKCE por sessão (pós-clique no e-mail) |
+| `app/auth/update-password/page.tsx` | Define nova senha após link de recuperação |
+| `app/admin/layout.tsx` / `app/admin/page.tsx` | Shell admin; bloqueia `is_active === false` |
+| `app/student/layout.tsx` / `app/student/page.tsx` | Shell aluno; mesma regra de conta inativa |
+| `app/page.tsx` | Link para `/login` |
+
+### 4.3 Tipos
+
+| Caminho | Descrição |
+|---------|-----------|
+| `types/database.ts` | Schema `public`; `Views`/`CompositeTypes` no formato compatível com supabase-js; tipo exportado **`ProfileRow`** |
+| `types/index.ts` | Reexporta `Database`, `Json`, `PublicEnums`, `ProfileRow` |
+
+Onde o inferidor do client ainda produz `never` em algumas chains, o código usa **cast explícito** para `ProfileRow` (revisar após `npm run db:types` com CLI atual).
+
+### 4.4 Dependências e scripts relevantes
+
+- **`@supabase/ssr`** — cookies no servidor/middleware.
+- `package.json`: `db:push`, `db:types`, `dev`, `build`, `test`.
+
+### 4.5 Assets
+
+- **Favicon:** `public/favicon.ico` (servido como estático em `/favicon.ico`; evita rota metadata que gerava erro em dev no Windows com cache `.next` inconsistente).
+- **`app/layout.tsx`:** `metadata.icons.icon` → `/favicon.ico`.
 
 ---
 
 ## 5. O que ainda não existe (deliberado ou próximas fases)
 
 - Dados reais de negócio nas tabelas (aulas, financeiro, trips, etc.).
-- **`lib/supabase/server.ts`**, **middleware** e rotas **`/login`** — Fase 3.
-- Fluxo de **onboarding** com token e escrita em `student_details` sem quebrar RLS — Fase 4.
-- Testes automatizados específicos do schema/RLS (o plano prevê validação manual com dois usuários — admin e aluno).
+- **Fase 4** — onboarding público `/onboarding/[token]`, validação de token, escrita em `profiles` + `student_details` respeitando RLS (possível RPC ou service role onde aplicável).
+- Testes automatizados E2E ou integração para login e redirects (Fase 12 ou incremental).
+- Validação manual RLS com **dois usuários** (admin + aluno), item pendente desde o critério da Fase 2 no plano.
 
 ---
 
 ## 6. Checklist rápido pós-deploy / novo dev
 
 1. Copiar `.env.example` → `.env.local` e preencher URL + chave anon do projeto correto.
-2. Confirmar no dashboard que as **7 tabelas** existem em `public` e que **RLS** está ativo onde esperado.
-3. Promover o primeiro **admin** manualmente (`UPDATE profiles SET role = 'admin' WHERE id = '<uuid>'`) após criar o usuário em Authentication.
-4. Rodar `npm run dev` e `npm run build` antes de abrir PR.
+2. Configurar **Redirect URLs** no Supabase para **`/auth/callback`** (localhost + produção).
+3. Confirmar no dashboard que as **7 tabelas** existem em `public` e que **RLS** está ativo onde esperado.
+4. Promover o primeiro **admin** manualmente (`UPDATE profiles SET role = 'admin' WHERE id = '<uuid>'`) após criar o usuário em Authentication.
+5. Rodar `npm run dev` e `npm run build` antes de abrir PR.
+6. Se o dev server acusar erro estranho em rotas ou favicon: apagar pasta **`.next`** e subir de novo (`npm run dev`).
 
 ---
 
 ## 7. Referências
 
 - [PRD — modelagem §5 e segurança §9](../films_dutra_PRD.md)
-- [Plano de implementação — Fase 2](../implementation/plano-de-implementacao.md)
+- [Plano de implementação](../implementation/plano-de-implementacao.md) — [Progresso por fase](../implementation/plano-de-implementacao.md#progresso-por-fase); próximo trabalho planificado na [Fase 4](../implementation/plano-de-implementacao.md#próximos-passos-imediatos-fase-4)
 - Migração: `supabase/migrations/20260428100000_initial_schema.sql`
+
+---
+
+## 8. Fase 3 — como funciona na prática
+
+Resumo para quem vai **usar** ou **testar** o sistema no dia a dia.
+
+### 8.1 Primeiro acesso e papéis
+
+1. Todo usuário criado no **Authentication** do Supabase recebe, via trigger, uma linha em **`profiles`** com `role = student` por padrão.
+2. O **primeiro administrador** da escola é promovido **manualmente** no SQL:  
+   `UPDATE profiles SET role = 'admin' WHERE id = '<uuid do auth.users>';`
+3. Quem entra com **admin** é sempre direcionado para **`/admin`**; quem entra com **student**, para **`/student`**. Tentar abrir a área errada redireciona para a correta.
+
+### 8.2 Fluxo de login (e-mail + senha)
+
+1. O usuário abre **`/login`** (ou clica “Entrar” na home).
+2. Submete e-mail e senha → **Server Action** valida com Zod, chama `signInWithPassword`, lê **`profiles`** (`role`, `is_active`).
+3. Se a conta estiver **inativa** (`is_active = false`), a sessão é encerrada e aparece mensagem de erro.
+4. Após sucesso, o redirect vai para **`/admin`** ou **`/student`**, ou para o path interno em **`?next=`** (se for `/admin` ou `/student`).
+
+### 8.3 Middleware (o que acontece “por baixo”)
+
+A cada requisição coberta pelo matcher, o middleware:
+
+1. Atualiza cookies de sessão Supabase (**refresh**).
+2. Identifica o usuário e carrega **`profiles.role`**.
+3. **Sem login** e URL começando com `/admin` ou `/student` → redireciona para **`/login?next=...`**.
+4. **Com login** em **`/login`** → redireciona para o painel certo (não fica preso na tela de login).
+5. **Admin** em rota `/student` → manda para **`/admin`**; **aluno** em `/admin` → manda para **`/student`**.
+6. Usuário autenticado mas **sem linha em `profiles`** (caso raro) → **`/login?error=profile`**.
+
+Os layouts de **`/admin`** e **`/student`** conferem de novo **`is_active`**; se inativo, fazem **sign out** e mandam para login com **`?error=inactive`**.
+
+### 8.4 Recuperação de senha (magic link)
+
+1. Em **`/login`**, bloco “Esqueceu a senha?” envia e-mail via **`resetPasswordForEmail`**, com redirect para **`/auth/callback?next=/auth/update-password`** (origem via `getSiteUrl()`).
+2. O usuário clica no link do e-mail → **`/auth/callback`** executa **`exchangeCodeForSession`** e redireciona para **`/auth/update-password`**.
+3. Na página de nova senha, o browser usa **`createBrowserSupabaseClient`** e **`updateUser({ password })`**.
+4. É obrigatório ter as **Redirect URLs** corretas no painel Supabase e **`NEXT_PUBLIC_SITE_URL`** coerente em produção.
+
+### 8.5 Logout
+
+O botão **Sair** dispara **`logoutAction`** (sign out no servidor) e redireciona para **`/login`**.
 
 ---
 

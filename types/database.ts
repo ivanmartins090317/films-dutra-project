@@ -360,7 +360,10 @@ export interface Database {
         ];
       };
     };
-    Views: Record<string, never>;
+    /** Forma compatível com `GenericSchema` do supabase-js (evita inferência `never` em `.from()`). */
+    Views: {
+      [_ in never]: never;
+    };
     Functions: {
       is_admin: {
         Args: Record<string, never>;
@@ -368,6 +371,11 @@ export interface Database {
       };
     };
     Enums: PublicEnums;
-    CompositeTypes: Record<string, never>;
+    CompositeTypes: {
+      [_ in never]: never;
+    };
   };
 }
+
+/** Linha da tabela `profiles` — uso onde o inferidor do Supabase client pode falhar. */
+export type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];

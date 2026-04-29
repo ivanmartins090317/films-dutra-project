@@ -16,6 +16,9 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Films Dutra — Dashboard",
   description: "Plataforma de gestão de alunos — Films Dutra Audiovisual Co.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
