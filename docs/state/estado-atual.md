@@ -17,6 +17,7 @@ Documento de referência do que já foi implementado até aqui (ambiente, Supaba
 | Dados | Tabelas criadas; **sem registros de negócio** ainda (ex.: `lessons` vazia) |
 | **Fase 3 (auth)** | **Implementada:** middleware, login, áreas `/admin` e `/student`, callback de recuperação de senha; favicon em `public/favicon.ico` |
 | **Fase 4 (onboarding)** | **Implementada no código:** `/onboarding/[token]`, Zod, service role no servidor, tabela `onboarding_tokens` — detalhes em [relatório Fase 4 e RLS](./relatorio-fase-4-e-pendencia-rls-fase-2.md) |
+| **Fase 5 (admin)** | **Parcial:** layout com sidebar + tema; home com métricas; `/admin/students` e `/admin/students/[id]` (leitura); painel para gerar/copiar link de onboarding (`SUPABASE_SERVICE_ROLE_KEY`). Detalhe do que foi entregue: [relatório Fase 5 (shell, alunos, convite)](./relatorio-fase-5-admin-shell-alunos-e-convite.md). Pendências: paginação/filtros avançados, edição admin no perfil, cards quando Agenda/Financeiro/Trips existirem. |
 
 ---
 
@@ -29,7 +30,7 @@ O trabalho segue o [plano de implementação](../implementation/plano-de-impleme
 - **Fase 3** (autenticação, middleware, `/login`, proteção de rotas) — **executada no código** (ver seções 4 e [§8](#8-fase-3--como-funciona-na-prática)).
 - **Fase 4** (onboarding público) — **executada no código**; ver [relatório](./relatorio-fase-4-e-pendencia-rls-fase-2.md).
 
-O **próximo bloco lógico** no plano é a **Fase 5** (admin: layout, home, módulo Alunos, incl. geração de link de onboarding).
+A **Fase 5** está **em curso**: já há shell admin, lista/detalhe de alunos e geração de link de onboarding na home; seguem refinamentos do PRD (cards enriquecidos, CRUD perfil, etc.).
 
 ---
 

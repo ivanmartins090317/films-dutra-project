@@ -1,11 +1,13 @@
 import { redirect } from "next/navigation";
 
+import type { User } from "@supabase/supabase-js";
+
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { ProfileRow } from "@/types/database";
 
 export interface AdminSessionContext {
   supabase: ReturnType<typeof createServerSupabaseClient>;
-  user: NonNullable<Awaited<ReturnType<typeof createServerSupabaseClient>["auth"]["getUser"]>["data"]["user"]>;
+  user: User;
   profile: ProfileRow;
 }
 

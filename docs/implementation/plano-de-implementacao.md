@@ -29,18 +29,21 @@ Toda implementação de interface deve obedecer ao **[design_system.md](../desig
 | 1 | Design system e shell | **Concluída** | Tema, layout público, conforme evolução do repo |
 | 2 | Supabase: schema, RLS, Storage | **Concluída (infra + app parcial)** | Migração aplicada no projeto **films_dutra_bd**; `lib/supabase/client.ts`, `types/database.ts`, scripts `db:push` / `db:types`. **Pendente:** validação manual RLS com usuários admin + aluno (critério do plano) |
 | 3 | Autenticação e rotas | **Concluída** | `lib/supabase/server.ts`, `middleware.ts`, `/login`, `/admin`, `/student`, callback e recuperação de senha — detalhes em [estado-atual §4 e §8](../state/estado-atual.md) |
-| 4 | Onboarding público | **Próxima** | Depende da Fase 3 (sessão e perfis) |
-| 5–12 | Demais fases | **Não iniciadas** | Conforme dependências do plano |
+| 4 | Onboarding público | **Concluída** | `/onboarding/[token]`, Zod, service role — ver [relatório Fase 4](../state/relatorio-fase-4-e-pendencia-rls-fase-2.md) |
+| 5 | Admin: layout, home, Alunos | **Em andamento** | Layout + sidebar + tema; home com métricas; lista/detalhe de alunos; geração de link de onboarding na home — ver [estado atual](../state/estado-atual.md) |
+| 6–12 | Demais fases | **Não iniciadas** | Conforme dependências do plano |
 
 ---
 
-## Próximos passos imediatos (Fase 4)
+## Próximos passos imediatos (Fase 5 em curso)
 
-A Fase 3 está **entregue no repositório** (ver [estado-atual](../state/estado-atual.md)). Próximo foco:
+A **Fase 4** está **entregue no código** (ver [relatório](../state/relatorio-fase-4-e-pendencia-rls-fase-2.md)). Foco atual na **Fase 5**:
 
-1. **`/onboarding/[token]`** — validação do token (tabela ou JWT), formulário multi-step, Zod em `lib/validations/onboarding.ts`.
-2. **Persistência** em `profiles` + `student_details` sem violar RLS (RPC `SECURITY DEFINER` ou fluxo com **service role** onde o PRD exigir escrita fora do papel admin).
-3. **Convite / primeiro acesso do aluno** — alinhar com produto (link enviado pelo professor).
+1. **Layout admin** — sidebar, navegação, `ThemeToggle` (home já contempla métricas e convite).
+2. **Módulo Alunos** — completar filtros/paginação, edição admin no perfil, foto quando Storage estiver em uso nas telas.
+3. **Home admin** — evoluir cards (aulas “hoje” em fuso da escola, alertas reais) conforme Fases 6–9 carregarem dados.
+
+Critério **Fase 2** (teste manual RLS com dois usuários): permanece checklist de QA — [roteiro](../state/relatorio-fase-4-e-pendencia-rls-fase-2.md#33-o-que-significa-validar-rls-na-prática-roteiro-sugerido).
 
 Contexto RLS: [estado-atual §3.5](../state/estado-atual.md).
 

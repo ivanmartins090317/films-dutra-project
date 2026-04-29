@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { CalendarBlank, CurrencyCircleDollar, Student, SuitcaseRolling } from "@phosphor-icons/react";
 

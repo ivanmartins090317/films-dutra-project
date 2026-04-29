@@ -106,7 +106,7 @@ Registrar evidências (prints ou notas) quando o time considerar a Fase 2 “fec
 ## 4. Próximos passos sugeridos
 
 1. **Executar** o checklist RLS da seção 3.3 e registrar conclusão no plano ou neste doc (data + responsável).
-2. **Fase 5**: layout admin, lista de alunos e **geração de link de onboarding** (substituir inserts manuais em `onboarding_tokens`).
+2. **Fase 5** (em curso no repositório): layout admin com sidebar e tema; home com métricas; lista/detalhe de alunos em `/admin/students`; **geração de link de onboarding** na home admin (substitui inserts manuais para o fluxo típico). Continua pendente evolução do módulo Alunos conforme PRD (edição, foto, paginação).
 3. Opcional: após mudanças no schema, rodar `npm run db:types` e revisar tipos.
 
 ---
