@@ -359,6 +359,44 @@ export interface Database {
           },
         ];
       };
+      onboarding_tokens: {
+        Row: {
+          id: string;
+          token: string;
+          expires_at: string;
+          used_at: string | null;
+          notes: string;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          token: string;
+          expires_at: string;
+          used_at?: string | null;
+          notes?: string;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          token?: string;
+          expires_at?: string;
+          used_at?: string | null;
+          notes?: string;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_tokens_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     /** Forma compatível com `GenericSchema` do supabase-js (evita inferência `never` em `.from()`). */
     Views: {

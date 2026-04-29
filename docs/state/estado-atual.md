@@ -16,6 +16,7 @@ Documento de referência do que já foi implementado até aqui (ambiente, Supaba
 | Schema `public` | Tabelas, enums, RLS, Storage e triggers conforme PRD §5 e plano Fase 2 |
 | Dados | Tabelas criadas; **sem registros de negócio** ainda (ex.: `lessons` vazia) |
 | **Fase 3 (auth)** | **Implementada:** middleware, login, áreas `/admin` e `/student`, callback de recuperação de senha; favicon em `public/favicon.ico` |
+| **Fase 4 (onboarding)** | **Implementada no código:** `/onboarding/[token]`, Zod, service role no servidor, tabela `onboarding_tokens` — detalhes em [relatório Fase 4 e RLS](./relatorio-fase-4-e-pendencia-rls-fase-2.md) |
 
 ---
 
@@ -24,10 +25,11 @@ Documento de referência do que já foi implementado até aqui (ambiente, Supaba
 O trabalho segue o [plano de implementação](../implementation/plano-de-implementacao.md), derivado do [PRD](../films_dutra_PRD.md).
 
 - **Fase 0** (fundação do repo) e **Fase 1** (design system / shell) — alinhadas ao plano.
-- **Fase 2** (Supabase: schema, RLS, Storage, tipos) — **executada** no banco e com tipos versionados.
+- **Fase 2** (Supabase: schema, RLS, Storage, tipos) — **executada** no banco e com tipos versionados. **Pendente (critério do plano):** [validação manual RLS com admin + aluno](./relatorio-fase-4-e-pendencia-rls-fase-2.md#3-fase-2--o-que-já-existe-vs-o-que-falta-rls).
 - **Fase 3** (autenticação, middleware, `/login`, proteção de rotas) — **executada no código** (ver seções 4 e [§8](#8-fase-3--como-funciona-na-prática)).
+- **Fase 4** (onboarding público) — **executada no código**; ver [relatório](./relatorio-fase-4-e-pendencia-rls-fase-2.md).
 
-O **próximo bloco lógico** é a **Fase 4** (onboarding público com token, formulário multi-step e persistência alinhada ao RLS).
+O **próximo bloco lógico** no plano é a **Fase 5** (admin: layout, home, módulo Alunos, incl. geração de link de onboarding).
 
 ---
 
@@ -149,15 +151,15 @@ Onde o inferidor do client ainda produz `never` em algumas chains, o código usa
 ## 5. O que ainda não existe (deliberado ou próximas fases)
 
 - Dados reais de negócio nas tabelas (aulas, financeiro, trips, etc.).
-- **Fase 4** — onboarding público `/onboarding/[token]`, validação de token, escrita em `profiles` + `student_details` respeitando RLS (possível RPC ou service role onde aplicável).
+- **Fase 5** — admin: layout com sidebar, home, módulo Alunos, **geração de link de onboarding** no painel (hoje o token pode ser inserido via SQL; ver [relatório Fase 4](./relatorio-fase-4-e-pendencia-rls-fase-2.md)).
 - Testes automatizados E2E ou integração para login e redirects (Fase 12 ou incremental).
-- Validação manual RLS com **dois usuários** (admin + aluno), item pendente desde o critério da Fase 2 no plano.
+- Validação manual RLS com **dois usuários** (admin + aluno), item pendente desde o critério da Fase 2 no plano — [roteiro sugerido](./relatorio-fase-4-e-pendencia-rls-fase-2.md#33-o-que-significa-validar-rls-na-prática-roteiro-sugerido).
 
 ---
 
 ## 6. Checklist rápido pós-deploy / novo dev
 
-1. Copiar `.env.example` → `.env.local` e preencher URL + chave anon do projeto correto.
+1. Copiar `.env.example` → `.env.local` e preencher URL + chave anon do projeto correto; para onboarding, também **`SUPABASE_SERVICE_ROLE_KEY`** (servidor) — ver [.env.example](../../.env.example).
 2. Configurar **Redirect URLs** no Supabase para **`/auth/callback`** (localhost + produção).
 3. Confirmar no dashboard que as **7 tabelas** existem em `public` e que **RLS** está ativo onde esperado.
 4. Promover o primeiro **admin** manualmente (`UPDATE profiles SET role = 'admin' WHERE id = '<uuid>'`) após criar o usuário em Authentication.
@@ -169,8 +171,9 @@ Onde o inferidor do client ainda produz `never` em algumas chains, o código usa
 ## 7. Referências
 
 - [PRD — modelagem §5 e segurança §9](../films_dutra_PRD.md)
-- [Plano de implementação](../implementation/plano-de-implementacao.md) — [Progresso por fase](../implementation/plano-de-implementacao.md#progresso-por-fase); próximo trabalho planificado na [Fase 4](../implementation/plano-de-implementacao.md#próximos-passos-imediatos-fase-4)
-- Migração: `supabase/migrations/20260428100000_initial_schema.sql`
+- [Plano de implementação](../implementation/plano-de-implementacao.md) — [Progresso por fase](../implementation/plano-de-implementacao.md#progresso-por-fase)
+- [Relatório — Fase 4 e pendência RLS (Fase 2)](./relatorio-fase-4-e-pendencia-rls-fase-2.md)
+- Migrações: `supabase/migrations/20260428100000_initial_schema.sql`, `supabase/migrations/20260429100000_onboarding_tokens.sql`
 
 ---
 
