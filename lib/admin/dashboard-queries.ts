@@ -1,6 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
+
+/** Mesmo tipo que `requireAdminSession` passa — evita conflito de genéricos SSR vs `SupabaseClient<Database>`. */
+export type AdminDashboardSupabaseClient = ReturnType<typeof createServerSupabaseClient>;
 
 export interface AdminDashboardCounts {
   activeStudents: number;
@@ -18,8 +22,11 @@ function utcDayBounds(): { start: string; end: string } {
 }
 
 export async function fetchAdminDashboardCounts(
-  supabase: SupabaseClient<Database>
+  supabase: AdminDashboardSupabaseClient
 ): Promise<AdminDashboardCounts> {
+  /** Cast interno: `@supabase/ssr` e `@supabase/supabase-js` divergem nos genéricos do cliente; o cast restaura inferência em `.from()`/`Row`. */
+  const db = supabase as unknown as SupabaseClient<Database>;
+
   const { start, end } = utcDayBounds();
 
   const [
@@ -28,21 +35,21 @@ export async function fetchAdminDashboardCounts(
     financialOverdueRes,
     tripsFutureRes,
   ] = await Promise.all([
-    supabase
+    db
       .from("profiles")
       .select("id", { count: "exact", head: true })
       .eq("role", "student")
       .eq("is_active", true),
-    supabase
+    db
       .from("lessons")
       .select("id", { count: "exact", head: true })
       .gte("scheduled_at", start)
       .lt("scheduled_at", end),
-    supabase
+    db
       .from("financials")
       .select("id", { count: "exact", head: true })
       .eq("status", "overdue"),
-    supabase
+    db
       .from("surf_trips")
       .select("id, spots_total, spots_taken")
       .gte("trip_date", new Date().toISOString().slice(0, 10)),

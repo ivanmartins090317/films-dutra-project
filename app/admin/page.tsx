@@ -4,7 +4,6 @@ import { AdminDashboardCards } from "@/components/admin/admin-dashboard-cards";
 import { OnboardingInvitePanel } from "@/components/admin/onboarding-invite-panel";
 import { fetchAdminDashboardCounts } from "@/lib/admin/dashboard-queries";
 import { requireAdminSession } from "@/lib/admin/session";
-
 export default async function AdminHomePage() {
   const { supabase } = await requireAdminSession();
   const counts = await fetchAdminDashboardCounts(supabase);
