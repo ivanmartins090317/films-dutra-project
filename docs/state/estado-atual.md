@@ -17,7 +17,7 @@ Documento de referência do que já foi implementado até aqui (ambiente, Supaba
 | Dados | Tabelas criadas; **sem registros de negócio** ainda (ex.: `lessons` vazia) |
 | **Fase 3 (auth)** | **Implementada:** middleware, login, áreas `/admin` e `/student`, callback de recuperação de senha; favicon em `public/favicon.ico` |
 | **Fase 4 (onboarding)** | **Implementada no código:** `/onboarding/[token]`, Zod, service role no servidor, tabela `onboarding_tokens` — detalhes em [relatório Fase 4 e RLS](./relatorio-fase-4-e-pendencia-rls-fase-2.md) |
-| **Fase 5 (admin)** | **Parcial:** layout com sidebar + tema; home com métricas; `/admin/students` e `/admin/students/[id]` (leitura); painel para gerar/copiar link de onboarding (`SUPABASE_SERVICE_ROLE_KEY`). Detalhe do que foi entregue: [relatório Fase 5 (shell, alunos, convite)](./relatorio-fase-5-admin-shell-alunos-e-convite.md). Pendências: paginação/filtros avançados, edição admin no perfil, cards quando Agenda/Financeiro/Trips existirem. |
+| **Fase 5 (admin)** | **Parcial (PRD):** layout com sidebar + tema; home com métricas; lista de alunos com **busca, status, ordenação, paginação**, **avatar** quando `avatar_url` existe; detalhe em leitura + **edição admin** de perfil e surf/saúde (upsert em `student_details`); painel de convite (`SUPABASE_SERVICE_ROLE_KEY`). Ver [relatório Fase 5](./relatorio-fase-5-admin-shell-alunos-e-convite.md) e o detalhamento técnico da evolução em [implementação lista/paginação/edição](./implementacao-fase-5-alunos-paginacao-edicao-admin.md). Pendências típicas do PRD: foto via upload Storage, última aula/status financeiro na lista, cards enriquecidos quando Agenda/Financeiro/Trips existirem. |
 
 ---
 

@@ -39,8 +39,8 @@ Toda implementação de interface deve obedecer ao **[design_system.md](../desig
 
 A **Fase 4** está **entregue no código** (ver [relatório](../state/relatorio-fase-4-e-pendencia-rls-fase-2.md)). Foco atual na **Fase 5**:
 
-1. **Layout admin** — sidebar, navegação, `ThemeToggle` (home já contempla métricas e convite).
-2. **Módulo Alunos** — completar filtros/paginação, edição admin no perfil, foto quando Storage estiver em uso nas telas.
+1. **Layout admin** — **entregue:** sidebar, navegação, `ThemeToggle`; home com métricas e painel de convite (ver [relatório Fase 5](../state/relatorio-fase-5-admin-shell-alunos-e-convite.md)).
+2. **Módulo Alunos** — **parcial:** lista + detalhe em leitura e busca por nome; completar filtros/paginação, edição admin no perfil, foto quando Storage estiver em uso nas telas.
 3. **Home admin** — evoluir cards (aulas “hoje” em fuso da escola, alertas reais) conforme Fases 6–9 carregarem dados.
 
 Critério **Fase 2** (teste manual RLS com dois usuários): permanece checklist de QA — [roteiro](../state/relatorio-fase-4-e-pendencia-rls-fase-2.md#33-o-que-significa-validar-rls-na-prática-roteiro-sugerido).
@@ -125,7 +125,7 @@ Contexto RLS: [estado-atual §3.5](../state/estado-atual.md).
 
 **Objetivo:** Login e separação Admin / Aluno (PRD seções 2, 6.1, 7).
 
-**Onde começar (ordem de implementação):** [Próximos passos imediatos (Fase 4)](#próximos-passos-imediatos-fase-4) no início deste documento.
+**Onde começar (ordem de implementação):** [Próximos passos imediatos (Fase 5)](#próximos-passos-imediatos-fase-5-em-curso) no início deste documento.
 
 **Entregas:**
 
@@ -305,4 +305,4 @@ Contexto RLS: [estado-atual §3.5](../state/estado-atual.md).
 
 ---
 
-*Documento vivo: a tabela [Progresso por fase](#progresso-por-fase) e a seção [Próximos passos imediatos (Fase 4)](#próximos-passos-imediatos-fase-4) devem ser revisadas a cada marco; manter alinhamento com [estado-atual.md](../state/estado-atual.md).*
+*Documento vivo: a tabela [Progresso por fase](#progresso-por-fase) e a seção [Próximos passos imediatos (Fase 5 em curso)](#próximos-passos-imediatos-fase-5-em-curso) devem ser revisadas a cada marco; manter alinhamento com [estado-atual.md](../state/estado-atual.md).*

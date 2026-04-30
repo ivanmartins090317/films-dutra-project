@@ -95,15 +95,19 @@ Proteção: **middleware** continua redirecionando não-admins; **`requireAdminS
 
 ## 7. O que ainda não está nesta entrega (Fase 5 no PRD)
 
-- Paginação além do limite fixo de 100 alunos.
-- Filtros avançados, foto em lista, edição admin de perfil e abas completas como no PRD §6.3.
-- Cards da home alimentados por regras de negócio mais ricas (alertas, aniversariantes, etc.) quando **Agenda / Financeiro / Trips** estiverem implementados.
-- Testes automatizados específicos destes fluxos (opcional na Fase 12).
+- Itens de lista estilo PRD §6.3: **última aula**, **status de pagamento** na linha (dependem de Agenda/Financeiro no app).
+- **Upload** de avatar pelo Storage (UI) — hoje a lista usa `avatar_url` quando já preenchido (URL).
+- Cards da home com regras mais ricas (alertas, aniversariantes, etc.) quando **Agenda / Financeiro / Trips** estiverem implementados de ponta a ponta.
+
+**Entregue depois do relatório inicial:** paginação + filtros (status, ordenação, itens por página), edição admin do perfil e de surf/saúde na página do aluno, testes Vitest para params da lista e validação admin do perfil.
+
+- Demais testes E2E/critérios da Fase 12 conforme plano.
 
 ---
 
 ## 8. Referências cruzadas
 
+- [Implementação — lista, paginação e edição admin](./implementacao-fase-5-alunos-paginacao-edicao-admin.md) (detalhamento técnico da evolução após este relatório)
 - [Estado atual do projeto](./estado-atual.md)
 - [Plano de implementação](../implementation/plano-de-implementacao.md)
 - [Relatório Fase 4 e pendência RLS Fase 2](./relatorio-fase-4-e-pendencia-rls-fase-2.md) — onboarding público e checklist manual de RLS
