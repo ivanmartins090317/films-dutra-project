@@ -1,12 +1,21 @@
 import Link from "next/link";
 
 import { AdminDashboardCards } from "@/components/admin/admin-dashboard-cards";
+import {
+  AdminDashboardHomeFeed,
+  AdminDashboardShortcuts,
+} from "@/components/admin/admin-dashboard-home-feed";
 import { OnboardingInvitePanel } from "@/components/admin/onboarding-invite-panel";
 import { fetchAdminDashboardCounts } from "@/lib/admin/dashboard-queries";
+import { fetchAdminDashboardFeed } from "@/lib/admin/dashboard-feed-queries";
 import { requireAdminSession } from "@/lib/admin/session";
+
 export default async function AdminHomePage() {
   const { supabase } = await requireAdminSession();
-  const counts = await fetchAdminDashboardCounts(supabase);
+  const [counts, feed] = await Promise.all([
+    fetchAdminDashboardCounts(supabase),
+    fetchAdminDashboardFeed(supabase),
+  ]);
 
   return (
     <div className="mx-auto max-w-6xl space-y-10">
@@ -19,6 +28,10 @@ export default async function AdminHomePage() {
       </div>
 
       <AdminDashboardCards counts={counts} />
+
+      <AdminDashboardHomeFeed feed={feed} />
+
+      <AdminDashboardShortcuts />
 
       <section className="space-y-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">

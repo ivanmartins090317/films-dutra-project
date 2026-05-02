@@ -2,7 +2,7 @@
 
 Documento complementar ao [estado-atual.md](./estado-atual.md). Consolida **tudo o que foi acrescentado ao repositório** nesta entrega da **Fase 5** do [plano de implementação](../implementation/plano-de-implementacao.md): área administrativa com navegação, tema claro/escuro, resumo em cards na home, lista e detalhe de alunos (leitura) e **geração/cópia de link** de onboarding para substituir inserts manuais em `onboarding_tokens` no fluxo típico.
 
-**Última atualização:** abril de 2026.
+**Última atualização:** maio de 2026 (secção [§9](#9-atualização-maio--2026--feed-da-home-e-lista-enriquecida)).
 
 ---
 
@@ -36,7 +36,7 @@ Esta entrega cobre **uma primeira fatia verificável**: shell admin utilizável,
 | Caminho | Função |
 |---------|--------|
 | `components/admin/admin-sidebar.tsx` | Sidebar cliente com links **Início** (`/admin`) e **Alunos** (`/admin/students`); estado ativo via `usePathname`; nota curta sobre próximas fases. |
-| `components/admin/admin-dashboard-cards.tsx` | **Client Component** (`"use client"`): grid de quatro cards com ícones Phosphor — métricas recebidas por props; apenas “Alunos ativos” é link para `/admin/students`; demais são cards estáticos com texto “Fase 6/8/9”. Motivo do `"use client"`: ícones Phosphor não podem ser usados como Server Component (bundle servidor / `createContext`). |
+| `components/admin/admin-dashboard-cards.tsx` | **Client Component** (`"use client"`): grid de quatro cards com ícones Phosphor — métricas por props; links úteis para `/admin/students`, âncoras na home (**próximas aulas**, **pagamentos em atraso**) quando aplicável; hints para Fases 6/9 onde ainda não há rota dedicada. Motivo do `"use client"`: ícones Phosphor no cliente. |
 | `components/admin/onboarding-invite-panel.tsx` | **Client Component**: painel neo (cream `#F0E8DE`, sombra soft UI alinhada ao design system), campo opcional de notas, botão “Gerar link”, exibição do URL e “Copiar link” (`navigator.clipboard`). |
 | `components/admin/student-detail-tabs.tsx` | **Client Component**: abas “Dados pessoais” e “Surf e saúde”; leitura de `profiles` + `student_details` (quando existir); mensagens quando não há `student_details` ou perfil não é aluno. |
 
@@ -45,8 +45,8 @@ Esta entrega cobre **uma primeira fatia verificável**: shell admin utilizável,
 | Caminho | Função |
 |---------|--------|
 | `app/admin/layout.tsx` | Layout admin: header fixo (marca, nome truncado do perfil, `ThemeToggle`, `LogoutButton`), `AdminSidebar`, `<main>` para filhos. Usa `requireAdminSession()` em vez de duplicar só checagem de login. |
-| `app/admin/page.tsx` | Home admin: título, `fetchAdminDashboardCounts` + `AdminDashboardCards`, seção “Primeiro acesso” com link para lista e `OnboardingInvitePanel`. |
-| `app/admin/students/page.tsx` | Lista de `profiles` com `role = student`, ordenação por nome, **limite 100**; busca GET `?q=` com `ilike` em `full_name`. |
+| `app/admin/page.tsx` | Home admin: título, `fetchAdminDashboardCounts` + `AdminDashboardCards`, **`fetchAdminDashboardFeed`** + `AdminDashboardHomeFeed` + `AdminDashboardShortcuts` (ver [§9](#9-atualização-maio--2026--feed-da-home-e-lista-enriquecida)), seção “Primeiro acesso” com link para lista e `OnboardingInvitePanel`. |
+| `app/admin/students/page.tsx` | Lista paginada com filtros GET (`q`, `page`, `per_page`, `status`, `sort`) — ver [implementação complementar](./implementacao-fase-5-alunos-paginacao-edicao-admin.md); **última aula** e **resumo financeiro** na linha desde maio/2026 ([§9](#9-atualização-maio--2026--feed-da-home-e-lista-enriquecida)). |
 | `app/admin/students/[id]/page.tsx` | Detalhe: validação de UUID; `profiles` por id; se aluno, busca `student_details` por `student_id`; `StudentDetailTabs`; `notFound()` se inválido. |
 
 ---
@@ -93,19 +93,43 @@ Proteção: **middleware** continua redirecionando não-admins; **`requireAdminS
 
 ---
 
-## 7. O que ainda não está nesta entrega (Fase 5 no PRD)
+## 7. Pendências restantes para “fechar” a Fase 5 no PRD/plano
 
-- Itens de lista estilo PRD §6.3: **última aula**, **status de pagamento** na linha (dependem de Agenda/Financeiro no app).
-- **Upload** de avatar pelo Storage (UI) — hoje a lista usa `avatar_url` quando já preenchido (URL).
-- Cards da home com regras mais ricas (alertas, aniversariantes, etc.) quando **Agenda / Financeiro / Trips** estiverem implementados de ponta a ponta.
+*(O que já foi entregue depois das primeiras fatias está nas secções [§8](#8-referências-cruzadas) deste relatório via doc de implementação e na [§9](#9-atualização-maio--2026--feed-da-home-e-lista-enriquecida); síntese também em [estado-atual §5.2](./estado-atual.md#52-o-que-falta-para-finalizar-a-fase-5-prd--plano).)*
 
-**Entregue depois do relatório inicial:** paginação + filtros (status, ordenação, itens por página), edição admin do perfil e de surf/saúde na página do aluno, testes Vitest para params da lista e validação admin do perfil.
-
-- Demais testes E2E/critérios da Fase 12 conforme plano.
+- **Upload** de avatar pelo **Supabase Storage** na UI (hoje: campo URL + lista mostra imagem quando `avatar_url` é HTTPS).
+- **Fuso horário da escola** em contagens “hoje” / próximas aulas / copy — hoje documentado como **UTC**; evolução prevista com Agenda (Fase 6).
+- **Cards e atalhos** ainda mais ligados ao PRD quando existirem rotas de **Agenda**, **Financeiro** e **Trips** com CRUD — métricas já consomem `lessons`, `financials`, `surf_trips` onde há dados.
+- **Última aula na lista:** usa varredura com limite de linhas; bases muito grandes podem precisar **RPC/view** no Postgres.
+- **Testes E2E** e revisão formal da **tabela de progresso** do plano — ver Fase 12 e [`estado-atual.md`](./estado-atual.md).
 
 ---
 
-## 8. Referências cruzadas
+## 8. Referências cruzadas (histórico de entregas)
+
+- **Primeira fatia:** shell, métricas, lista/detalhe em leitura, convite — este documento até §6.
+- **Segunda fatia:** paginação, filtros, edição admin — [implementação — lista, paginação e edição](./implementacao-fase-5-alunos-paginacao-edicao-admin.md).
+- **Terceira fatia:** feed na home e lista enriquecida — [§9](#9-atualização-maio--2026--feed-da-home-e-lista-enriquecida) abaixo.
+
+---
+
+## 9. Atualização maio / 2026 — feed da home e lista enriquecida
+
+Objetivo: aproximar a **home** e a **lista de alunos** do texto da Fase 5 no [plano](../implementation/plano-de-implementacao.md) sem esperar as Fases 6–9 completas.
+
+| Caminho | Função |
+|---------|--------|
+| `lib/admin/dashboard-feed-queries.ts` | `fetchAdminDashboardFeed`: próximas aulas futuras (não canceladas), lançamentos `financials` **overdue**, **aniversariantes** em 7 dias (UTC) via `profiles.birth_date`; resolve nomes em `profiles`. |
+| `lib/admin/student-birthday-window.ts` | Cálculo de janela de aniversário em UTC (`filterBirthdaysWithinUtcDays`, etc.). |
+| `lib/admin/student-financial-rollup.ts` | Agregação **vencido → pendente → em dia → sem lançamentos** por aluno na lista. |
+| `lib/admin/lesson-status-label.ts` | Rótulos PT para `lesson_status`. |
+| `components/admin/admin-dashboard-home-feed.tsx` | UI das secções Próximas aulas, Pagamentos em atraso, Aniversariantes + **`AdminDashboardShortcuts`**. |
+| `lib/admin/students-list-query.ts` | Extende `fetchAdminStudentsList` com enriquecimento pós-página (aulas + financeiro). |
+| `*.test.ts` | Vitest: `student-birthday-window`, `student-financial-rollup`. |
+
+---
+
+## 10. Referências externas ao relatório
 
 - [Implementação — lista, paginação e edição admin](./implementacao-fase-5-alunos-paginacao-edicao-admin.md) (detalhamento técnico da evolução após este relatório)
 - [Estado atual do projeto](./estado-atual.md)

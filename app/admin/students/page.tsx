@@ -1,8 +1,13 @@
 import Link from "next/link";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 import { StudentListAvatar } from "@/components/admin/student-list-avatar";
 import { StudentsPagination } from "@/components/admin/students-pagination";
+import { lessonStatusLabelPt } from "@/lib/admin/lesson-status-label";
 import { fetchAdminStudentsList } from "@/lib/admin/students-list-query";
+import type { StudentPaymentRollup } from "@/lib/admin/student-financial-rollup";
+import type { PublicEnums } from "@/types/database";
 import {
   parseStudentsListSearchParams,
   STUDENTS_PER_PAGE_OPTIONS,
@@ -11,6 +16,36 @@ import {
 import { requireAdminSession } from "@/lib/admin/session";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+
+function paymentSummaryDisplay(summary: StudentPaymentRollup): { label: string; className: string } {
+  switch (summary) {
+    case "overdue":
+      return { label: "Pag. vencido", className: "bg-destructive/15 text-destructive" };
+    case "pending":
+      return {
+        label: "Pag. pendente",
+        className: "bg-amber-500/15 text-amber-900 dark:text-amber-100",
+      };
+    case "clear":
+      return { label: "Pagamentos em dia", className: "bg-primary/15 text-primary" };
+    default:
+      return { label: "Sem lançamentos", className: "bg-muted text-muted-foreground" };
+  }
+}
+
+function formatLastLesson(
+  iso: string | null,
+  status: PublicEnums["lesson_status"] | null
+): string {
+  if (!iso || !status) return "Última aula: —";
+  try {
+    const d = format(new Date(iso), "dd/MM/yyyy", { locale: ptBR });
+    return `Última aula: ${d} · ${lessonStatusLabelPt(status)}`;
+  } catch {
+    return "Última aula: —";
+  }
+}
 
 interface StudentsPageProps {
   searchParams: Record<string, string | string[] | undefined>;
@@ -38,8 +73,8 @@ export default async function AdminStudentsPage({ searchParams }: StudentsPagePr
           </Link>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight">Alunos</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Busca por nome, filtro por status, ordenação e paginação. Avatar quando houver URL em{" "}
-            <span className="font-medium">avatar_url</span>.
+            Busca por nome, filtro por status, ordenação e paginação.             À direita: última aula com horário já passado no calendário e resumo financeiro (vencido /
+            pendente / em dia), quando há lançamentos.
           </p>
         </div>
       </div>
@@ -129,11 +164,13 @@ export default async function AdminStudentsPage({ searchParams }: StudentsPagePr
       ) : (
         <>
           <ul className="space-y-3">
-            {result.students.map((s) => (
+            {result.students.map((s) => {
+              const paymentUi = paymentSummaryDisplay(s.paymentSummary);
+              return (
               <li key={s.id}>
                 <Link
                   href={`/admin/students/${s.id}`}
-                  className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 shadow-sm transition-colors hover:bg-accent/30"
+                  className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-sm transition-colors hover:bg-accent/30 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
                 >
                   <div className="flex min-w-0 items-center gap-3">
                     <StudentListAvatar name={s.full_name} avatarUrl={s.avatar_url} />
@@ -144,18 +181,34 @@ export default async function AdminStudentsPage({ searchParams }: StudentsPagePr
                       </p>
                     </div>
                   </div>
-                  <span
-                    className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      s.is_active
-                        ? "bg-primary/15 text-primary"
-                        : "bg-muted text-muted-foreground line-through decoration-muted-foreground/60"
-                    }`}
-                  >
-                    {s.is_active ? "Ativo" : "Inativo"}
-                  </span>
+                  <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
+                    <p className="max-w-full text-xs text-muted-foreground sm:text-right">
+                      {formatLastLesson(s.lastLessonScheduledAt, s.lastLessonStatus)}
+                    </p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span
+                        className={cn(
+                          "rounded-full px-2.5 py-0.5 text-xs font-medium",
+                          paymentUi.className
+                        )}
+                      >
+                        {paymentUi.label}
+                      </span>
+                      <span
+                        className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                          s.is_active
+                            ? "bg-primary/15 text-primary"
+                            : "bg-muted text-muted-foreground line-through decoration-muted-foreground/60"
+                        }`}
+                      >
+                        {s.is_active ? "Ativo" : "Inativo"}
+                      </span>
+                    </div>
+                  </div>
                 </Link>
               </li>
-            ))}
+            );
+            })}
           </ul>
           <StudentsPagination params={listParams} totalCount={result.totalCount} />
         </>

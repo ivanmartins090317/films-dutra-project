@@ -2,7 +2,7 @@
 
 Documento de referência que descreve **o que foi implementado** na evolução do módulo **Alunos** e da **edição admin de perfil**, após a primeira entrega registrada em [relatorio-fase-5-admin-shell-alunos-e-convite.md](./relatorio-fase-5-admin-shell-alunos-e-convite.md). Complementa o [estado-atual.md](./estado-atual.md) e o [plano de implementação](../implementation/plano-de-implementacao.md) (Fase 5).
 
-**Última atualização:** abril de 2026.
+**Última atualização:** maio de 2026 (lista enriquecida e feed da home — ver [§9](#9-atualização-maio--2026--feed-da-home-e-enriquecimento-da-lista)).
 
 ---
 
@@ -15,7 +15,7 @@ Fechar lacunas explícitas do PRD/plano para a **Fase 5** que ainda não estavam
 3. **Avatar** na lista quando existir URL em `profiles.avatar_url`.
 4. **Edição administrativa** dos dados do perfil e dos detalhes de surf/saúde na página de detalhe do aluno.
 
-O escopo **não** inclui upload de arquivo para Storage, última aula ou status financeiro na linha da lista (dependências das fases Agenda/Financeiro), nem enriquecimento avançado dos cards da home admin.
+O escopo **desta fatia histórica** não incluía upload de arquivo para Storage nem feed extra na home; **última aula**, **resumo financeiro na lista** e **feed da home** foram acrescentados **depois** — ver [§9](#9-atualização-maio--2026--feed-da-home-e-enriquecimento-da-lista) e [`estado-atual.md` §5.1](./estado-atual.md#51-entregue-no-código-home-e-lista).
 
 ---
 
@@ -38,6 +38,7 @@ A UI usa um **formulário GET** com campo oculto `page=1` ao aplicar filtros, pa
 - Implementação em **`lib/admin/students-list-query.ts`** (`fetchAdminStudentsList`):
   - Primeiro obtém o **total** com a mesma base de filtros (`eq('role','student')`, `q`, `status`).
   - Depois aplica **`.range(from, to)`** conforme página efetiva e `per_page`.
+  - **Maio/2026:** após carregar a página, **enriquece** cada linha com última aula (`lessons.scheduled_at ≤ agora`, varredura limitada) e agregação financeira (`student-financial-rollup`), usando cast **`SupabaseClient<Database>`** nas queries auxiliares (mesmo padrão da home).
 - Parâmetros tipados e parsing da query string em **`lib/admin/students-list-params.ts`** (`parseStudentsListSearchParams`, `studentsListQueryString` para montar links de paginação preservando filtros).
 
 ### 2.3 Paginação na interface
@@ -107,7 +108,7 @@ Arquivo **`lib/admin/student-admin-actions.ts`** (`"use server"`):
 | Caminho | Função |
 |---------|--------|
 | `lib/admin/students-list-params.ts` | Parse de query string, constantes de `per_page`, helper para montar `?` nas navegações. |
-| `lib/admin/students-list-query.ts` | `fetchAdminStudentsList`: contagem + página + ordenação. |
+| `lib/admin/students-list-query.ts` | `fetchAdminStudentsList`: contagem + página + ordenação + **enriquecimento** (última aula / financeiro) desde maio/2026. |
 | `lib/admin/student-admin-actions.ts` | Server Actions de atualização de perfil e upsert de `student_details`. |
 | `lib/validations/admin-student.ts` | Schemas Zod admin. |
 | `lib/validations/admin-student.test.ts` | Testes Vitest do schema de perfil. |
@@ -120,9 +121,9 @@ Arquivo **`lib/admin/student-admin-actions.ts`** (`"use server"`):
 
 Arquivos **alterados** em destaque:
 
-- **`app/admin/students/page.tsx`** — toolbar de filtros + lista com avatar + paginação.
+- **`app/admin/students/page.tsx`** — toolbar de filtros + lista com avatar + paginação + **última aula / resumo financeiro** (maio/2026).
 - **`app/admin/students/[id]/page.tsx`** — seção de edição admin.
-- **`docs/state/estado-atual.md`** e **`docs/state/relatorio-fase-5-admin-shell-alunos-e-convite.md`** — texto alinhado a esta entrega.
+- **`docs/state/*.md`** — atualizados em **maio/2026** para o feed da home e a lista enriquecida ([`estado-atual.md`](./estado-atual.md), [relatório Fase 5](./relatorio-fase-5-admin-shell-alunos-e-convite.md)).
 
 ---
 
@@ -142,16 +143,30 @@ Nenhuma variável **nova** para esta fatia. Continua válido:
 
 ---
 
-## 8. O que permanece fora deste escopo
+## 8. O que permanece fora deste escopo (fatia lista/edição)
 
 - **Upload** de avatar via Supabase Storage na UI (apenas campo **URL**).
-- Colunas na lista: **última aula**, **status de pagamento** (exigem módulos Agenda/Financeiro integrados ao app).
-- **Cards** da home admin com alertas/aniversariantes/regras mais ricas (dependência das fases 6–9).
-- Refatorações grandes (ex.: um único builder de query para eliminar duplicação filtros contagem vs. dados) — possível melhoria futura.
+- Melhorias de **escala** na última aula (RPC Postgres / vista) se o histórico de `lessons` explodir.
+- Demais refinamentos da home quando **Agenda / Financeiro / Trips** tiverem **rotas próprias** no app — parte já coberta por `dashboard-feed-queries` com dados existentes.
 
 ---
 
-## 9. Referências cruzadas
+## 9. Atualização maio / 2026 — feed da home e enriquecimento da lista
+
+| Caminho | Função |
+|---------|--------|
+| `lib/admin/dashboard-feed-queries.ts` | `fetchAdminDashboardFeed` para a home admin. |
+| `lib/admin/student-birthday-window.ts` | Janela de aniversariantes em UTC + testes. |
+| `lib/admin/student-financial-rollup.ts` | Prioridade de status financeiro na lista + testes. |
+| `lib/admin/lesson-status-label.ts` | Labels PT dos status de aula. |
+| `components/admin/admin-dashboard-home-feed.tsx` | Secções da home + atalhos. |
+| `components/admin/admin-dashboard-cards.tsx` | Links âncora para secções da home. |
+
+Ver também [relatório Fase 5 §9](./relatorio-fase-5-admin-shell-alunos-e-convite.md#9-atualização-maio--2026--feed-da-home-e-lista-enriquecida).
+
+---
+
+## 10. Referências cruzadas
 
 - [Estado atual do projeto](./estado-atual.md)
 - [Relatório Fase 5 (primeira fatia — shell, leitura, convite)](./relatorio-fase-5-admin-shell-alunos-e-convite.md)
