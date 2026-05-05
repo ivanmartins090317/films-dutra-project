@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 
 import { AdminStudentDetailsEditForm } from "@/components/admin/admin-student-details-edit-form";
 import { AdminStudentProfileEditForm } from "@/components/admin/admin-student-profile-edit-form";
+import { AdminStudentLessonsSection } from "@/components/admin/admin-student-lessons-section";
 import { StudentDetailTabs } from "@/components/admin/student-detail-tabs";
+import { fetchLessonsForStudent, type LessonWithStudent } from "@/lib/admin/lessons-queries";
 import { requireAdminSession } from "@/lib/admin/session";
 import type { Database, ProfileRow } from "@/types/database";
 
@@ -36,13 +38,14 @@ export default async function AdminStudentDetailPage({ params }: StudentDetailPa
   const profile = profileRow as ProfileRow;
 
   let studentDetails: StudentDetailsRow | null = null;
+  let studentLessons: LessonWithStudent[] = [];
   if (profile.role === "student") {
-    const { data: details } = await supabase
-      .from("student_details")
-      .select("*")
-      .eq("student_id", profile.id)
-      .maybeSingle();
+    const [{ data: details }, lessons] = await Promise.all([
+      supabase.from("student_details").select("*").eq("student_id", profile.id).maybeSingle(),
+      fetchLessonsForStudent(supabase, profile.id),
+    ]);
     studentDetails = details as StudentDetailsRow | null;
+    studentLessons = lessons;
   }
 
   return (
@@ -68,6 +71,10 @@ export default async function AdminStudentDetailPage({ params }: StudentDetailPa
       </div>
 
       <StudentDetailTabs profile={profile} studentDetails={studentDetails} />
+
+      {profile.role === "student" ? (
+        <AdminStudentLessonsSection lessons={studentLessons} />
+      ) : null}
 
       <section className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm md:p-6">
         <h2 className="text-lg font-semibold tracking-tight">Edição (administrador)</h2>

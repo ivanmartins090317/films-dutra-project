@@ -23,7 +23,7 @@ export default async function AdminHomePage() {
         <h1 className="text-2xl font-semibold tracking-tight">Painel administrativo</h1>
         <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
           Resumo rápido da escola e atalhos. Os números refletem os dados atuais no Supabase (aulas
-          &quot;hoje&quot; em UTC).
+          &quot;hoje&quot; no fuso America/São_Paulo).
         </p>
       </div>
 

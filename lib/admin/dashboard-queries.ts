@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import { getSchoolDayBoundsUtc } from "@/lib/school-timezone";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 
@@ -13,12 +14,8 @@ export interface AdminDashboardCounts {
   tripsOpen: number;
 }
 
-function utcDayBounds(): { start: string; end: string } {
-  const now = new Date();
-  const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-  const end = new Date(start);
-  end.setUTCDate(end.getUTCDate() + 1);
-  return { start: start.toISOString(), end: end.toISOString() };
+function schoolTodayBounds(): { start: string; end: string } {
+  return getSchoolDayBoundsUtc(new Date());
 }
 
 export async function fetchAdminDashboardCounts(
@@ -27,7 +24,7 @@ export async function fetchAdminDashboardCounts(
   /** Cast interno: `@supabase/ssr` e `@supabase/supabase-js` divergem nos genéricos do cliente; o cast restaura inferência em `.from()`/`Row`. */
   const db = supabase as unknown as SupabaseClient<Database>;
 
-  const { start, end } = utcDayBounds();
+  const { start, end } = schoolTodayBounds();
 
   const [
     activeStudentsRes,
@@ -44,7 +41,8 @@ export async function fetchAdminDashboardCounts(
       .from("lessons")
       .select("id", { count: "exact", head: true })
       .gte("scheduled_at", start)
-      .lt("scheduled_at", end),
+      .lt("scheduled_at", end)
+      .neq("status", "cancelled"),
     db
       .from("financials")
       .select("id", { count: "exact", head: true })

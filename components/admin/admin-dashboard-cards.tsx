@@ -19,11 +19,11 @@ export function AdminDashboardCards({ counts }: AdminDashboardCardsProps) {
       hint: "Ver lista",
     },
     {
-      label: "Aulas hoje (UTC)",
+      label: "Aulas hoje (Brasília)",
       value: counts.lessonsToday,
       icon: CalendarBlank,
-      href: "/admin#proximas-aulas-heading",
-      hint: "Ver próximas aulas abaixo",
+      href: "/admin/agenda",
+      hint: "Abrir agenda",
     },
     {
       label: "Pagamentos vencidos",

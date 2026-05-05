@@ -3,14 +3,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 import type { AdminDashboardFeed } from "@/lib/admin/dashboard-feed-queries";
-
-function formatLessonWhen(iso: string): string {
-  try {
-    return format(new Date(iso), "EEE d MMM · HH:mm", { locale: ptBR });
-  } catch {
-    return iso;
-  }
-}
+import { formatLessonDateTimeSchool } from "@/lib/school-timezone";
 
 function formatDueShort(iso: string): string {
   try {
@@ -38,7 +31,7 @@ export function AdminDashboardHomeFeed({ feed }: AdminDashboardHomeFeedProps) {
           Próximas aulas
         </h2>
         <p className="text-xs text-muted-foreground">
-          Agendamentos futuros (exceto canceladas). Horários em UTC até haver fuso da escola na Fase 6.
+          Agendamentos futuros (exceto canceladas). Horários em horário de Brasília (America/São_Paulo).
         </p>
         {upcomingLessons.length === 0 ? (
           <p className="rounded-xl border border-border bg-muted/30 px-4 py-6 text-sm text-muted-foreground">
@@ -61,7 +54,7 @@ export function AdminDashboardHomeFeed({ feed }: AdminDashboardHomeFeedProps) {
                   <p className="mt-0.5 text-xs capitalize text-muted-foreground">{row.status}</p>
                 </div>
                 <div className="text-right text-sm text-muted-foreground">
-                  <time dateTime={row.scheduled_at}>{formatLessonWhen(row.scheduled_at)}</time>
+                  <time dateTime={row.scheduled_at}>{formatLessonDateTimeSchool(row.scheduled_at)}</time>
                   <p className="text-xs">{row.duration_min} min</p>
                 </div>
               </li>
@@ -134,6 +127,7 @@ export function AdminDashboardHomeFeed({ feed }: AdminDashboardHomeFeedProps) {
 
 export function AdminDashboardShortcuts() {
   const items = [
+    { href: "/admin/agenda", label: "Agenda", description: "Calendário e aulas" },
     { href: "/admin/students", label: "Alunos", description: "Lista, busca e edição" },
     { href: "/login", label: "Login", description: "Página pública de acesso" },
   ] as const;
@@ -157,7 +151,7 @@ export function AdminDashboardShortcuts() {
         ))}
       </ul>
       <p className="text-xs text-muted-foreground">
-        Agenda, evolução, financeiro e trips entram nas próximas fases do plano.
+        Evolução, financeiro e trips seguem nas próximas fases do plano.
       </p>
     </section>
   );

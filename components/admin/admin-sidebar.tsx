@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { House, Student } from "@phosphor-icons/react";
+import { CalendarBlank, House, Student } from "@phosphor-icons/react";
 
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/admin", label: "Início", icon: House },
+  { href: "/admin/agenda", label: "Agenda", icon: CalendarBlank },
   { href: "/admin/students", label: "Alunos", icon: Student },
 ] as const;
 
@@ -40,7 +41,7 @@ export function AdminSidebar() {
         })}
       </nav>
       <p className="mt-auto hidden px-2 pt-6 text-[11px] leading-snug text-muted-foreground md:block">
-        Agenda, evolução e financeiro — próximas fases do plano.
+        Evolução, financeiro e trips — próximas fases do plano.
       </p>
     </aside>
   );
