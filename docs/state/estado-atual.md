@@ -17,7 +17,7 @@ Documento de referência do que já foi implementado até aqui (ambiente, Supaba
 | Dados | Tabelas criadas; **sem registros de negócio** ainda (ex.: `lessons` vazia) |
 | **Fase 3 (auth)** | **Implementada:** middleware, login, áreas `/admin` e `/student`, callback de recuperação de senha; favicon em `public/favicon.ico` |
 | **Fase 4 (onboarding)** | **Implementada no código:** `/onboarding/[token]`, Zod, service role no servidor, tabela `onboarding_tokens` — detalhes em [relatório Fase 4 e RLS](./relatorio-fase-4-e-pendencia-rls-fase-2.md) |
-| **Fase 5 (admin)** | **Quase completa no código:** layout + tema; **home** com cards, **lista de próximas aulas**, **pagamentos em atraso**, **aniversariantes (7 dias, UTC)** e **atalhos**; lista de alunos com busca, filtros, ordenação, paginação, avatar por URL, **última aula** (último `scheduled_at` já passado) e **resumo financeiro** na linha; detalhe + edição admin de perfil e surf/saúde; convite de onboarding na home. Documentação: [relatório Fase 5](./relatorio-fase-5-admin-shell-alunos-e-convite.md), [implementação lista/paginação/edição](./implementacao-fase-5-alunos-paginacao-edicao-admin.md). **Pendências para “fechar” a fase no PRD:** ver [§5](#5-fase-5-admin--implementação-e-pendências). |
+| **Fase 5 (admin)** | **Concluída no código** (maio/2026): layout + tema; **home** com cards, feed (próximas aulas, inadimplência, aniversariantes UTC), **atalhos**; lista de alunos com busca, filtros, ordenação, paginação; **avatar** por URL ou **upload admin** para o bucket Storage **`avatars`** (migração `20260504140000_storage_avatars_admin_insert_public.sql`); **última aula** e **resumo financeiro** na linha; detalhe + edição admin de perfil e surf/saúde; convite de onboarding na home. Docs: [relatório Fase 5](./relatorio-fase-5-admin-shell-alunos-e-convite.md), [implementação lista/paginação/edição](./implementacao-fase-5-alunos-paginacao-edicao-admin.md). **Ressalvas de produto/infra:** ver [§5.2](#52-ressalvas-pós-fase-5-prd--operações) (fusos, RLS manual, E2E na Fase 12). |
 
 ---
 
@@ -30,7 +30,7 @@ O trabalho segue o [plano de implementação](../implementation/plano-de-impleme
 - **Fase 3** (autenticação, middleware, `/login`, proteção de rotas) — **executada no código** (ver seções 4 e [§9](#9-fase-3--como-funciona-na-prática)).
 - **Fase 4** (onboarding público) — **executada no código**; ver [relatório](./relatorio-fase-4-e-pendencia-rls-fase-2.md).
 
-A **Fase 5** está **bem avançada no código**: shell admin, feed na home (próximas aulas, inadimplência, aniversariantes), lista/detalhe de alunos enriquecida, edição admin e convite na home — ver [§5](#5-fase-5-admin--implementação-e-pendências).
+A **Fase 5** está **concluída no código** (incl. upload de avatar no Storage pela área admin) — detalhes e ressalvas em [§5](#5-fase-5-admin--implementação-e-pendências).
 
 ---
 
@@ -163,19 +163,18 @@ Esta secção resume o que entrou no repositório **após maio/2026** na área a
 
 Documentação histórica das fatias anteriores: [relatório Fase 5](./relatorio-fase-5-admin-shell-alunos-e-convite.md), [implementação lista/paginação/edição](./implementacao-fase-5-alunos-paginacao-edicao-admin.md).
 
-### 5.2 O que falta para finalizar a Fase 5 (PRD / plano)
+### 5.2 Ressalvas pós–Fase 5 (PRD / operações)
 
-Itens que **ainda diferem** do texto completo da Fase 5 no plano ou são decisões de produto/MVP:
+Itens que **não impedem** considerar a Fase 5 **fechada no repositório**, mas permanecem no radar:
 
 | Item | Notas |
 |------|--------|
-| **Fuso horário da escola** | Contagens “aulas hoje”, próximas aulas e copy seguem **UTC**; o plano prevê evolução para fuso da escola (ex. `America/Sao_Paulo`) quando a Agenda (Fase 6) amadurecer. |
-| **Upload de avatar (Storage)** | MVP v1 do plano já menciona **sem upload de mídia** na evolução; há apenas campo **URL** e exibição na lista. Upload pelo bucket **`avatars`** permanece opcional/pós-MVP explícito. |
-| **Home “lista próximas aulas” vs PRD estendido** | Lista curta de próximas aulas e alertas de inadimplência **implementados**. O PRD cita também **alertas** mais amplos e **atalhos** adicionais conforme módulos futuros — pode-se declarar “feito para MVP” ou acrescentar links quando existirem rotas `/admin/agenda`, `/admin/financeiro`, etc. |
-| **Última aula na lista — escala** | Implementação usa varredura ordenada com **limite de linhas**; histórico enorme por aluno pode exigir **RPC SQL** (`DISTINCT ON`) ou vista materializada no futuro. |
-| **Aniversariantes** | Baseados em **`birth_date`** preenchido; sem data, o aluno não aparece na lista. |
-| **Critério formal do plano** | Atualizar a **tabela de progresso** em [`plano-de-implementacao.md`](../implementation/plano-de-implementacao.md) para **“Concluída”** quando o time aceitar as ressalvas acima e revisar **RLS**/QA. |
-| **Fase 12** | Testes **E2E** da jornada admin continuam previstos no hardening global. |
+| **Fuso horário da escola** | Contagens “aulas hoje”, próximas aulas e copy seguem **UTC**; evolução com **Fase 6** (Agenda) e configuração de fuso. |
+| **Home vs rotas dedicadas** | Atalhos apontam para o que existe hoje (`/admin/students`, âncoras na home). Links específicos para `/admin/agenda`, `/admin/financeiro`, etc. entram com as **Fases 6–9**. |
+| **Última aula na lista — escala** | Varredura com **limite de linhas**; volume muito grande pode exigir **RPC/view** no Postgres. |
+| **Aniversariantes** | Dependem de **`birth_date`** preenchido. |
+| **RLS (Fase 2)** | Validação manual com **admin + aluno** continua recomendada antes de produção — [roteiro](./relatorio-fase-4-e-pendencia-rls-fase-2.md#33-o-que-significa-validar-rls-na-prática-roteiro-sugerido). **Conta aluno:** ver [§9.4](#94-conta-de-teste-aluno). |
+| **Fase 12** | Testes **E2E** e hardening LGPD/deploy. |
 
 ---
 
@@ -193,9 +192,11 @@ Itens que **ainda diferem** do texto completo da Fase 5 no plano ou são decisõ
 1. Copiar `.env.example` → `.env.local` e preencher URL + chave anon do projeto correto; para onboarding, também **`SUPABASE_SERVICE_ROLE_KEY`** (servidor) — ver [.env.example](../../.env.example).
 2. Configurar **Redirect URLs** no Supabase para **`/auth/callback`** (localhost + produção).
 3. Confirmar no dashboard que as **7 tabelas** existem em `public` e que **RLS** está ativo onde esperado.
-4. Promover o primeiro **admin** manualmente (`UPDATE profiles SET role = 'admin' WHERE id = '<uuid>'`) após criar o usuário em Authentication.
-5. Rodar `npm run dev` e `npm run build` antes de abrir PR.
-6. Se o dev server acusar erro estranho em rotas ou favicon: apagar pasta **`.next`** e subir de novo (`npm run dev`).
+4. Aplicar migrações (`npm run db:push` ou fluxo do time), incluindo Storage **`avatars`** (upload admin + bucket público para leitura da URL — ver `supabase/migrations/20260504140000_storage_avatars_admin_insert_public.sql`).
+5. Promover o primeiro **admin** manualmente (`UPDATE profiles SET role = 'admin' WHERE id = '<uuid>'`) após criar o usuário em Authentication.
+6. Para testes **aluno + admin**, criar um segundo usuário em Authentication (não elevar a admin) — ver [§9.4](#94-conta-de-teste-aluno).
+7. Rodar `npm run dev` e `npm run build` antes de abrir PR.
+8. Se o dev server acusar erro estranho em rotas ou favicon: apagar pasta **`.next`** e subir de novo (`npm run dev`).
 
 ---
 
@@ -206,7 +207,7 @@ Itens que **ainda diferem** do texto completo da Fase 5 no plano ou são decisõ
 - [Relatório — Fase 4 e pendência RLS (Fase 2)](./relatorio-fase-4-e-pendencia-rls-fase-2.md)
 - [Relatório — Fase 5 (histórico + atualizações)](./relatorio-fase-5-admin-shell-alunos-e-convite.md)
 - [Implementação — Fase 5 complementos](./implementacao-fase-5-alunos-paginacao-edicao-admin.md)
-- Migrações: `supabase/migrations/20260428100000_initial_schema.sql`, `supabase/migrations/20260429100000_onboarding_tokens.sql`
+- Migrações: `supabase/migrations/20260428100000_initial_schema.sql`, `supabase/migrations/20260429100000_onboarding_tokens.sql`, `supabase/migrations/20260504140000_storage_avatars_admin_insert_public.sql`
 
 ---
 
@@ -241,14 +242,25 @@ A cada requisição coberta pelo matcher, o middleware:
 
 Os layouts de **`/admin`** e **`/student`** conferem de novo **`is_active`**; se inativo, fazem **sign out** e mandam para login com **`?error=inactive`**.
 
-### 9.4 Recuperação de senha (magic link)
+### 9.4 Conta de teste aluno
+
+Para o roteiro **RLS** (admin vê tudo; aluno só o próprio) e para validar **`/student`**:
+
+1. No **Supabase Dashboard** → **Authentication** → **Users** → **Add user** (ou “Invite” / “Create user”, conforme a UI), informe **e-mail** e **senha** distintos do admin.
+2. O trigger **`handle_new_user`** cria automaticamente **`profiles`** com **`role = student`**. Não execute `UPDATE` promovendo essa conta a admin.
+3. Se o projeto exigir **confirmação de e-mail**, confirme o usuário no painel ou desative temporariamente a confirmação em **Auth → Providers → Email** (apenas em dev).
+4. Acesse **`/login`** com esse usuário → o app deve redirecionar para **`/student`**. O admin continua acessando **`/admin`**.
+
+**Alternativa com dados completos de onboarding:** na home admin, use **Gerar link** de onboarding e conclua o fluxo em `/onboarding/<token>` com outro e-mail (cria perfil aluno com `student_details` preenchido).
+
+### 9.5 Recuperação de senha (magic link)
 
 1. Em **`/login`**, bloco “Esqueceu a senha?” envia e-mail via **`resetPasswordForEmail`**, com redirect para **`/auth/callback?next=/auth/update-password`** (origem via `getSiteUrl()`).
 2. O usuário clica no link do e-mail → **`/auth/callback`** executa **`exchangeCodeForSession`** e redireciona para **`/auth/update-password`**.
 3. Na página de nova senha, o browser usa **`createBrowserSupabaseClient`** e **`updateUser({ password })`**.
 4. É obrigatório ter as **Redirect URLs** corretas no painel Supabase e **`NEXT_PUBLIC_SITE_URL`** coerente em produção.
 
-### 9.5 Logout
+### 9.6 Logout
 
 O botão **Sair** dispara **`logoutAction`** (sign out no servidor) e redireciona para **`/login`**.
 

@@ -15,7 +15,7 @@ Fechar lacunas explícitas do PRD/plano para a **Fase 5** que ainda não estavam
 3. **Avatar** na lista quando existir URL em `profiles.avatar_url`.
 4. **Edição administrativa** dos dados do perfil e dos detalhes de surf/saúde na página de detalhe do aluno.
 
-O escopo **desta fatia histórica** não incluía upload de arquivo para Storage nem feed extra na home; **última aula**, **resumo financeiro na lista** e **feed da home** foram acrescentados **depois** — ver [§9](#9-atualização-maio--2026--feed-da-home-e-enriquecimento-da-lista) e [`estado-atual.md` §5.1](./estado-atual.md#51-entregue-no-código-home-e-lista).
+O escopo **desta fatia histórica** não incluía feed extra na home no primeiro relatório; **última aula**, **resumo financeiro na lista**, **feed da home** e **upload de avatar no Storage** foram acrescentados **depois** — ver [§8](#8-escopo-evoluído--upload-de-avatar-storage), [§9](#9-atualização-maio--2026--feed-da-home-e-enriquecimento-da-lista) e [`estado-atual.md` §5.1](./estado-atual.md#51-entregue-no-código-home-e-lista).
 
 ---
 
@@ -99,7 +99,7 @@ Arquivo **`lib/admin/student-admin-actions.ts`** (`"use server"`):
 | `updateStudentProfileAdminAction(profileId, raw)` | `requireAdminSession()`; valida UUID; parse Zod; **`UPDATE`** em `profiles`; `revalidatePath` na rota do aluno e na lista. Cliente Supabase tipado como **`SupabaseClient<Database>`** (cast a partir do cliente SSR, mesmo padrão da home admin). |
 | `upsertStudentDetailsAdminAction(studentId, raw)` | Idem sessão; parse Zod; se existe registro em `student_details` por `student_id`, **UPDATE**; senão **INSERT** com `student_id` + payload. |
 
-**Segurança:** políticas RLS existentes permitem que **admin** atualize `profiles` e faça **FOR ALL** em `student_details` (ver migração inicial). Não foi criada migração SQL nesta entrega.
+**Segurança:** políticas RLS existentes permitem que **admin** atualize `profiles` e faça **FOR ALL** em `student_details` (ver migração inicial). **Storage:** migração **`20260504140000_storage_avatars_admin_insert_public.sql`** — política **INSERT** para `authenticated` quando **`is_admin()`**, bucket **`avatars`** marcado como **público** para leitura via URL estável.
 
 ---
 
@@ -109,7 +109,8 @@ Arquivo **`lib/admin/student-admin-actions.ts`** (`"use server"`):
 |---------|--------|
 | `lib/admin/students-list-params.ts` | Parse de query string, constantes de `per_page`, helper para montar `?` nas navegações. |
 | `lib/admin/students-list-query.ts` | `fetchAdminStudentsList`: contagem + página + ordenação + **enriquecimento** (última aula / financeiro) desde maio/2026. |
-| `lib/admin/student-admin-actions.ts` | Server Actions de atualização de perfil e upsert de `student_details`. |
+| `lib/admin/student-admin-actions.ts` | Server Actions: perfil, upsert `student_details`, **upload de avatar** (`uploadStudentAvatarAdminAction`). |
+| `lib/admin/student-avatar-upload.ts` | Constantes e validação de MIME/tamanho do upload. |
 | `lib/validations/admin-student.ts` | Schemas Zod admin. |
 | `lib/validations/admin-student.test.ts` | Testes Vitest do schema de perfil. |
 | `lib/admin/students-list-params.test.ts` | Testes Vitest dos params da lista. |
@@ -143,11 +144,14 @@ Nenhuma variável **nova** para esta fatia. Continua válido:
 
 ---
 
-## 8. O que permanece fora deste escopo (fatia lista/edição)
+## 8. Escopo evoluído — upload de avatar (Storage)
 
-- **Upload** de avatar via Supabase Storage na UI (apenas campo **URL**).
+Desde **maio/2026**, o formulário admin inclui **envio de arquivo** (JPEG/PNG/WebP, até 2 MB) para o bucket **`avatars`**, com atualização de **`profiles.avatar_url`** para a URL pública. Server Action: **`uploadStudentAvatarAdminAction`** em **`lib/admin/student-admin-actions.ts`**; validação em **`lib/admin/student-avatar-upload.ts`**.
+
+Fora do escopo imediato:
+
 - Melhorias de **escala** na última aula (RPC Postgres / vista) se o histórico de `lessons` explodir.
-- Demais refinamentos da home quando **Agenda / Financeiro / Trips** tiverem **rotas próprias** no app — parte já coberta por `dashboard-feed-queries` com dados existentes.
+- Refinamentos da home quando **Agenda / Financeiro / Trips** tiverem **rotas próprias** — parcialmente coberto por `dashboard-feed-queries`.
 
 ---
 

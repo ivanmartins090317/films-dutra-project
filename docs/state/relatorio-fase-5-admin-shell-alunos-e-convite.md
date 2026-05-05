@@ -93,15 +93,14 @@ Proteção: **middleware** continua redirecionando não-admins; **`requireAdminS
 
 ---
 
-## 7. Pendências restantes para “fechar” a Fase 5 no PRD/plano
+## 7. Ressalvas após fechamento da Fase 5 (documentação maio/2026)
 
-*(O que já foi entregue depois das primeiras fatias está nas secções [§8](#8-referências-cruzadas) deste relatório via doc de implementação e na [§9](#9-atualização-maio--2026--feed-da-home-e-lista-enriquecida); síntese também em [estado-atual §5.2](./estado-atual.md#52-o-que-falta-para-finalizar-a-fase-5-prd--plano).)*
-
-- **Upload** de avatar pelo **Supabase Storage** na UI (hoje: campo URL + lista mostra imagem quando `avatar_url` é HTTPS).
-- **Fuso horário da escola** em contagens “hoje” / próximas aulas / copy — hoje documentado como **UTC**; evolução prevista com Agenda (Fase 6).
-- **Cards e atalhos** ainda mais ligados ao PRD quando existirem rotas de **Agenda**, **Financeiro** e **Trips** com CRUD — métricas já consomem `lessons`, `financials`, `surf_trips` onde há dados.
-- **Última aula na lista:** usa varredura com limite de linhas; bases muito grandes podem precisar **RPC/view** no Postgres.
-- **Testes E2E** e revisão formal da **tabela de progresso** do plano — ver Fase 12 e [`estado-atual.md`](./estado-atual.md).
+- **Upload de avatar:** implementado na edição admin do aluno — bucket **`avatars`**, política de **INSERT** para admin + bucket **público** para URL estável (migração `20260504140000_storage_avatars_admin_insert_public.sql`). Campo **URL manual** permanece como alternativa.
+- **Fuso horário da escola** em contagens “hoje” / próximas aulas — ainda **UTC**; evolução com **Agenda (Fase 6)**.
+- **Cards e atalhos** ganham rotas dedicadas quando **Agenda / Financeiro / Trips** existirem — métricas já leem `lessons`, `financials`, `surf_trips`.
+- **Última aula na lista:** varredura com limite; escala muito grande → **RPC/view** opcional.
+- **RLS manual** admin vs aluno — checklist **Fase 2**; conta aluno: [`estado-atual` §9.4](./estado-atual.md#94-conta-de-teste-aluno).
+- **Testes E2E** — **Fase 12**; tabela de progresso do [plano](../implementation/plano-de-implementacao.md) atualizada para Fase 5 **concluída**.
 
 ---
 

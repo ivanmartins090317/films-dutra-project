@@ -2,11 +2,16 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { ReactNode } from "react";
-import { useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import type { Resolver } from "react-hook-form";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
-import { updateStudentProfileAdminAction } from "@/lib/admin/student-admin-actions";
+import {
+  updateStudentProfileAdminAction,
+  uploadStudentAvatarAdminAction,
+} from "@/lib/admin/student-admin-actions";
+import { StudentListAvatar } from "@/components/admin/student-list-avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,7 +26,11 @@ interface AdminStudentProfileEditFormProps {
 }
 
 export function AdminStudentProfileEditForm({ profile }: AdminStudentProfileEditFormProps) {
+  const router = useRouter();
+  const fileRef = useRef<HTMLInputElement>(null);
   const [pending, startTransition] = useTransition();
+  const [uploadPending, setUploadPending] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const methods = useForm<AdminStudentProfileInput>({
     resolver: zodResolver(adminStudentProfileSchema) as Resolver<AdminStudentProfileInput>,
@@ -38,6 +47,34 @@ export function AdminStudentProfileEditForm({ profile }: AdminStudentProfileEdit
       is_active: profile.is_active,
     },
   });
+
+  const avatarUrlWatch = methods.watch("avatar_url");
+
+  async function handleAvatarUpload() {
+    const input = fileRef.current;
+    const file = input?.files?.[0];
+    if (!file) {
+      setUploadError("Escolha uma imagem (JPEG, PNG ou WebP, até 2 MB).");
+      return;
+    }
+    setUploadError(null);
+    setUploadPending(true);
+    try {
+      const fd = new FormData();
+      fd.set("file", file);
+      const res = await uploadStudentAvatarAdminAction(profile.id, fd);
+      if (!res.ok) {
+        setUploadError(res.error);
+        return;
+      }
+      const next = methods.getValues();
+      methods.reset({ ...next, avatar_url: res.publicUrl });
+      if (input) input.value = "";
+      router.refresh();
+    } finally {
+      setUploadPending(false);
+    }
+  }
 
   function onSubmit(values: AdminStudentProfileInput) {
     startTransition(async () => {
@@ -89,8 +126,46 @@ export function AdminStudentProfileEditForm({ profile }: AdminStudentProfileEdit
             disabled={pending}
           />
         </Field>
+
+        <div className="sm:col-span-2 rounded-lg border border-border/60 bg-muted/30 p-4">
+          <p className="mb-3 text-xs font-medium text-muted-foreground">Foto do perfil (Supabase Storage)</p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <StudentListAvatar
+              name={profile.full_name || "Aluno"}
+              avatarUrl={avatarUrlWatch?.trim() ? avatarUrlWatch.trim() : null}
+            />
+            <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-center">
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="max-w-full text-sm text-muted-foreground file:mr-2 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-primary-foreground"
+                disabled={pending || uploadPending}
+              />
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={pending || uploadPending}
+                onClick={() => void handleAvatarUpload()}
+              >
+                {uploadPending ? "Enviando…" : "Enviar foto"}
+              </Button>
+            </div>
+          </div>
+          {uploadError ? (
+            <p className="mt-2 text-xs text-destructive" role="alert">
+              {uploadError}
+            </p>
+          ) : (
+            <p className="mt-2 text-xs text-muted-foreground">
+              A imagem vai para o bucket <code className="rounded bg-muted px-1">avatars</code> e a URL pública
+              é salva no perfil. Exige migração aplicada no projeto Supabase.
+            </p>
+          )}
+        </div>
+
         <Field
-          label="URL do avatar (Storage ou URL pública)"
+          label="URL do avatar (alternativa — colar link público)"
           className="sm:col-span-2"
           error={methods.formState.errors.avatar_url?.message}
         >

@@ -1,9 +1,15 @@
 "use server";
 
+import { Buffer } from "node:buffer";
+
 import { revalidatePath } from "next/cache";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import {
+  mimeToAvatarExtension,
+  validateAvatarUploadFile,
+} from "@/lib/admin/student-avatar-upload";
 import { requireAdminSession } from "@/lib/admin/session";
 import {
   adminStudentDetailsSchema,
@@ -19,6 +25,60 @@ const UUID_RE =
 
 function validateUuid(id: string): boolean {
   return UUID_RE.test(id);
+}
+
+export async function uploadStudentAvatarAdminAction(
+  profileId: string,
+  formData: FormData
+): Promise<{ ok: true; publicUrl: string } | { ok: false; error: string }> {
+  if (!validateUuid(profileId)) {
+    return { ok: false, error: "Identificador inválido." };
+  }
+
+  const file = formData.get("file");
+  if (!(file instanceof File)) {
+    return { ok: false, error: "Selecione uma imagem." };
+  }
+
+  const valid = validateAvatarUploadFile(file);
+  if (!valid.ok) {
+    return valid;
+  }
+
+  const ext = mimeToAvatarExtension(file.type);
+  if (!ext) {
+    return { ok: false, error: "Formato de imagem não suportado." };
+  }
+
+  const { supabase } = await requireAdminSession();
+  const db = supabase as unknown as SupabaseClient<Database>;
+
+  const path = `${profileId}/avatar.${ext}`;
+  const buffer = Buffer.from(await file.arrayBuffer());
+
+  const { error: upErr } = await supabase.storage
+    .from("avatars")
+    .upload(path, buffer, { upsert: true, contentType: file.type });
+
+  if (upErr) {
+    return {
+      ok: false,
+      error: "Falha ao enviar a imagem. Confira se a migração do Storage foi aplicada.",
+    };
+  }
+
+  const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+  const publicUrl = urlData.publicUrl;
+
+  const { error: dbErr } = await db.from("profiles").update({ avatar_url: publicUrl }).eq("id", profileId);
+
+  if (dbErr) {
+    return { ok: false, error: "Upload ok, mas não foi possível atualizar o perfil." };
+  }
+
+  revalidatePath(`/admin/students/${profileId}`);
+  revalidatePath("/admin/students");
+  return { ok: true, publicUrl };
 }
 
 export async function updateStudentProfileAdminAction(

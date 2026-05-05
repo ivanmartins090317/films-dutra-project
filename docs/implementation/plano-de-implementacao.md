@@ -4,7 +4,7 @@ Documento derivado do [films_dutra_PRD.md](../../films_dutra_PRD.md). Organiza o
 
 **Escopo alvo:** MVP v1 conforme seção 10 do PRD (onboarding, perfis, dashboard admin completo, área do aluno em leitura, tema claro/escuro, sem upload de mídia na evolução na v1).
 
-**Última revisão do status:** abril de 2026 (alinhado a [docs/state/estado-atual.md](../state/estado-atual.md)).
+**Última revisão do status:** maio de 2026 (alinhado a [docs/state/estado-atual.md](../state/estado-atual.md)).
 
 ---
 
@@ -30,20 +30,19 @@ Toda implementação de interface deve obedecer ao **[design_system.md](../desig
 | 2 | Supabase: schema, RLS, Storage | **Concluída (infra + app parcial)** | Migração aplicada no projeto **films_dutra_bd**; `lib/supabase/client.ts`, `types/database.ts`, scripts `db:push` / `db:types`. **Pendente:** validação manual RLS com usuários admin + aluno (critério do plano) |
 | 3 | Autenticação e rotas | **Concluída** | `lib/supabase/server.ts`, `middleware.ts`, `/login`, `/admin`, `/student`, callback e recuperação de senha — detalhes em [estado-atual §4 e §8](../state/estado-atual.md) |
 | 4 | Onboarding público | **Concluída** | `/onboarding/[token]`, Zod, service role — ver [relatório Fase 4](../state/relatorio-fase-4-e-pendencia-rls-fase-2.md) |
-| 5 | Admin: layout, home, Alunos | **Em andamento** | Layout + sidebar + tema; home com métricas; lista/detalhe de alunos; geração de link de onboarding na home — ver [estado atual](../state/estado-atual.md) |
+| 5 | Admin: layout, home, Alunos | **Concluída** | Shell, home com feed, lista paginada/filtros, detalhe + edição admin, upload de avatar (Storage `avatars`), convite onboarding — ver [estado atual §5](../state/estado-atual.md#5-fase-5-admin--implementação-e-pendências). **Ressalvas:** fuso UTC até Agenda (Fase 6); validação manual RLS (Fase 2) recomendada antes de produção |
 | 6–12 | Demais fases | **Não iniciadas** | Conforme dependências do plano |
 
 ---
 
-## Próximos passos imediatos (Fase 5 em curso)
+## Próximos passos imediatos (pós–Fase 5)
 
-A **Fase 4** está **entregue no código** (ver [relatório](../state/relatorio-fase-4-e-pendencia-rls-fase-2.md)). Foco atual na **Fase 5**:
+A **Fase 5** está **entregue no código** (layout, home, alunos, Storage avatar admin, convite). Próximo foco sugerido:
 
-1. **Layout admin** — **entregue:** sidebar, navegação, `ThemeToggle`; home com métricas e painel de convite (ver [relatório Fase 5](../state/relatorio-fase-5-admin-shell-alunos-e-convite.md)).
-2. **Módulo Alunos** — **parcial:** lista + detalhe em leitura e busca por nome; completar filtros/paginação, edição admin no perfil, foto quando Storage estiver em uso nas telas.
-3. **Home admin** — evoluir cards (aulas “hoje” em fuso da escola, alertas reais) conforme Fases 6–9 carregarem dados.
+1. **Fase 6 — Agenda:** calendário de aulas e CRUD `lessons` (desbloqueia fuso da escola e integração mais profunda com a home admin).
+2. **QA cruzado:** executar o roteiro **RLS** com usuários **admin + aluno** — [roteiro](../state/relatorio-fase-4-e-pendencia-rls-fase-2.md#33-o-que-significa-validar-rls-na-prática-roteiro-sugerido). Para conta aluno: novo usuário em Supabase Authentication (o trigger cria `profiles` com `role = student`); login em `/login` → `/student`.
 
-Critério **Fase 2** (teste manual RLS com dois usuários): permanece checklist de QA — [roteiro](../state/relatorio-fase-4-e-pendencia-rls-fase-2.md#33-o-que-significa-validar-rls-na-prática-roteiro-sugerido).
+Critério **Fase 2** (validação manual RLS): permanece checklist até ser executado em ambiente de projeto.
 
 Contexto RLS: [estado-atual §3.5](../state/estado-atual.md).
 
@@ -125,7 +124,7 @@ Contexto RLS: [estado-atual §3.5](../state/estado-atual.md).
 
 **Objetivo:** Login e separação Admin / Aluno (PRD seções 2, 6.1, 7).
 
-**Onde começar (ordem de implementação):** [Próximos passos imediatos (Fase 5)](#próximos-passos-imediatos-fase-5-em-curso) no início deste documento.
+**Onde começar (ordem de implementação):** [Próximos passos imediatos (pós–Fase 5)](#próximos-passos-imediatos-pós-fase-5) no início deste documento.
 
 **Entregas:**
 
@@ -305,4 +304,4 @@ Contexto RLS: [estado-atual §3.5](../state/estado-atual.md).
 
 ---
 
-*Documento vivo: a tabela [Progresso por fase](#progresso-por-fase) e a seção [Próximos passos imediatos (Fase 5 em curso)](#próximos-passos-imediatos-fase-5-em-curso) devem ser revisadas a cada marco; manter alinhamento com [estado-atual.md](../state/estado-atual.md).*
+*Documento vivo: a tabela [Progresso por fase](#progresso-por-fase) e a seção [Próximos passos imediatos (pós–Fase 5)](#próximos-passos-imediatos-pós-fase-5) devem ser revisadas a cada marco; manter alinhamento com [estado-atual.md](../state/estado-atual.md).*
