@@ -99,7 +99,7 @@ Proteção: **middleware** continua redirecionando não-admins; **`requireAdminS
 - **Fuso horário da escola** em contagens “hoje” / próximas aulas — ainda **UTC**; evolução com **Agenda (Fase 6)**.
 - **Cards e atalhos** ganham rotas dedicadas quando **Agenda / Financeiro / Trips** existirem — métricas já leem `lessons`, `financials`, `surf_trips`.
 - **Última aula na lista:** varredura com limite; escala muito grande → **RPC/view** opcional.
-- **RLS manual** admin vs aluno — checklist **Fase 2**; conta aluno: [`estado-atual` §9.4](./estado-atual.md#94-conta-de-teste-aluno).
+- **RLS manual** admin vs aluno — checklist **Fase 2**; conta aluno: [`estado-atual` §10.4](./estado-atual.md#104-conta-de-teste-aluno).
 - **Testes E2E** — **Fase 12**; tabela de progresso do [plano](../implementation/plano-de-implementacao.md) atualizada para Fase 5 **concluída**.
 
 ---

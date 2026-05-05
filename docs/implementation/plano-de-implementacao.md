@@ -4,7 +4,7 @@ Documento derivado do [films_dutra_PRD.md](../../films_dutra_PRD.md). Organiza o
 
 **Escopo alvo:** MVP v1 conforme seção 10 do PRD (onboarding, perfis, dashboard admin completo, área do aluno em leitura, tema claro/escuro, sem upload de mídia na evolução na v1).
 
-**Última revisão do status:** maio de 2026 (alinhado a [docs/state/estado-atual.md](../state/estado-atual.md)).
+**Última revisão do status:** maio de 2026 — Fase 6 (Agenda) concluída no código; alinhar [docs/state/estado-atual.md](../state/estado-atual.md) quando o time atualizar o snapshot de documentação.
 
 ---
 
@@ -30,16 +30,17 @@ Toda implementação de interface deve obedecer ao **[design_system.md](../desig
 | 2 | Supabase: schema, RLS, Storage | **Concluída (infra + app parcial)** | Migração aplicada no projeto **films_dutra_bd**; `lib/supabase/client.ts`, `types/database.ts`, scripts `db:push` / `db:types`. **Pendente:** validação manual RLS com usuários admin + aluno (critério do plano) |
 | 3 | Autenticação e rotas | **Concluída** | `lib/supabase/server.ts`, `middleware.ts`, `/login`, `/admin`, `/student`, callback e recuperação de senha — detalhes em [estado-atual §4 e §8](../state/estado-atual.md) |
 | 4 | Onboarding público | **Concluída** | `/onboarding/[token]`, Zod, service role — ver [relatório Fase 4](../state/relatorio-fase-4-e-pendencia-rls-fase-2.md) |
-| 5 | Admin: layout, home, Alunos | **Concluída** | Shell, home com feed, lista paginada/filtros, detalhe + edição admin, upload de avatar (Storage `avatars`), convite onboarding — ver [estado atual §5](../state/estado-atual.md#5-fase-5-admin--implementação-e-pendências). **Ressalvas:** fuso UTC até Agenda (Fase 6); validação manual RLS (Fase 2) recomendada antes de produção |
-| 6–12 | Demais fases | **Não iniciadas** | Conforme dependências do plano |
+| 5 | Admin: layout, home, Alunos | **Concluída** | Shell, home com feed, lista paginada/filtros, detalhe + edição admin, upload de avatar (Storage `avatars`), convite onboarding — ver [estado atual §5](../state/estado-atual.md#5-fase-5-admin--implementação-e-pendências). **Ressalvas:** validação manual RLS (Fase 2) recomendada antes de produção; contagem “aulas hoje” / feed alinhados ao fuso da escola a partir da Fase 6 |
+| 6 | Admin: Agenda / calendário | **Concluída** | Rota `/admin/agenda` (mês + painel do dia), CRUD `lessons`, fuso **America/São_Paulo** (`lib/school-timezone.ts`, `date-fns-tz`), validação de conflito de horário por aluno, histórico no perfil do aluno, testes em `__tests__/lesson-*.test.ts`. **Opcional pós-MVP do módulo:** visão **semana** na UI |
+| 7–12 | Demais fases | **Não iniciadas** | Conforme dependências do plano |
 
 ---
 
-## Próximos passos imediatos (pós–Fase 5)
+## Próximos passos imediatos (pós–Fase 6)
 
-A **Fase 5** está **entregue no código** (layout, home, alunos, Storage avatar admin, convite). Próximo foco sugerido:
+A **Fase 6** está **entregue no código** (`/admin/agenda`, integração com home e perfil de aluno). Próximo foco sugerido:
 
-1. **Fase 6 — Agenda:** calendário de aulas e CRUD `lessons` (desbloqueia fuso da escola e integração mais profunda com a home admin).
+1. **Fase 7 — Evolução:** página `/admin/evolution`, CRUD `evolution_entries`, vínculo opcional com `lesson_id`, Recharts quando houver dados.
 2. **QA cruzado:** executar o roteiro **RLS** com usuários **admin + aluno** — [roteiro](../state/relatorio-fase-4-e-pendencia-rls-fase-2.md#33-o-que-significa-validar-rls-na-prática-roteiro-sugerido). Para conta aluno: novo usuário em Supabase Authentication (o trigger cria `profiles` com `role = student`); login em `/login` → `/student`.
 
 Critério **Fase 2** (validação manual RLS): permanece checklist até ser executado em ambiente de projeto.
@@ -124,7 +125,7 @@ Contexto RLS: [estado-atual §3.5](../state/estado-atual.md).
 
 **Objetivo:** Login e separação Admin / Aluno (PRD seções 2, 6.1, 7).
 
-**Onde começar (ordem de implementação):** [Próximos passos imediatos (pós–Fase 5)](#próximos-passos-imediatos-pós-fase-5) no início deste documento.
+**Onde começar (ordem de implementação):** [Próximos passos imediatos (pós–Fase 6)](#próximos-passos-imediatos-pós-fase-6) no início deste documento.
 
 **Entregas:**
 
@@ -180,6 +181,8 @@ Contexto RLS: [estado-atual §3.5](../state/estado-atual.md).
 - Histórico por aluno acessível a partir do calendário e/ou do perfil.
 
 **Critérios de conclusão:** Conflitos de agenda tratados (validação ou regra explícita); estados de aula refletidos na UI.
+
+**Status repositório (maio/2026):** Implementado: `app/admin/agenda/page.tsx`, componentes `components/admin/admin-agenda-client.tsx` e `lesson-form-dialog.tsx`, ações em `lib/admin/lesson-admin-actions.ts`, validação `lib/validations/lesson.ts`, fuso e helpers em `lib/school-timezone.ts`. Home admin (`lib/admin/dashboard-queries.ts`, feed) usa o dia civil em **America/São_Paulo** para “aulas hoje” e exibição de horários. **Pendência opcional de produto:** visão **semana** (a entrega mínima do plano — mês + dia — está atendida).
 
 ---
 
@@ -304,4 +307,4 @@ Contexto RLS: [estado-atual §3.5](../state/estado-atual.md).
 
 ---
 
-*Documento vivo: a tabela [Progresso por fase](#progresso-por-fase) e a seção [Próximos passos imediatos (pós–Fase 5)](#próximos-passos-imediatos-pós-fase-5) devem ser revisadas a cada marco; manter alinhamento com [estado-atual.md](../state/estado-atual.md).*
+*Documento vivo: a tabela [Progresso por fase](#progresso-por-fase) e a seção [Próximos passos imediatos (pós–Fase 6)](#próximos-passos-imediatos-pós-fase-6) devem ser revisadas a cada marco; manter alinhamento com [estado-atual.md](../state/estado-atual.md).*
