@@ -129,6 +129,7 @@ export function AdminDashboardShortcuts() {
   const items = [
     { href: "/admin/agenda", label: "Agenda", description: "Calendário e aulas" },
     { href: "/admin/financeiro", label: "Financeiro", description: "Lançamentos e consolidado" },
+    { href: "/admin/surf-trips", label: "Surf trips", description: "Viagens e inscrições" },
     { href: "/admin/students", label: "Alunos", description: "Lista, busca e edição" },
     { href: "/login", label: "Login", description: "Página pública de acesso" },
   ] as const;
@@ -152,7 +153,7 @@ export function AdminDashboardShortcuts() {
         ))}
       </ul>
       <p className="text-xs text-muted-foreground">
-        Evolução em /admin/evolution; trips e configurações nas próximas fases do plano.
+        Evolução em /admin/evolution; configurações da escola na próxima fase do plano.
       </p>
     </section>
   );

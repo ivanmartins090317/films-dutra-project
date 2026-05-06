@@ -36,8 +36,8 @@ export function AdminDashboardCards({ counts }: AdminDashboardCardsProps) {
       label: "Trips com vagas",
       value: counts.tripsOpen,
       icon: SuitcaseRolling,
-      href: undefined,
-      hint: "Trips na Fase 9",
+      href: "/admin/surf-trips",
+      hint: "Gerenciar trips",
     },
   ] as const;
 

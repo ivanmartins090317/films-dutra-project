@@ -8,6 +8,7 @@ import {
   CurrencyCircleDollar,
   House,
   Student,
+  SuitcaseRolling,
 } from "@phosphor-icons/react";
 
 import { cn } from "@/lib/utils";
@@ -17,6 +18,7 @@ const navItems = [
   { href: "/admin/agenda", label: "Agenda", icon: CalendarBlank },
   { href: "/admin/evolution", label: "Evolução", icon: ChartLineUp },
   { href: "/admin/financeiro", label: "Financeiro", icon: CurrencyCircleDollar },
+  { href: "/admin/surf-trips", label: "Surf trips", icon: SuitcaseRolling },
   { href: "/admin/students", label: "Alunos", icon: Student },
 ] as const;
 
@@ -49,7 +51,7 @@ export function AdminSidebar() {
         })}
       </nav>
       <p className="mt-auto hidden px-2 pt-6 text-[11px] leading-snug text-muted-foreground md:block">
-        Surf trips e configurações — próximas fases do plano.
+        Configurações da escola — próxima fase do plano.
       </p>
     </aside>
   );
