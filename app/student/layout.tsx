@@ -1,55 +1,42 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
-import { fallbackSchoolDisplayName, fetchSchoolSettings } from "@/lib/school-settings";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
-import type { ProfileRow } from "@/types/database";
 import { LogoutButton } from "@/components/auth/logout-button";
+import { StudentSidebar } from "@/components/student/student-sidebar";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { fallbackSchoolDisplayName, fetchSchoolSettings } from "@/lib/school-settings";
+import { requireStudentSession } from "@/lib/student/session";
 
 export default async function StudentLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const supabase = createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    redirect("/login?next=/student");
-  }
-
-  const { data } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  const profile = data as ProfileRow | null;
-
-  if (!profile?.is_active) {
-    await supabase.auth.signOut();
-    redirect("/login?error=inactive");
-  }
-
+  const { profile, supabase } = await requireStudentSession();
   const schoolRow = await fetchSchoolSettings(supabase);
-  if (schoolRow?.student_portal_enabled === false) {
-    await supabase.auth.signOut();
-    redirect("/login?error=portal");
-  }
-
   const schoolLabel = fallbackSchoolDisplayName(schoolRow);
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="flex items-center justify-between border-b border-border px-4 py-3">
-        <Link className="text-sm font-semibold tracking-tight" href="/student">
+      <header className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-border bg-background/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+        <Link className="text-sm font-semibold tracking-tight md:hidden" href="/student">
+          {schoolLabel}
+        </Link>
+        <Link className="hidden text-sm font-semibold tracking-tight md:inline" href="/student">
           {schoolLabel} — Área do aluno
         </Link>
-        <LogoutButton />
+        <div className="flex items-center gap-2 md:gap-3">
+          <span className="hidden max-w-[10rem] truncate text-xs text-muted-foreground sm:inline md:max-w-xs">
+            {profile.full_name?.trim() || profile.id.slice(0, 8)}
+          </span>
+          <ThemeToggle />
+          <LogoutButton />
+        </div>
       </header>
-      <div className="p-6">{children}</div>
+      <div className="flex flex-col md:flex-row md:items-stretch">
+        <StudentSidebar />
+        <main className="min-w-0 flex-1 p-4 md:p-6">{children}</main>
+      </div>
     </div>
   );
 }
