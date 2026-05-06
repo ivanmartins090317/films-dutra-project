@@ -2,7 +2,7 @@
 
 Documento de referência do que já foi implementado até aqui (ambiente, Supabase e código de integração). Atualizar quando avançar fases ou mudar infraestrutura.
 
-**Última revisão:** maio de 2026 — inclui **Fase 6 (Agenda)** e renumerada a secção “Fase 3 na prática” para **§10**.
+**Última revisão:** maio de 2026 — inclui **Fase 8 (Financeiro admin)**; a secção “Fase 3 na prática” está em **§12**.
 
 ---
 
@@ -14,11 +14,13 @@ Documento de referência do que já foi implementado até aqui (ambiente, Supaba
 | Variáveis Supabase | `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` em `.env.local` |
 | Projeto Supabase | **films_dutra_bd** no ambiente **main / PRODUCTION** |
 | Schema `public` | Tabelas, enums, RLS, Storage e triggers conforme PRD §5 e plano Fase 2 |
-| Dados | Tabelas criadas; registros dependem do uso (ex.: **`lessons`** preenchida quando há cadastro na Agenda) |
+| Dados | Tabelas criadas; registros dependem do uso (ex.: **`lessons`** na Agenda; **`evolution_entries`** no módulo Evolução) |
 | **Fase 3 (auth)** | **Implementada:** middleware, login, áreas `/admin` e `/student`, callback de recuperação de senha; favicon em `public/favicon.ico` |
 | **Fase 4 (onboarding)** | **Implementada no código:** `/onboarding/[token]`, Zod, service role no servidor, tabela `onboarding_tokens` — detalhes em [relatório Fase 4 e RLS](./relatorio-fase-4-e-pendencia-rls-fase-2.md) |
 | **Fase 5 (admin)** | **Concluída no código** (maio/2026): layout + tema; **home** com cards, feed (próximas aulas, inadimplência, aniversariantes), **atalhos**; lista de alunos com busca, filtros, ordenação, paginação; **avatar** por URL ou **upload admin** para o bucket Storage **`avatars`** (migração `20260504140000_storage_avatars_admin_insert_public.sql`); **última aula** e **resumo financeiro** na linha; detalhe + edição admin de perfil e surf/saúde; convite de onboarding na home. Docs: [relatório Fase 5](./relatorio-fase-5-admin-shell-alunos-e-convite.md), [implementação lista/paginação/edição](./implementacao-fase-5-alunos-paginacao-edicao-admin.md). **Ressalvas:** ver [§5.2](#52-ressalvas-pós-fase-5-prd--operações) (aniversariantes/última aula; RLS manual; E2E na Fase 12). **Fuso “aulas hoje” / horários de aula no feed** — alinhados a **America/São_Paulo** a partir da [Fase 6 — §6](#6-fase-6--agenda--calendário). |
 | **Fase 6 (agenda)** | **Concluída no código** (maio/2026): `/admin/agenda` (grade mensal + painel do dia), CRUD **`lessons`**, validação de **conflito de horário por aluno**, histórico no perfil do aluno, `lib/school-timezone.ts` + **`date-fns-tz`**. Detalhes em [§6](#6-fase-6--agenda--calendário). **Opcional:** visão **semana** na UI. |
+| **Fase 7 (evolução)** | **Concluída no código** (maio/2026): `/admin/evolution` (filtro por aluno, timeline, CRUD **`evolution_entries`**, tags de habilidade, vínculo opcional a **`lesson_id`** com validação de pertencimento ao aluno), gráfico **Recharts** por frequência de tags, atalho no perfil do aluno. Detalhes em [§7](#7-fase-7--evolução-admin). **v1:** sem upload de mídia (coluna `media_urls` preparada no schema). |
+| **Fase 8 (financeiro)** | **Concluída no código** (maio/2026): `/admin/financeiro` — CRUD **`financials`** por aluno, cards (receita no mês, inadimplência, a receber, total histórico), gráfico **Recharts** dos últimos 12 meses, navegação `year`/`month`, entrada na sidebar e atalho na home. Detalhes em [§8](#8-fase-8--financeiro-admin). **Critério RLS:** tabela só para admin; validar manualmente que aluno não lê linhas (`/student` não lista financeiro). |
 
 ---
 
@@ -28,12 +30,16 @@ O trabalho segue o [plano de implementação](../implementation/plano-de-impleme
 
 - **Fase 0** (fundação do repo) e **Fase 1** (design system / shell) — alinhadas ao plano.
 - **Fase 2** (Supabase: schema, RLS, Storage, tipos) — **executada** no banco e com tipos versionados. **Pendente (critério do plano):** [validação manual RLS com admin + aluno](./relatorio-fase-4-e-pendencia-rls-fase-2.md#3-fase-2--o-que-já-existe-vs-o-que-falta-rls).
-- **Fase 3** (autenticação, middleware, `/login`, proteção de rotas) — **executada no código** (ver seções 4 e [§10](#10-fase-3--como-funciona-na-prática)).
+- **Fase 3** (autenticação, middleware, `/login`, proteção de rotas) — **executada no código** (ver seções 4 e [§12](#12-fase-3--como-funciona-na-prática)).
 - **Fase 4** (onboarding público) — **executada no código**; ver [relatório](./relatorio-fase-4-e-pendencia-rls-fase-2.md).
 
 A **Fase 5** está **concluída no código** (incl. upload de avatar no Storage pela área admin) — detalhes e ressalvas em [§5](#5-fase-5-admin--implementação-e-pendências).
 
 A **Fase 6** (Agenda / calendário de aulas) está **concluída no código** — detalhes em [§6](#6-fase-6--agenda--calendário); plano: [Fase 6 no plano de implementação](../implementation/plano-de-implementacao.md#fase-6--admin-agenda--calendário).
+
+A **Fase 7** (Evolução no admin) está **concluída no código** — detalhes em [§7](#7-fase-7--evolução-admin); plano: [Fase 7 no plano de implementação](../implementation/plano-de-implementacao.md#fase-7--admin-evolução).
+
+A **Fase 8** (Financeiro no admin) está **concluída no código** — detalhes em [§8](#8-fase-8--financeiro-admin); plano: [Fase 8 no plano de implementação](../implementation/plano-de-implementacao.md#fase-8--admin-financeiro).
 
 ---
 
@@ -129,6 +135,8 @@ Buckets previstos na migração:
 | `app/auth/update-password/page.tsx` | Define nova senha após link de recuperação |
 | `app/admin/layout.tsx` / `app/admin/page.tsx` | Shell admin; bloqueia `is_active === false`. Home (`page.tsx`): cards (**`fetchAdminDashboardCounts`** — “aulas hoje” no fuso da escola) + **`fetchAdminDashboardFeed`** (próximas aulas em horário de Brasília, inadimplência, aniversariantes) + atalhos + convite — ver [§5](#5-fase-5-admin--implementação-e-pendências). |
 | `app/admin/agenda/page.tsx` | Agenda admin — ver [§6](#6-fase-6--agenda--calendário). |
+| `app/admin/evolution/page.tsx` | Evolução admin — ver [§7](#7-fase-7--evolução-admin). |
+| `app/admin/financeiro/page.tsx` | Financeiro admin — ver [§8](#8-fase-8--financeiro-admin). |
 | `app/student/layout.tsx` / `app/student/page.tsx` | Shell aluno; mesma regra de conta inativa |
 | `app/page.tsx` | Link para `/login` |
 
@@ -145,6 +153,7 @@ Onde o inferidor do client ainda produz `never` em algumas chains, o código usa
 
 - **`@supabase/ssr`** — cookies no servidor/middleware.
 - **`date-fns`** + **`date-fns-tz`** — calendário da Agenda e fuso **America/São_Paulo** (`lib/school-timezone.ts`).
+- **`recharts`** — gráficos na Evolução admin ([§7](#7-fase-7--evolução-admin)) e no Financeiro admin ([§8](#8-fase-8--financeiro-admin)).
 - `package.json`: `db:push`, `db:types`, `dev`, `build`, `test`.
 
 ### 4.5 Assets
@@ -175,10 +184,10 @@ Itens que **não impedem** considerar a Fase 5 **fechada no repositório**, mas 
 | Item | Notas |
 |------|--------|
 | **Fuso horário** | **Aulas** (home: contagem do dia, feed de próximas aulas, Agenda): **America/São_Paulo** — ver [§6](#6-fase-6--agenda--calendário). **Aniversariantes** na home ainda usam janela em **UTC** (melhoria futura: alinhar à escola). |
-| **Home vs rotas dedicadas** | Atalhos incluem **`/admin/agenda`**. Rotas como `/admin/financeiro`, `/admin/evolution` seguem **Fases 7–9**. |
+| **Home vs rotas dedicadas** | Atalhos incluem **`/admin/agenda`**, **`/admin/financeiro`**, **`/admin/evolution`** ([§7](#7-fase-7--evolução-admin)), lista de alunos e login. **Surf trips** — [Fase 9](../implementation/plano-de-implementacao.md#fase-9--admin-surf-trips) no plano. |
 | **Última aula na lista — escala** | Varredura com **limite de linhas**; volume muito grande pode exigir **RPC/view** no Postgres. |
 | **Aniversariantes** | Dependem de **`birth_date`** preenchido. |
-| **RLS (Fase 2)** | Validação manual com **admin + aluno** continua recomendada antes de produção — [roteiro](./relatorio-fase-4-e-pendencia-rls-fase-2.md#33-o-que-significa-validar-rls-na-prática-roteiro-sugerido). **Conta aluno:** ver [§10.4](#104-conta-de-teste-aluno). |
+| **RLS (Fase 2)** | Validação manual com **admin + aluno** continua recomendada antes de produção — [roteiro](./relatorio-fase-4-e-pendencia-rls-fase-2.md#33-o-que-significa-validar-rls-na-prática-roteiro-sugerido). **Conta aluno:** ver [§12.4](#124-conta-de-teste-aluno). |
 | **Fase 12** | Testes **E2E** e hardening LGPD/deploy. |
 
 ---
@@ -210,32 +219,83 @@ Módulo alinhado ao [plano — Fase 6](../implementation/plano-de-implementacao.
 
 ---
 
-## 7. O que ainda não existe (deliberado ou próximas fases)
+## 7. Fase 7 — Evolução admin
 
-- Dados reais de negócio em todas as tabelas (financeiro, trips, evolução, etc.) — **Agenda** já persiste **`lessons`** quando utilizada; demais módulos conforme adoção.
-- **Fases 7–11** — Evolução, Financeiro (telas CRUD), Surf trips, Configurações, área do aluno (`/student/*`), conforme [plano](../implementation/plano-de-implementacao.md).
+Módulo alinhado ao [plano — Fase 7](../implementation/plano-de-implementacao.md#fase-7--admin-evolução) e ao PRD (evolução em texto/tags no MVP).
+
+### 7.1 Entregue no código
+
+| Área | Descrição |
+|------|-----------|
+| **Rota `/admin/evolution`** | Seleção de aluno (`?student=<uuid>`; se ausente ou inválido, usa o primeiro aluno ativo na lista); timeline ordenada por data da entrada (+ `created_at`); entrada **Evolução** na sidebar admin. |
+| **CRUD `evolution_entries`** | Dialog com data (`entry_date`), texto (`content`), tags (`skills`, campo livre com mesmo critério de parsing que `skills_noted` das aulas), **`lesson_id` opcional** — ação valida que a aula pertence ao mesmo aluno. Server Actions em **`lib/admin/evolution-admin-actions.ts`**. |
+| **Gráfico** | **Recharts** — barras com contagem agregada de tags (lista vazia ou sem tags não quebra a página). Agregação em **`lib/admin/evolution-skill-stats.ts`**. |
+| **Perfil do aluno** | Bloco com link para **`/admin/evolution?student=...`** (`admin-student-evolution-section.tsx`). |
+| **Validação** | Zod: **`lib/validations/evolution.ts`** (`adminEvolutionFormSchema`). |
+| **Testes** | Vitest: `__tests__/evolution-validation.test.ts`, `__tests__/evolution-skill-stats.test.ts`. |
+
+### 7.2 Arquivos principais (referência rápida)
+
+`app/admin/evolution/page.tsx`, `components/admin/admin-evolution-client.tsx`, `components/admin/evolution-form-dialog.tsx`, `components/admin/evolution-skills-chart.tsx`, `components/admin/admin-student-evolution-section.tsx`, `lib/admin/evolution-queries.ts`, `lib/admin/evolution-admin-actions.ts`, `lib/admin/evolution-skill-stats.ts`, `lib/validations/evolution.ts`.
+
+### 7.3 Pendências / v2
+
+- **Upload de mídia** em evolução (Storage) — previsto pós-MVP no plano; coluna `media_urls` já existe no schema.
+
+---
+
+## 8. Fase 8 — Financeiro admin
+
+Módulo alinhado ao [plano — Fase 8](../implementation/plano-de-implementacao.md#fase-8--admin-financeiro) e à tabela **`financials`** (PRD §6.3).
+
+### 8.1 Entregue no código
+
+| Área | Descrição |
+|------|-----------|
+| **Rota `/admin/financeiro`** | Cards de **receita no mês** (soma dos pagamentos cuja **`paid_at`** cai no mês de referência), **inadimplência** (valor e quantidade com vencimento antes do dia atual na escola e sem `paid_at`), **a receber** em aberto, **total recebido histórico**; navegação **mês anterior / próximo** (`?year=&month=`); filtro **`?student=<uuid>`** alinhado à lista de alunos ativos. |
+| **CRUD `financials`** | Dialog com tipo (`financial_type`), valor, vencimento, **pago em** (opcional), observações; **status** persistido conforme **`deriveFinancialStatus`** (`lib/admin/financial-status.ts`). Não permite trocar o aluno ao editar. Server Actions em **`lib/admin/financial-admin-actions.ts`**. |
+| **Gráfico** | Barras **Recharts** dos recebidos por mês (últimos 12 meses terminando na referência) — **`financial-monthly-chart.tsx`**. |
+| **Perfil do aluno** | Bloco com link para **`/admin/financeiro?student=...`** (`admin-student-finance-section.tsx`). |
+| **Sidebar / home** | Entrada **Financeiro** (`admin-sidebar.tsx`); atalhos na **`AdminDashboardShortcuts`**. |
+| **Validação** | Zod: **`lib/validations/financial.ts`**. |
+| **Testes** | Vitest: `__tests__/financial-status.test.ts`, `__tests__/financial-validation.test.ts`, `__tests__/financial-dashboard-stats.test.ts`. |
+
+### 8.2 Arquivos principais (referência rápida)
+
+`app/admin/financeiro/page.tsx`, `components/admin/admin-financeiro-client.tsx`, `components/admin/financial-form-dialog.tsx`, `components/admin/financial-monthly-chart.tsx`, `components/admin/admin-student-finance-section.tsx`, `lib/admin/financial-queries.ts`, `lib/admin/financial-dashboard-stats.ts`, `lib/admin/financial-admin-actions.ts`, `lib/admin/financial-status.ts`, `lib/validations/financial.ts`.
+
+### 8.3 Pendências / operação
+
+- **RLS:** confirmar em dev com conta **aluno** que **`select`/API não retorna linhas de `financials`** (critério do plano).
+
+---
+
+## 9. O que ainda não existe (deliberado ou próximas fases)
+
+- Dados reais de negócio nas tabelas **trips** e demais quando ainda não usados — **Agenda**, **Evolução** e **Financeiro** persistem **`lessons`**, **`evolution_entries`** e **`financials`** quando utilizadas.
+- **Fases 9–11** — Surf trips, Configurações, área do aluno (`/student/*`) com paridade de leitura, conforme [plano](../implementation/plano-de-implementacao.md).
 - Testes automatizados **E2E** ou integração ampla para login e redirects (**Fase 12** ou incremental).
 - Validação manual **RLS** com **dois usuários** (admin + aluno), item pendente desde o critério da **Fase 2** no plano — [roteiro sugerido](./relatorio-fase-4-e-pendencia-rls-fase-2.md#33-o-que-significa-validar-rls-na-prática-roteiro-sugerido).
 
 ---
 
-## 8. Checklist rápido pós-deploy / novo dev
+## 10. Checklist rápido pós-deploy / novo dev
 
 1. Copiar `.env.example` → `.env.local` e preencher URL + chave anon do projeto correto; para onboarding, também **`SUPABASE_SERVICE_ROLE_KEY`** (servidor) — ver [.env.example](../../.env.example).
 2. Configurar **Redirect URLs** no Supabase para **`/auth/callback`** (localhost + produção).
 3. Confirmar no dashboard que as **7 tabelas** existem em `public` e que **RLS** está ativo onde esperado.
 4. Aplicar migrações (`npm run db:push` ou fluxo do time), incluindo Storage **`avatars`** (upload admin + bucket público para leitura da URL — ver `supabase/migrations/20260504140000_storage_avatars_admin_insert_public.sql`).
 5. Promover o primeiro **admin** manualmente (`UPDATE profiles SET role = 'admin' WHERE id = '<uuid>'`) após criar o usuário em Authentication.
-6. Para testes **aluno + admin**, criar um segundo usuário em Authentication (não elevar a admin) — ver [§10.4](#104-conta-de-teste-aluno).
+6. Para testes **aluno + admin**, criar um segundo usuário em Authentication (não elevar a admin) — ver [§12.4](#124-conta-de-teste-aluno).
 7. Rodar `npm run dev` e `npm run build` antes de abrir PR.
 8. Se o dev server acusar erro estranho em rotas ou favicon: apagar pasta **`.next`** e subir de novo (`npm run dev`).
 
 ---
 
-## 9. Referências
+## 11. Referências
 
 - [PRD — modelagem §5 e segurança §9](../films_dutra_PRD.md)
-- [Plano de implementação](../implementation/plano-de-implementacao.md) — [Progresso por fase](../implementation/plano-de-implementacao.md#progresso-por-fase) — [Fase 6 resumida](../implementation/plano-de-implementacao.md#fase-6--admin-agenda--calendário)
+- [Plano de implementação](../implementation/plano-de-implementacao.md) — [Progresso por fase](../implementation/plano-de-implementacao.md#progresso-por-fase) — [Fase 6 resumida](../implementation/plano-de-implementacao.md#fase-6--admin-agenda--calendário) — [Fase 7 resumida](../implementation/plano-de-implementacao.md#fase-7--admin-evolução) — [Fase 8 resumida](../implementation/plano-de-implementacao.md#fase-8--admin-financeiro)
 - [Relatório — Fase 4 e pendência RLS (Fase 2)](./relatorio-fase-4-e-pendencia-rls-fase-2.md)
 - [Relatório — Fase 5 (histórico + atualizações)](./relatorio-fase-5-admin-shell-alunos-e-convite.md)
 - [Implementação — Fase 5 complementos](./implementacao-fase-5-alunos-paginacao-edicao-admin.md)
@@ -243,25 +303,25 @@ Módulo alinhado ao [plano — Fase 6](../implementation/plano-de-implementacao.
 
 ---
 
-## 10. Fase 3 — como funciona na prática
+## 12. Fase 3 — como funciona na prática
 
 Resumo para quem vai **usar** ou **testar** o sistema no dia a dia.
 
-### 10.1 Primeiro acesso e papéis
+### 12.1 Primeiro acesso e papéis
 
 1. Todo usuário criado no **Authentication** do Supabase recebe, via trigger, uma linha em **`profiles`** com `role = student` por padrão.
 2. O **primeiro administrador** da escola é promovido **manualmente** no SQL:  
    `UPDATE profiles SET role = 'admin' WHERE id = '<uuid do auth.users>';`
 3. Quem entra com **admin** é sempre direcionado para **`/admin`**; quem entra com **student**, para **`/student`**. Tentar abrir a área errada redireciona para a correta.
 
-### 10.2 Fluxo de login (e-mail + senha)
+### 12.2 Fluxo de login (e-mail + senha)
 
 1. O usuário abre **`/login`** (ou clica “Entrar” na home).
 2. Submete e-mail e senha → **Server Action** valida com Zod, chama `signInWithPassword`, lê **`profiles`** (`role`, `is_active`).
 3. Se a conta estiver **inativa** (`is_active = false`), a sessão é encerrada e aparece mensagem de erro.
 4. Após sucesso, o redirect vai para **`/admin`** ou **`/student`**, ou para o path interno em **`?next=`** (se for `/admin` ou `/student`).
 
-### 10.3 Middleware (o que acontece “por baixo”)
+### 12.3 Middleware (o que acontece “por baixo”)
 
 A cada requisição coberta pelo matcher, o middleware:
 
@@ -274,7 +334,7 @@ A cada requisição coberta pelo matcher, o middleware:
 
 Os layouts de **`/admin`** e **`/student`** conferem de novo **`is_active`**; se inativo, fazem **sign out** e mandam para login com **`?error=inactive`**.
 
-### 10.4 Conta de teste aluno
+### 12.4 Conta de teste aluno
 
 Para o roteiro **RLS** (admin vê tudo; aluno só o próprio) e para validar **`/student`**:
 
@@ -285,14 +345,14 @@ Para o roteiro **RLS** (admin vê tudo; aluno só o próprio) e para validar **`
 
 **Alternativa com dados completos de onboarding:** na home admin, use **Gerar link** de onboarding e conclua o fluxo em `/onboarding/<token>` com outro e-mail (cria perfil aluno com `student_details` preenchido).
 
-### 10.5 Recuperação de senha (magic link)
+### 12.5 Recuperação de senha (magic link)
 
 1. Em **`/login`**, bloco “Esqueceu a senha?” envia e-mail via **`resetPasswordForEmail`**, com redirect para **`/auth/callback?next=/auth/update-password`** (origem via `getSiteUrl()`).
 2. O usuário clica no link do e-mail → **`/auth/callback`** executa **`exchangeCodeForSession`** e redireciona para **`/auth/update-password`**.
 3. Na página de nova senha, o browser usa **`createBrowserSupabaseClient`** e **`updateUser({ password })`**.
 4. É obrigatório ter as **Redirect URLs** corretas no painel Supabase e **`NEXT_PUBLIC_SITE_URL`** coerente em produção.
 
-### 10.6 Logout
+### 12.6 Logout
 
 O botão **Sair** dispara **`logoutAction`** (sign out no servidor) e redireciona para **`/login`**.
 

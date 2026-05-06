@@ -4,7 +4,7 @@ Documento derivado do [films_dutra_PRD.md](../../films_dutra_PRD.md). Organiza o
 
 **Escopo alvo:** MVP v1 conforme seção 10 do PRD (onboarding, perfis, dashboard admin completo, área do aluno em leitura, tema claro/escuro, sem upload de mídia na evolução na v1).
 
-**Última revisão do status:** maio de 2026 — Fase 6 (Agenda) concluída no código; alinhar [docs/state/estado-atual.md](../state/estado-atual.md) quando o time atualizar o snapshot de documentação.
+**Última revisão do status:** maio de 2026 — Fase 8 (Financeiro admin) concluída no código; manter [docs/state/estado-atual.md](../state/estado-atual.md) alinhado ao repositório.
 
 ---
 
@@ -32,7 +32,9 @@ Toda implementação de interface deve obedecer ao **[design_system.md](../desig
 | 4 | Onboarding público | **Concluída** | `/onboarding/[token]`, Zod, service role — ver [relatório Fase 4](../state/relatorio-fase-4-e-pendencia-rls-fase-2.md) |
 | 5 | Admin: layout, home, Alunos | **Concluída** | Shell, home com feed, lista paginada/filtros, detalhe + edição admin, upload de avatar (Storage `avatars`), convite onboarding — ver [estado atual §5](../state/estado-atual.md#5-fase-5-admin--implementação-e-pendências). **Ressalvas:** validação manual RLS (Fase 2) recomendada antes de produção; contagem “aulas hoje” / feed alinhados ao fuso da escola a partir da Fase 6 |
 | 6 | Admin: Agenda / calendário | **Concluída** | Rota `/admin/agenda` (mês + painel do dia), CRUD `lessons`, fuso **America/São_Paulo** (`lib/school-timezone.ts`, `date-fns-tz`), validação de conflito de horário por aluno, histórico no perfil do aluno, testes em `__tests__/lesson-*.test.ts`. **Opcional pós-MVP do módulo:** visão **semana** na UI |
-| 7–12 | Demais fases | **Não iniciadas** | Conforme dependências do plano |
+| 7 | Evolução admin | **Concluída** | `/admin/evolution` — ver [estado-atual §7](../state/estado-atual.md#7-fase-7--evolução-admin) |
+| 8 | Financeiro admin | **Concluída** | `/admin/financeiro` — ver [estado-atual §8](../state/estado-atual.md#8-fase-8--financeiro-admin) |
+| 9–12 | Demais fases | **Não iniciadas ou parciais** | Conforme dependências do plano |
 
 ---
 
@@ -211,6 +213,8 @@ Contexto RLS: [estado-atual §3.5](../state/estado-atual.md).
 - Gráfico mensal (Recharts).
 
 **Critérios de conclusão:** Aluno **não** enxerga tabela financeira (validar com usuário aluno de teste).
+
+**Status repositório (maio/2026):** Implementado `app/admin/financeiro/page.tsx`, cliente `AdminFinanceiroClient`, actions `financial-admin-actions.ts`, validação Zod em `lib/validations/financial.ts`, agregações `financial-dashboard-stats.ts`, gráfico Recharts (`financial-monthly-chart.tsx`). Navegação por mês civil (`year`/`month`). Status derivado por `paid_at`, `due_date` e fuso **America/São_Paulo**. RLS em `financials` permanece apenas admin; área `/student` não consome a tabela.
 
 ---
 

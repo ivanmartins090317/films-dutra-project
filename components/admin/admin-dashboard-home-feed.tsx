@@ -128,6 +128,7 @@ export function AdminDashboardHomeFeed({ feed }: AdminDashboardHomeFeedProps) {
 export function AdminDashboardShortcuts() {
   const items = [
     { href: "/admin/agenda", label: "Agenda", description: "Calendário e aulas" },
+    { href: "/admin/financeiro", label: "Financeiro", description: "Lançamentos e consolidado" },
     { href: "/admin/students", label: "Alunos", description: "Lista, busca e edição" },
     { href: "/login", label: "Login", description: "Página pública de acesso" },
   ] as const;
@@ -151,7 +152,7 @@ export function AdminDashboardShortcuts() {
         ))}
       </ul>
       <p className="text-xs text-muted-foreground">
-        Evolução, financeiro e trips seguem nas próximas fases do plano.
+        Evolução em /admin/evolution; trips e configurações nas próximas fases do plano.
       </p>
     </section>
   );

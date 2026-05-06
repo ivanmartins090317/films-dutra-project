@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { AdminStudentDetailsEditForm } from "@/components/admin/admin-student-details-edit-form";
+import { AdminStudentEvolutionSection } from "@/components/admin/admin-student-evolution-section";
+import { AdminStudentFinanceSection } from "@/components/admin/admin-student-finance-section";
 import { AdminStudentProfileEditForm } from "@/components/admin/admin-student-profile-edit-form";
 import { AdminStudentLessonsSection } from "@/components/admin/admin-student-lessons-section";
 import { StudentDetailTabs } from "@/components/admin/student-detail-tabs";
@@ -73,7 +75,11 @@ export default async function AdminStudentDetailPage({ params }: StudentDetailPa
       <StudentDetailTabs profile={profile} studentDetails={studentDetails} />
 
       {profile.role === "student" ? (
-        <AdminStudentLessonsSection lessons={studentLessons} />
+        <>
+          <AdminStudentEvolutionSection studentId={profile.id} />
+          <AdminStudentFinanceSection studentId={profile.id} />
+          <AdminStudentLessonsSection lessons={studentLessons} />
+        </>
       ) : null}
 
       <section className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm md:p-6">
