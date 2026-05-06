@@ -2,7 +2,7 @@
 
 Documento de referência do que já foi implementado até aqui (ambiente, Supabase e código de integração). Atualizar quando avançar fases ou mudar infraestrutura.
 
-**Última revisão:** maio de 2026 — inclui **Fase 9 (Surf trips admin)**; a secção “Fase 3 na prática” está em **§13**.
+**Última revisão:** maio de 2026 — inclui **Fase 10 (Configurações da escola)**; a secção “Fase 3 na prática” está em **§14**.
 
 ---
 
@@ -21,7 +21,8 @@ Documento de referência do que já foi implementado até aqui (ambiente, Supaba
 | **Fase 6 (agenda)** | **Concluída no código** (maio/2026): `/admin/agenda` (grade mensal + painel do dia), CRUD **`lessons`**, validação de **conflito de horário por aluno**, histórico no perfil do aluno, `lib/school-timezone.ts` + **`date-fns-tz`**. Detalhes em [§6](#6-fase-6--agenda--calendário). **Opcional:** visão **semana** na UI. |
 | **Fase 7 (evolução)** | **Concluída no código** (maio/2026): `/admin/evolution` (filtro por aluno, timeline, CRUD **`evolution_entries`**, tags de habilidade, vínculo opcional a **`lesson_id`** com validação de pertencimento ao aluno), gráfico **Recharts** por frequência de tags, atalho no perfil do aluno. Detalhes em [§7](#7-fase-7--evolução-admin). **v1:** sem upload de mídia (coluna `media_urls` preparada no schema). |
 | **Fase 8 (financeiro)** | **Concluída no código** (maio/2026): `/admin/financeiro` — CRUD **`financials`** por aluno, cards (receita no mês, inadimplência, a receber, total histórico), gráfico **Recharts** dos últimos 12 meses, navegação `year`/`month`, entrada na sidebar e atalho na home. Detalhes em [§8](#8-fase-8--financeiro-admin). **Critério RLS:** tabela só para admin; validar manualmente que aluno não lê linhas (`/student` não lista financeiro). |
-| **Fase 9 (surf trips)** | **Concluída no código** (maio/2026): `/admin/surf-trips` — CRUD **`surf_trips`**, inscrições **`trip_registrations`** (interessado / confirmado / cancelado), **`spots_taken`** alinhado aos confirmados com regras de vagas, upload de capa no Storage **`trip-covers`** ou URL manual (migração pública `20260506120000_storage_trip_covers_public.sql`). Listagem por ano civil com agrupamento mensal; sidebar, atalhos na home e card “Trips com vagas” no painel. Detalhes em [§9](#9-fase-9--surf-trips-admin). **Próximo:** interação do aluno em `/student` — [Fase 11](../implementation/plano-de-implementacao.md#fase-11--área-do-aluno-student). |
+| **Fase 9 (surf trips)** | **Concluída no código** (maio/2026): `/admin/surf-trips` — CRUD **`surf_trips`**, inscrições **`trip_registrations`** (interessado / confirmado / cancelado), **`spots_taken`** alinhado aos confirmados com regras de vagas, upload de capa no Storage **`trip-covers`** ou URL manual (migração pública `20260506120000_storage_trip_covers_public.sql`). Listagem por ano civil com agrupamento mensal; sidebar, atalhos na home e card “Trips com vagas” no painel. Detalhes em [§9](#9-fase-9--surf-trips-admin). |
+| **Fase 10 (configurações)** | **Concluída no código** (maio/2026): tabela **`school_settings`** (singleton), **`/admin/configuracoes`** (nome, contato, URL do logo, interruptor **portal dos alunos**), branding em **`/login`** e cabeçalhos admin/aluno; **`student_portal_enabled`** + middleware/login/layout bloqueiam **`/student`** quando desligado; **conta inativa** continua por **`profiles.is_active`** (módulo Alunos). Migração **`20260507100000_school_settings.sql`**. Detalhes em [§10](#10-fase-10--configurações-da-escola). **Próximo:** [Fase 11](../implementation/plano-de-implementacao.md#fase-11--área-do-aluno-student) (área do aluno). |
 
 ---
 
@@ -31,7 +32,7 @@ O trabalho segue o [plano de implementação](../implementation/plano-de-impleme
 
 - **Fase 0** (fundação do repo) e **Fase 1** (design system / shell) — alinhadas ao plano.
 - **Fase 2** (Supabase: schema, RLS, Storage, tipos) — **executada** no banco e com tipos versionados. **Pendente (critério do plano):** [validação manual RLS com admin + aluno](./relatorio-fase-4-e-pendencia-rls-fase-2.md#3-fase-2--o-que-já-existe-vs-o-que-falta-rls).
-- **Fase 3** (autenticação, middleware, `/login`, proteção de rotas) — **executada no código** (ver seções 4 e [§13](#13-fase-3--como-funciona-na-prática)).
+- **Fase 3** (autenticação, middleware, `/login`, proteção de rotas) — **executada no código** (ver seções 4 e [§14](#14-fase-3--como-funciona-na-prática)).
 - **Fase 4** (onboarding público) — **executada no código**; ver [relatório](./relatorio-fase-4-e-pendencia-rls-fase-2.md).
 
 A **Fase 5** está **concluída no código** (incl. upload de avatar no Storage pela área admin) — detalhes e ressalvas em [§5](#5-fase-5-admin--implementação-e-pendências).
@@ -43,6 +44,8 @@ A **Fase 7** (Evolução no admin) está **concluída no código** — detalhes 
 A **Fase 8** (Financeiro no admin) está **concluída no código** — detalhes em [§8](#8-fase-8--financeiro-admin); plano: [Fase 8 no plano de implementação](../implementation/plano-de-implementacao.md#fase-8--admin-financeiro).
 
 A **Fase 9** (Surf trips no admin) está **concluída no código** — detalhes em [§9](#9-fase-9--surf-trips-admin); plano: [Fase 9 no plano de implementação](../implementation/plano-de-implementacao.md#fase-9--admin-surf-trips).
+
+A **Fase 10** (Configurações da escola) está **concluída no código** — detalhes em [§10](#10-fase-10--configurações-da-escola); plano: [Fase 10 no plano de implementação](../implementation/plano-de-implementacao.md#fase-10--admin-configurações).
 
 ---
 
@@ -75,6 +78,7 @@ No **Table Editor** do Supabase, o schema **`public`** contém as tabelas abaixo
 | `financials` | Lançamentos financeiros por aluno |
 | `surf_trips` | Surf trips |
 | `trip_registrations` | Inscrições em trips |
+| `school_settings` | Configurações institucionais (singleton): nome, contato, logo URL, portal dos alunos ligado/desligado |
 
 ### 3.3 Tipos enumerados (Postgres)
 
@@ -83,7 +87,7 @@ Definidos na migração inicial, alinhados ao PRD: `user_role`, `lesson_status`,
 ### 3.4 Funções e triggers
 
 - **`handle_new_user`** — após insert em `auth.users`, cria linha em `profiles` (papel padrão `student`).
-- **`set_updated_at`** — mantém `updated_at` em `profiles` e `student_details`.
+- **`set_updated_at`** — mantém `updated_at` em `profiles`, `student_details` e **`school_settings`** (Fase 10).
 - **`is_admin()`** — função `SECURITY DEFINER` para políticas RLS (evita recursão ao ler `profiles`).
 - **`profiles_guard_student_updates`** — em `UPDATE` de `profiles`, usuários não admin não alteram `role` nem `is_active` (valores forçados a permanecer como antes da linha).
 
@@ -95,6 +99,7 @@ RLS **habilitado** nas tabelas acima. Resumo da intenção:
 - **Aluno** — em geral só **próprios** dados em `profiles`, `lessons`, `evolution_entries`, `trip_registrations` (conforme políticas por tabela).
 - **`student_details`** e **`financials`** — restritos a **admin** no modelo atual (onboarding público na Fase 4 pode exigir RPC `SECURITY DEFINER` ou fluxo com **service role**).
 - **`surf_trips`** — leitura para usuários autenticados; escrita administrativa.
+- **`school_settings`** — **SELECT** para `anon` e `authenticated` (branding no login e checagem do portal no middleware); **UPDATE** apenas **admin** (`is_admin()`).
 
 Detalhes estão na migração SQL versionada no repositório.
 
@@ -107,7 +112,7 @@ Buckets previstos na migração:
 
 ### 3.7 Migração versionada
 
-- Arquivo: **`supabase/migrations/20260428100000_initial_schema.sql`**
+- Arquivos principais: **`supabase/migrations/20260428100000_initial_schema.sql`**, **`supabase/migrations/20260507100000_school_settings.sql`** (Fase 10 — `school_settings`).
 - **`supabase init`** gerou **`supabase/config.toml`** (desenvolvimento local / CLI).
 - Script **`npm run db:push`** aplica migrações ao projeto **linkado** via Supabase CLI.
 
@@ -122,26 +127,27 @@ Buckets previstos na migração:
 | `lib/supabase/env.ts` | `getSupabaseEnv()`, `getSiteUrl()` — URL/chave e origem para redirects de auth |
 | `lib/supabase/client.ts` | `createBrowserSupabaseClient()` — uso no browser (login recovery, update password) |
 | `lib/supabase/server.ts` | `createServerSupabaseClient()` — Server Actions, Route Handlers, RSC (`@supabase/ssr` + cookies) |
-| `lib/supabase/middleware.ts` | `updateSession()` — refresh de sessão + regras de rota por `profiles.role` |
+| `lib/supabase/middleware.ts` | `updateSession()` — refresh de sessão + rota por `profiles.role`; aluno com portal desligado ou inativo não entra em `/student` (**`error=portal`** / **`inactive`**); estudante bloqueado não é redirecionado para `/student` ao abrir `/login` |
 | `middleware.ts` (raiz) | Chama `updateSession`; matcher exclui estáticos conhecidos |
 
 ### 4.2 Autenticação e rotas
 
 | Caminho | Descrição |
 |---------|-----------|
-| `lib/auth/actions.ts` | Server Actions: `loginAction`, `logoutAction`, `requestPasswordResetAction` |
+| `lib/auth/actions.ts` | Server Actions: `loginAction` (aluno bloqueado se **`student_portal_enabled === false`**), `logoutAction`, `requestPasswordResetAction` |
 | `lib/validations/auth.ts` | Zod `loginSchema` |
-| `app/login/page.tsx` | Página de login; query `next`, `error`; bloco “esqueci a senha” |
+| `app/login/page.tsx` | Página de login; query `next`, `error` (**`inactive`**, **`portal`**, profile, auth); branding a partir de **`school_settings`** (**`SchoolBrandMark`**, nome, `mailto` opcional); bloco “esqueci a senha” |
 | `components/auth/login-form.tsx` | Formulário cliente com `useFormState` |
 | `components/auth/logout-button.tsx` | Botão “Sair” (server action) |
 | `app/auth/callback/route.ts` | Troca `code` PKCE por sessão (pós-clique no e-mail) |
 | `app/auth/update-password/page.tsx` | Define nova senha após link de recuperação |
-| `app/admin/layout.tsx` / `app/admin/page.tsx` | Shell admin; bloqueia `is_active === false`. Home (`page.tsx`): cards (**`fetchAdminDashboardCounts`** — “aulas hoje” no fuso da escola) + **`fetchAdminDashboardFeed`** (próximas aulas em horário de Brasília, inadimplência, aniversariantes) + atalhos + convite — ver [§5](#5-fase-5-admin--implementação-e-pendências). |
+| `app/admin/layout.tsx` / `app/admin/page.tsx` | Shell admin; título no header com nome da escola (**`fetchSchoolSettings`**); bloqueia `is_active === false`. Home (`page.tsx`): cards (**`fetchAdminDashboardCounts`** — “aulas hoje” no fuso da escola) + **`fetchAdminDashboardFeed`** (próximas aulas em horário de Brasília, inadimplência, aniversariantes) + atalhos + convite — ver [§5](#5-fase-5-admin--implementação-e-pendências). |
 | `app/admin/agenda/page.tsx` | Agenda admin — ver [§6](#6-fase-6--agenda--calendário). |
 | `app/admin/evolution/page.tsx` | Evolução admin — ver [§7](#7-fase-7--evolução-admin). |
 | `app/admin/financeiro/page.tsx` | Financeiro admin — ver [§8](#8-fase-8--financeiro-admin). |
 | `app/admin/surf-trips/page.tsx` | Surf trips admin — ver [§9](#9-fase-9--surf-trips-admin). |
-| `app/student/layout.tsx` / `app/student/page.tsx` | Shell aluno; mesma regra de conta inativa |
+| `app/admin/configuracoes/page.tsx` | Configurações da escola — ver [§10](#10-fase-10--configurações-da-escola). |
+| `app/student/layout.tsx` / `app/student/page.tsx` | Shell aluno; **conta inativa** (`is_active`), **portal desligado** (`school_settings.student_portal_enabled`) e nome da escola no header |
 | `app/page.tsx` | Link para `/login` |
 
 ### 4.3 Tipos
@@ -151,7 +157,7 @@ Buckets previstos na migração:
 | `types/database.ts` | Schema `public`; `Views`/`CompositeTypes` no formato compatível com supabase-js; tipo exportado **`ProfileRow`** |
 | `types/index.ts` | Reexporta `Database`, `Json`, `PublicEnums`, `ProfileRow` |
 
-Onde o inferidor do client ainda produz `never` em algumas chains, o código usa **cast explícito** para `ProfileRow` (revisar após `npm run db:types` com CLI atual).
+Onde o inferidor do client ainda produz `never` em algumas chains, o código usa **cast explícito** para `ProfileRow` (revisar após `npm run db:types` com CLI atual). **`createServerSupabaseClient`** e o cliente do middleware usam **`as unknown as AppSupabaseClient`** (`lib/supabase/ssr-client-type.ts`) para alinhar genéricos do `@supabase/ssr` ao schema `Database`.
 
 ### 4.4 Dependências e scripts relevantes
 
@@ -191,7 +197,7 @@ Itens que **não impedem** considerar a Fase 5 **fechada no repositório**, mas 
 | **Home vs rotas dedicadas** | Atalhos incluem **`/admin/agenda`**, **`/admin/financeiro`**, **`/admin/evolution`** ([§7](#7-fase-7--evolução-admin)), **`/admin/surf-trips`** ([§9](#9-fase-9--surf-trips-admin)), lista de alunos e login. |
 | **Última aula na lista — escala** | Varredura com **limite de linhas**; volume muito grande pode exigir **RPC/view** no Postgres. |
 | **Aniversariantes** | Dependem de **`birth_date`** preenchido. |
-| **RLS (Fase 2)** | Validação manual com **admin + aluno** continua recomendada antes de produção — [roteiro](./relatorio-fase-4-e-pendencia-rls-fase-2.md#33-o-que-significa-validar-rls-na-prática-roteiro-sugerido). **Conta aluno:** ver [§13.4](#134-conta-de-teste-aluno). |
+| **RLS (Fase 2)** | Validação manual com **admin + aluno** continua recomendada antes de produção — [roteiro](./relatorio-fase-4-e-pendencia-rls-fase-2.md#33-o-que-significa-validar-rls-na-prática-roteiro-sugerido). **Conta aluno:** ver [§14.4](#144-conta-de-teste-aluno). |
 | **Fase 12** | Testes **E2E** e hardening LGPD/deploy. |
 
 ---
@@ -219,7 +225,7 @@ Módulo alinhado ao [plano — Fase 6](../implementation/plano-de-implementacao.
 ### 6.3 Pendências opcionais de produto
 
 - **Visão semana** na UI (o plano permite entrega progressiva mês + dia).
-- **Fuso configurável** via Configurações da escola ([Fase 10](../implementation/plano-de-implementacao.md#fase-10--admin-configurações)) em vez de constante no código.
+- **Fuso configurável** na UI (ex. por escola) — **ainda não** implementado; o fuso continua em constante **`America/São_Paulo`** no código. A [Fase 10](#10-fase-10--configurações-da-escola) entregou branding e portal, não seleção de fuso.
 
 ---
 
@@ -302,71 +308,100 @@ Módulo alinhado ao [plano — Fase 9](../implementation/plano-de-implementacao.
 
 ---
 
-## 10. O que ainda não existe (deliberado ou próximas fases)
+## 10. Fase 10 — Configurações da escola
+
+Módulo alinhado ao [plano — Fase 10](../implementation/plano-de-implementacao.md#fase-10--admin-configurações) e ao PRD §6.3 (Configurações).
+
+### 10.1 Entregue no código
+
+| Área | Descrição |
+|------|-----------|
+| **Tabela `school_settings`** | Linha **singleton** (`singleton = true`): `school_name`, `contact_email`, `contact_phone`, `logo_url`, `student_portal_enabled`, `updated_at`. Migração **`supabase/migrations/20260507100000_school_settings.sql`**. |
+| **Rota `/admin/configuracoes`** | Formulário (RHF + Zod): dados da escola, URL opcional do logo (substitui marca estática no login via **`next/image` unoptimized**), interruptor **Portal dos alunos**; link para **`/admin/students`** para **conta inativa por aluno** (`profiles.is_active`). Server Action **`updateSchoolSettingsAdminAction`** (`lib/admin/school-settings-admin-actions.ts`). |
+| **Branding** | **`/login`**: componente **`SchoolBrandMark`** (`components/school/school-brand-mark.tsx`); cabeçalhos **`app/admin/layout.tsx`** e **`app/student/layout.tsx`** com nome amigável (**`fallbackSchoolDisplayName`** em `lib/school-settings.ts`). |
+| **Portal dos alunos** | Se **`student_portal_enabled === false`**: middleware redireciona **`/student`** → **`/login?error=portal`**; **`loginAction`** encerra sessão de aluno; **`app/student/layout.tsx`** faz sign out e redirect. Aluno **inativo** mantém **`?error=inactive`**. |
+| **Tema** | Continua global (**`ThemeToggle`** no header admin — Fase 1); a tela de configurações apenas documenta isso na cópia de interface. |
+| **RLS** | Ver [§3.5](#35-row-level-security-rls). |
+| **Validação / testes** | Zod **`lib/validations/school-settings.ts`**; Vitest **`lib/validations/school-settings.test.ts`**. |
+
+### 10.2 Arquivos principais (referência rápida)
+
+`lib/school-settings.ts`, `lib/supabase/ssr-client-type.ts`, `components/admin/admin-configuracoes-client.tsx`, `components/admin/admin-sidebar.tsx` (entrada **Configurações**), `components/school/school-brand-mark.tsx`.
+
+### 10.3 Operação
+
+- Aplicar a migração **`20260507100000_school_settings.sql`** no projeto Supabase (`npm run db:push` ou SQL Editor — ver [.env.example](../../.env.example)).
+- Sem a tabela no banco, **`/admin/configuracoes`** exibe aviso orientando a rodar a migração; o app faz **fail-open** no portal (considera ligado se não houver linha).
+
+---
+
+## 11. O que ainda não existe (deliberado ou próximas fases)
 
 - Dados reais de negócio em **`surf_trips`** / **`trip_registrations`** dependem do uso do módulo admin; **Agenda**, **Evolução**, **Financeiro** e **Surf trips** persistem nas respectivas tabelas quando utilizados.
-- **Fases 10–11** — Configurações da escola, área do aluno (`/student/*`) com paridade de leitura e trips, conforme [plano](../implementation/plano-de-implementacao.md).
+- **Fase 11** — área do aluno (`/student/*`) com paridade de leitura, trips e demais rotas do PRD, conforme [plano](../implementation/plano-de-implementacao.md#fase-11--área-do-aluno-student).
 - Testes automatizados **E2E** ou integração ampla para login e redirects (**Fase 12** ou incremental).
 - Validação manual **RLS** com **dois usuários** (admin + aluno), item pendente desde o critério da **Fase 2** no plano — [roteiro sugerido](./relatorio-fase-4-e-pendencia-rls-fase-2.md#33-o-que-significa-validar-rls-na-prática-roteiro-sugerido).
 
 ---
 
-## 11. Checklist rápido pós-deploy / novo dev
+## 12. Checklist rápido pós-deploy / novo dev
 
 1. Copiar `.env.example` → `.env.local` e preencher URL + chave anon do projeto correto; para onboarding, também **`SUPABASE_SERVICE_ROLE_KEY`** (servidor) — ver [.env.example](../../.env.example).
 2. Configurar **Redirect URLs** no Supabase para **`/auth/callback`** (localhost + produção).
-3. Confirmar no dashboard que as **7 tabelas** existem em `public` e que **RLS** está ativo onde esperado.
-4. Aplicar migrações (`npm run db:push` ou fluxo do time), incluindo Storage **`avatars`** (upload admin + bucket público — ver `supabase/migrations/20260504140000_storage_avatars_admin_insert_public.sql`) e **`trip-covers` público** para capas de surf trips (`supabase/migrations/20260506120000_storage_trip_covers_public.sql`).
+3. Confirmar no dashboard que as tabelas esperadas existem em **`public`** (incl. **`onboarding_tokens`**, **`school_settings`**) e que **RLS** está ativo onde esperado.
+4. Aplicar migrações (`npm run db:push` ou fluxo do time), incluindo Storage **`avatars`** (upload admin + bucket público — ver `supabase/migrations/20260504140000_storage_avatars_admin_insert_public.sql`), **`trip-covers` público** para capas de surf trips (`supabase/migrations/20260506120000_storage_trip_covers_public.sql`) e **`school_settings`** (`supabase/migrations/20260507100000_school_settings.sql` — Fase 10).
 5. Promover o primeiro **admin** manualmente (`UPDATE profiles SET role = 'admin' WHERE id = '<uuid>'`) após criar o usuário em Authentication.
-6. Para testes **aluno + admin**, criar um segundo usuário em Authentication (não elevar a admin) — ver [§13.4](#134-conta-de-teste-aluno).
+6. Para testes **aluno + admin**, criar um segundo usuário em Authentication (não elevar a admin) — ver [§14.4](#144-conta-de-teste-aluno).
 7. Rodar `npm run dev` e `npm run build` antes de abrir PR.
 8. Se o dev server acusar erro estranho em rotas ou favicon: apagar pasta **`.next`** e subir de novo (`npm run dev`).
 
 ---
 
-## 12. Referências
+## 13. Referências
 
 - [PRD — modelagem §5 e segurança §9](../films_dutra_PRD.md)
-- [Plano de implementação](../implementation/plano-de-implementacao.md) — [Progresso por fase](../implementation/plano-de-implementacao.md#progresso-por-fase) — [Fase 6 resumida](../implementation/plano-de-implementacao.md#fase-6--admin-agenda--calendário) — [Fase 7 resumida](../implementation/plano-de-implementacao.md#fase-7--admin-evolução) — [Fase 8 resumida](../implementation/plano-de-implementacao.md#fase-8--admin-financeiro) — [Fase 9 resumida](../implementation/plano-de-implementacao.md#fase-9--admin-surf-trips)
+- [Plano de implementação](../implementation/plano-de-implementacao.md) — [Progresso por fase](../implementation/plano-de-implementacao.md#progresso-por-fase) — [Fase 6 resumida](../implementation/plano-de-implementacao.md#fase-6--admin-agenda--calendário) — [Fase 7 resumida](../implementation/plano-de-implementacao.md#fase-7--admin-evolução) — [Fase 8 resumida](../implementation/plano-de-implementacao.md#fase-8--admin-financeiro) — [Fase 9 resumida](../implementation/plano-de-implementacao.md#fase-9--admin-surf-trips) — [Fase 10 resumida](../implementation/plano-de-implementacao.md#fase-10--admin-configurações)
 - [Relatório — Fase 4 e pendência RLS (Fase 2)](./relatorio-fase-4-e-pendencia-rls-fase-2.md)
 - [Relatório — Fase 5 (histórico + atualizações)](./relatorio-fase-5-admin-shell-alunos-e-convite.md)
 - [Implementação — Fase 5 complementos](./implementacao-fase-5-alunos-paginacao-edicao-admin.md)
-- Migrações: `supabase/migrations/20260428100000_initial_schema.sql`, `supabase/migrations/20260429100000_onboarding_tokens.sql`, `supabase/migrations/20260504140000_storage_avatars_admin_insert_public.sql`, `supabase/migrations/20260506120000_storage_trip_covers_public.sql`
+- Migrações: `supabase/migrations/20260428100000_initial_schema.sql`, `supabase/migrations/20260429100000_onboarding_tokens.sql`, `supabase/migrations/20260504140000_storage_avatars_admin_insert_public.sql`, `supabase/migrations/20260506120000_storage_trip_covers_public.sql`, `supabase/migrations/20260507100000_school_settings.sql`
 
 ---
 
-## 13. Fase 3 — como funciona na prática
+## 14. Fase 3 — como funciona na prática
 
 Resumo para quem vai **usar** ou **testar** o sistema no dia a dia.
 
-### 13.1 Primeiro acesso e papéis
+### 14.1 Primeiro acesso e papéis
 
 1. Todo usuário criado no **Authentication** do Supabase recebe, via trigger, uma linha em **`profiles`** com `role = student` por padrão.
 2. O **primeiro administrador** da escola é promovido **manualmente** no SQL:  
    `UPDATE profiles SET role = 'admin' WHERE id = '<uuid do auth.users>';`
 3. Quem entra com **admin** é sempre direcionado para **`/admin`**; quem entra com **student**, para **`/student`**. Tentar abrir a área errada redireciona para a correta.
 
-### 13.2 Fluxo de login (e-mail + senha)
+### 14.2 Fluxo de login (e-mail + senha)
 
 1. O usuário abre **`/login`** (ou clica “Entrar” na home).
 2. Submete e-mail e senha → **Server Action** valida com Zod, chama `signInWithPassword`, lê **`profiles`** (`role`, `is_active`).
 3. Se a conta estiver **inativa** (`is_active = false`), a sessão é encerrada e aparece mensagem de erro.
-4. Após sucesso, o redirect vai para **`/admin`** ou **`/student`**, ou para o path interno em **`?next=`** (se for `/admin` ou `/student`).
+4. Se o papel for **student** e **`school_settings.student_portal_enabled`** estiver **false**, a sessão é encerrada e o formulário mostra erro (portal desligado pela escola — ver [§10](#10-fase-10--configurações-da-escola)).
+5. Após sucesso, o redirect vai para **`/admin`** ou **`/student`**, ou para o path interno em **`?next=`** (se for `/admin` ou `/student`).
 
-### 13.3 Middleware (o que acontece “por baixo”)
+### 14.3 Middleware (o que acontece “por baixo”)
 
 A cada requisição coberta pelo matcher, o middleware:
 
 1. Atualiza cookies de sessão Supabase (**refresh**).
-2. Identifica o usuário e carrega **`profiles.role`**.
-3. **Sem login** e URL começando com `/admin` ou `/student` → redireciona para **`/login?next=...`**.
-4. **Com login** em **`/login`** → redireciona para o painel certo (não fica preso na tela de login).
-5. **Admin** em rota `/student` → manda para **`/admin`**; **aluno** em `/admin` → manda para **`/student`**.
-6. Usuário autenticado mas **sem linha em `profiles`** (caso raro) → **`/login?error=profile`**.
+2. Identifica o usuário e carrega **`profiles.role`** e **`profiles.is_active`**.
+3. Para **aluno**, lê **`school_settings.student_portal_enabled`** — se **`false`** ou conta **inativa**, bloqueia **`/student`** e envia ao login com **`?error=portal`** ou **`inactive`** (alinhado a [§10](#10-fase-10--configurações-da-escola)).
+4. **Sem login** e URL começando com `/admin` ou `/student` → redireciona para **`/login?next=...`**.
+5. **Com login** em **`/login`** → **admin** segue para **`/admin`**; **aluno** só vai para **`/student`** se o portal estiver ligado e a conta **ativa** (caso contrário permanece na tela de login com mensagens de erro já existentes).
+6. **Admin** em rota `/student` → manda para **`/admin`**; **aluno** em `/admin` → manda para **`/student`** (salvo bloqueios do item 3).
+7. Usuário autenticado mas **sem linha em `profiles`** (caso raro) → **`/login?error=profile`**.
 
-Os layouts de **`/admin`** e **`/student`** conferem de novo **`is_active`**; se inativo, fazem **sign out** e mandam para login com **`?error=inactive`**.
+Os layouts de **`/admin`** e **`/student`** conferem de novo **`is_active`** e, na área aluno, o **portal global**; se inapto, fazem **sign out** quando aplicável e redirecionam com **`?error=inactive`** ou **`portal`**.
 
-### 13.4 Conta de teste aluno
+### 14.4 Conta de teste aluno
 
 Para o roteiro **RLS** (admin vê tudo; aluno só o próprio) e para validar **`/student`**:
 
@@ -377,14 +412,14 @@ Para o roteiro **RLS** (admin vê tudo; aluno só o próprio) e para validar **`
 
 **Alternativa com dados completos de onboarding:** na home admin, use **Gerar link** de onboarding e conclua o fluxo em `/onboarding/<token>` com outro e-mail (cria perfil aluno com `student_details` preenchido).
 
-### 13.5 Recuperação de senha (magic link)
+### 14.5 Recuperação de senha (magic link)
 
 1. Em **`/login`**, bloco “Esqueceu a senha?” envia e-mail via **`resetPasswordForEmail`**, com redirect para **`/auth/callback?next=/auth/update-password`** (origem via `getSiteUrl()`).
 2. O usuário clica no link do e-mail → **`/auth/callback`** executa **`exchangeCodeForSession`** e redireciona para **`/auth/update-password`**.
 3. Na página de nova senha, o browser usa **`createBrowserSupabaseClient`** e **`updateUser({ password })`**.
 4. É obrigatório ter as **Redirect URLs** corretas no painel Supabase e **`NEXT_PUBLIC_SITE_URL`** coerente em produção.
 
-### 13.6 Logout
+### 14.6 Logout
 
 O botão **Sair** dispara **`logoutAction`** (sign out no servidor) e redireciona para **`/login`**.
 

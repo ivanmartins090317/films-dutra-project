@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { fallbackSchoolDisplayName, fetchSchoolSettings } from "@/lib/school-settings";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { ProfileRow } from "@/types/database";
 import { LogoutButton } from "@/components/auth/logout-button";
@@ -32,11 +33,19 @@ export default async function StudentLayout({
     redirect("/login?error=inactive");
   }
 
+  const schoolRow = await fetchSchoolSettings(supabase);
+  if (schoolRow?.student_portal_enabled === false) {
+    await supabase.auth.signOut();
+    redirect("/login?error=portal");
+  }
+
+  const schoolLabel = fallbackSchoolDisplayName(schoolRow);
+
   return (
     <div className="min-h-screen bg-background">
       <header className="flex items-center justify-between border-b border-border px-4 py-3">
         <Link className="text-sm font-semibold tracking-tight" href="/student">
-          Films Dutra — Área do aluno
+          {schoolLabel} — Área do aluno
         </Link>
         <LogoutButton />
       </header>

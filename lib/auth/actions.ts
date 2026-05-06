@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getSiteUrl } from "@/lib/supabase/env";
+import { isStudentPortalEnabled } from "@/lib/school-settings";
 import { loginSchema } from "@/lib/validations/auth";
 import type { ProfileRow } from "@/types/database";
 
@@ -62,6 +63,16 @@ export async function loginAction(
   if (!profile.is_active) {
     await supabase.auth.signOut();
     return { error: "Conta inativa. Entre em contato com a escola." };
+  }
+
+  if (profile.role === "student") {
+    const portalOk = await isStudentPortalEnabled(supabase);
+    if (!portalOk) {
+      await supabase.auth.signOut();
+      return {
+        error: "O portal dos alunos está desativado. Entre em contato com a escola.",
+      };
+    }
   }
 
   const nextRaw = String(formData.get("next") ?? "");

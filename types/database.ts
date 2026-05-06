@@ -359,6 +359,36 @@ export interface Database {
           },
         ];
       };
+      school_settings: {
+        Row: {
+          singleton: boolean;
+          school_name: string;
+          contact_email: string;
+          contact_phone: string;
+          logo_url: string | null;
+          student_portal_enabled: boolean;
+          updated_at: string;
+        };
+        Insert: {
+          singleton?: boolean;
+          school_name?: string;
+          contact_email?: string;
+          contact_phone?: string;
+          logo_url?: string | null;
+          student_portal_enabled?: boolean;
+          updated_at?: string;
+        };
+        Update: {
+          singleton?: boolean;
+          school_name?: string;
+          contact_email?: string;
+          contact_phone?: string;
+          logo_url?: string | null;
+          student_portal_enabled?: boolean;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       onboarding_tokens: {
         Row: {
           id: string;

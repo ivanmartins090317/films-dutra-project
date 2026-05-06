@@ -4,12 +4,13 @@ import { cookies } from "next/headers";
 import type { Database } from "@/types/database";
 
 import { getSupabaseEnv } from "@/lib/supabase/env";
+import type { AppSupabaseClient } from "@/lib/supabase/ssr-client-type";
 
 /**
  * Cliente Supabase no servidor (Server Actions, Route Handlers, Server Components).
  * Em RSC puro, cookies podem ser somente leitura — refresh de sessão fica no middleware.
  */
-export function createServerSupabaseClient() {
+export function createServerSupabaseClient(): AppSupabaseClient {
   const cookieStore = cookies();
   const { url, anonKey } = getSupabaseEnv();
 
@@ -30,5 +31,5 @@ export function createServerSupabaseClient() {
         }
       },
     },
-  });
+  }) as unknown as AppSupabaseClient;
 }

@@ -6,6 +6,7 @@ import {
   CalendarBlank,
   ChartLineUp,
   CurrencyCircleDollar,
+  GearSix,
   House,
   Student,
   SuitcaseRolling,
@@ -20,6 +21,7 @@ const navItems = [
   { href: "/admin/financeiro", label: "Financeiro", icon: CurrencyCircleDollar },
   { href: "/admin/surf-trips", label: "Surf trips", icon: SuitcaseRolling },
   { href: "/admin/students", label: "Alunos", icon: Student },
+  { href: "/admin/configuracoes", label: "Configurações", icon: GearSix },
 ] as const;
 
 export function AdminSidebar() {
@@ -50,9 +52,6 @@ export function AdminSidebar() {
           );
         })}
       </nav>
-      <p className="mt-auto hidden px-2 pt-6 text-[11px] leading-snug text-muted-foreground md:block">
-        Configurações da escola — próxima fase do plano.
-      </p>
     </aside>
   );
 }
