@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { ForgotPasswordBlock, LoginForm } from "@/components/auth/login-form";
+import { PublicLegalFooter } from "@/components/legal/public-legal-footer";
 import { SchoolBrandMark } from "@/components/school/school-brand-mark";
 import { fallbackSchoolDisplayName, fetchSchoolSettings } from "@/lib/school-settings";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -70,11 +71,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <div className="mx-auto flex max-w-sm justify-center">
           <ForgotPasswordBlock />
         </div>
-        <p className="mt-10 text-center text-sm text-muted-foreground">
+        <div className="mt-10 flex flex-col items-center gap-4 text-center text-sm text-muted-foreground">
           <Link className="text-primary underline-offset-4 hover:underline" href="/">
             Voltar ao início
           </Link>
-        </p>
+          <PublicLegalFooter />
+        </div>
       </div>
     </main>
   );

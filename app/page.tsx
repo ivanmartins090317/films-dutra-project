@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { BrandLogo } from "@/components/brand/brand-logo";
+import { PublicLegalFooter } from "@/components/legal/public-legal-footer";
 import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
@@ -16,12 +17,15 @@ export default function HomePage() {
           ou a área do aluno.
         </p>
       </div>
-      <Button
-        asChild
-        className="rounded-full px-6 py-3 text-sm font-medium shadow-[8px_8px_20px_rgba(90,78,62,0.18),-6px_-6px_18px_rgba(255,255,255,0.55)]"
-      >
-        <Link href="/login">Entrar</Link>
-      </Button>
+      <div className="flex flex-col items-center gap-8">
+        <Button
+          asChild
+          className="rounded-full px-6 py-3 text-sm font-medium shadow-[8px_8px_20px_rgba(90,78,62,0.18),-6px_-6px_18px_rgba(255,255,255,0.55)]"
+        >
+          <Link href="/login">Entrar</Link>
+        </Button>
+        <PublicLegalFooter />
+      </div>
     </main>
   );
 }

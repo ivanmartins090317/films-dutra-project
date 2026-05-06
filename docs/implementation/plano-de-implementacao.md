@@ -4,7 +4,7 @@ Documento derivado do [films_dutra_PRD.md](../../films_dutra_PRD.md). Organiza o
 
 **Escopo alvo:** MVP v1 conforme seção 10 do PRD (onboarding, perfis, dashboard admin completo, área do aluno em leitura, tema claro/escuro, sem upload de mídia na evolução na v1).
 
-**Última revisão do status:** maio de 2026 — Fase 8 (Financeiro admin) concluída no código; manter [docs/state/estado-atual.md](../state/estado-atual.md) alinhado ao repositório.
+**Última revisão do status:** maio de 2026 — Fases 9–12 concluídas no código (incl. **Fase 12**: LGPD/links, E2E smoke, headers); deploy e checklist manual seguem operação — ver [implementação Fase 12](../state/implementado/implementacao-fase-12-hardening-lgpd-testes-deploy.md); manter [docs/state/estado-atual.md](../state/estado-atual.md) alinhado.
 
 ---
 
@@ -34,7 +34,10 @@ Toda implementação de interface deve obedecer ao **[design_system.md](../desig
 | 6 | Admin: Agenda / calendário | **Concluída** | Rota `/admin/agenda` (mês + painel do dia), CRUD `lessons`, fuso **America/São_Paulo** (`lib/school-timezone.ts`, `date-fns-tz`), validação de conflito de horário por aluno, histórico no perfil do aluno, testes em `__tests__/lesson-*.test.ts`. **Opcional pós-MVP do módulo:** visão **semana** na UI |
 | 7 | Evolução admin | **Concluída** | `/admin/evolution` — ver [estado-atual §7](../state/estado-atual.md#7-fase-7--evolução-admin) |
 | 8 | Financeiro admin | **Concluída** | `/admin/financeiro` — ver [estado-atual §8](../state/estado-atual.md#8-fase-8--financeiro-admin) |
-| 9–12 | Demais fases | **Não iniciadas ou parciais** | Conforme dependências do plano |
+| 9 | Surf trips admin | **Concluída** | `/admin/surf-trips` — ver [estado-atual §9](../state/estado-atual.md#9-fase-9--surf-trips-admin) |
+| 10 | Configurações da escola | **Concluída** | `/admin/configuracoes`, `school_settings` — ver [estado-atual §10](../state/estado-atual.md#10-fase-10--configurações-da-escola) |
+| 11 | Área do aluno | **Concluída** | `/student/*` — ver [estado-atual §11](../state/estado-atual.md#11-fase-11--área-do-aluno-student) |
+| 12 | Hardening LGPD, testes, deploy e handoff | **Concluída no código** | `/privacidade`, Playwright smoke em CI, headers — ver [implementação Fase 12](../state/implementado/implementacao-fase-12-hardening-lgpd-testes-deploy.md); revisão jurídica e deploy Vercel são etapas operacionais |
 
 ---
 

@@ -13,6 +13,7 @@ import {
 } from "@/lib/validations/onboarding";
 
 import { BrandLogo } from "@/components/brand/brand-logo";
+import { PublicLegalFooter } from "@/components/legal/public-legal-footer";
 import { Button } from "@/components/ui/button";
 
 import { STEP_TITLES } from "@/components/onboarding/onboarding-constants";
@@ -284,9 +285,12 @@ export function OnboardingWizard({ token }: OnboardingWizardProps) {
           </form>
         </div>
 
-        <p className="text-center text-xs text-muted-foreground">
-          Dúvidas? Entre em contato com a escola Films Dutra.
-        </p>
+        <div className="flex flex-col items-center gap-3">
+          <PublicLegalFooter className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-muted-foreground" />
+          <p className="text-center text-xs text-muted-foreground">
+            Dúvidas? Entre em contato com a escola Films Dutra.
+          </p>
+        </div>
       </div>
     </main>
   );

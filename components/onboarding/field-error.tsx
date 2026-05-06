@@ -1,4 +1,13 @@
-export function FieldError({ message }: { message?: string }) {
+interface FieldErrorProps {
+  message?: string;
+  id?: string;
+}
+
+export function FieldError({ message, id }: FieldErrorProps) {
   if (!message) return null;
-  return <p className="text-xs text-destructive">{message}</p>;
+  return (
+    <p id={id} className="text-xs text-destructive" role="alert">
+      {message}
+    </p>
+  );
 }

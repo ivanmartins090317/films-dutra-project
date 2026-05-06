@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { FieldError } from "@/components/onboarding/field-error";
 import type { OnboardingStepFieldsProps } from "@/components/onboarding/onboarding-step-types";
 
@@ -54,18 +56,30 @@ export function OnboardingStepConfirm({
         />
         <FieldError message={fieldErrors.password_confirm} />
       </div>
-      <label className="flex cursor-pointer items-start gap-3">
+      <div className="flex items-start gap-3">
         <input
+          id="lgpd_accepted"
           type="checkbox"
-          className="mt-1 size-4 rounded border-input"
+          className="mt-1 size-4 shrink-0 rounded border-input"
           checked={Boolean(form.lgpd_accepted)}
           onChange={(e) => patch({ lgpd_accepted: e.target.checked })}
+          aria-invalid={fieldErrors.lgpd_accepted ? true : undefined}
+          aria-describedby={fieldErrors.lgpd_accepted ? "lgpd_accepted-error" : undefined}
         />
-        <span className="text-sm leading-snug">
-          Li e aceito a política de privacidade e o tratamento dos meus dados (LGPD). *
-        </span>
-      </label>
-      <FieldError message={fieldErrors.lgpd_accepted} />
+        <label htmlFor="lgpd_accepted" className="cursor-pointer text-sm leading-snug">
+          Li e aceito a{" "}
+          <Link
+            className="text-primary underline-offset-4 hover:underline"
+            href="/privacidade"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            política de privacidade
+          </Link>{" "}
+          e o tratamento dos meus dados (LGPD). *
+        </label>
+      </div>
+      <FieldError id="lgpd_accepted-error" message={fieldErrors.lgpd_accepted} />
       {submitError ? (
         <p className="text-sm text-destructive" role="alert">
           {submitError}
