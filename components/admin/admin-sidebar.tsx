@@ -2,27 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  CalendarBlank,
-  ChartLineUp,
-  CurrencyCircleDollar,
-  GearSix,
-  House,
-  Student,
-  SuitcaseRolling,
-} from "@phosphor-icons/react";
 
+import { ADMIN_NAV_ITEMS } from "@/lib/nav/admin-nav-items";
 import { cn } from "@/lib/utils";
-
-const navItems = [
-  { href: "/admin", label: "Início", icon: House },
-  { href: "/admin/agenda", label: "Agenda", icon: CalendarBlank },
-  { href: "/admin/evolution", label: "Evolução", icon: ChartLineUp },
-  { href: "/admin/financeiro", label: "Financeiro", icon: CurrencyCircleDollar },
-  { href: "/admin/surf-trips", label: "Surf trips", icon: SuitcaseRolling },
-  { href: "/admin/students", label: "Alunos", icon: Student },
-  { href: "/admin/configuracoes", label: "Configurações", icon: GearSix },
-] as const;
 
 export function AdminSidebar() {
   const pathname = usePathname();
@@ -33,7 +15,7 @@ export function AdminSidebar() {
         Menu
       </p>
       <nav className="flex flex-col gap-0.5" aria-label="Administração">
-        {navItems.map(({ href, label, icon: Icon }) => {
+        {ADMIN_NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || (href !== "/admin" && pathname.startsWith(`${href}/`));
           return (
             <Link

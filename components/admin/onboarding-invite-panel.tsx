@@ -3,15 +3,12 @@
 import { LinkSimple } from "@phosphor-icons/react";
 import { useState, useTransition } from "react";
 
-import { createOnboardingInviteAction } from "@/lib/admin/onboarding-invite-action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { createOnboardingInviteAction } from "@/lib/admin/onboarding-invite-action";
+import { cn } from "@/lib/utils";
 
-/** Painel neo único na home admin — sombras soft UI alinhadas ao cream (#F0E8DE). */
-const neoCardStyle = {
-  boxShadow:
-    "8px 8px 18px rgba(90, 78, 62, 0.14), -6px -6px 18px rgba(255, 255, 255, 0.85)",
-} as const;
+/** Painel na home admin — superfície vidro (blur + translucidez) sobre o canvas creme. */
 
 export function OnboardingInvitePanel() {
   const [notes, setNotes] = useState("");
@@ -47,8 +44,13 @@ export function OnboardingInvitePanel() {
 
   return (
     <section
-      className="rounded-2xl border border-[hsl(35_37%_72%)] bg-[#F0E8DE] p-6 text-[#1A1A1A] dark:border-border dark:bg-card dark:text-card-foreground"
-      style={neoCardStyle}
+      className={cn(
+        "rounded-2xl border border-[hsl(35_37%_65%/0.45)] p-6 text-[#1A1A1A]",
+        "bg-[#F0E8DE]/45 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.35),0_10px_40px_-12px_rgba(26,26,26,0.15)]",
+        "backdrop-blur-md backdrop-saturate-150 supports-[backdrop-filter]:bg-[#F0E8DE]/35",
+        "dark:border-border/70 dark:bg-card/45 dark:text-card-foreground dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_12px_40px_-10px_rgba(0,0,0,0.35)]",
+        "dark:supports-[backdrop-filter]:bg-card/35"
+      )}
     >
       <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
         <div>
@@ -58,12 +60,19 @@ export function OnboardingInvitePanel() {
             <span className="font-medium">/onboarding</span>.
           </p>
         </div>
-        <LinkSimple className="hidden size-10 shrink-0 text-[#7A8C6E] sm:block" weight="duotone" aria-hidden />
+        <LinkSimple
+          className="hidden size-10 shrink-0 text-[#7A8C6E] sm:block"
+          weight="duotone"
+          aria-hidden
+        />
       </div>
 
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="min-w-0 flex-1 space-y-2">
-          <label htmlFor="invite-notes" className="text-xs font-medium text-[#555555] dark:text-muted-foreground">
+          <label
+            htmlFor="invite-notes"
+            className="text-xs font-medium text-[#555555] dark:text-muted-foreground"
+          >
             Notas internas (opcional)
           </label>
           <Input
@@ -72,7 +81,7 @@ export function OnboardingInvitePanel() {
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Ex.: João — turma manhã"
             disabled={pending}
-            className="border-[hsl(35_37%_72%)] bg-white/90 dark:bg-background"
+            className="border-[hsl(35_37%_65%/0.5)] bg-white/55 backdrop-blur-sm dark:border-border dark:bg-background/60"
           />
         </div>
         <Button
@@ -92,8 +101,10 @@ export function OnboardingInvitePanel() {
       ) : null}
 
       {inviteUrl ? (
-        <div className="mt-4 rounded-xl border border-[hsl(35_37%_72%/0.55)] bg-white/70 p-3 dark:border-border dark:bg-muted/40">
-          <p className="text-xs font-medium text-[#555555] dark:text-muted-foreground">Link gerado</p>
+        <div className="mt-4 rounded-xl border border-[hsl(35_37%_65%/0.4)] bg-white/40 p-3 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.25)] backdrop-blur-sm dark:border-border/60 dark:bg-muted/30 dark:shadow-none">
+          <p className="text-xs font-medium text-[#555555] dark:text-muted-foreground">
+            Link gerado
+          </p>
           <p className="mt-1 break-all font-mono text-sm">{inviteUrl}</p>
           <Button type="button" variant="outline" size="sm" className="mt-3" onClick={handleCopy}>
             {copied ? "Copiado!" : "Copiar link"}

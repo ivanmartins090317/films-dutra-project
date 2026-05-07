@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 
+import { AdminMobileDock } from "@/components/admin/admin-mobile-dock";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -37,9 +38,12 @@ export default async function AdminLayout({
         </div>
       </header>
       <div className="flex flex-col md:flex-row md:items-stretch">
-        <AdminSidebar />
-        <main className="min-w-0 flex-1 p-4 md:p-6">{children}</main>
+        <div className="max-[768px]:hidden w-full md:w-56 md:shrink-0">
+          <AdminSidebar />
+        </div>
+        <main className="min-w-0 flex-1 p-4 max-[768px]:pb-24 md:p-6">{children}</main>
       </div>
+      <AdminMobileDock />
     </div>
   );
 }

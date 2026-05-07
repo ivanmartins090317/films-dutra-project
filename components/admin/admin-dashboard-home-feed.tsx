@@ -125,6 +125,7 @@ export function AdminDashboardHomeFeed({ feed }: AdminDashboardHomeFeedProps) {
   );
 }
 
+/** Atalhos da home admin — ocultos em viewport estreita (max 768px): o dock mobile cobre a navegação. */
 export function AdminDashboardShortcuts() {
   const items = [
     { href: "/admin/agenda", label: "Agenda", description: "Calendário e aulas" },
@@ -135,7 +136,10 @@ export function AdminDashboardShortcuts() {
   ] as const;
 
   return (
-    <section aria-labelledby="atalhos-heading" className="space-y-3">
+    <section
+      aria-labelledby="atalhos-heading"
+      className="max-[768px]:hidden space-y-3"
+    >
       <h2 id="atalhos-heading" className="text-lg font-semibold tracking-tight">
         Atalhos
       </h2>

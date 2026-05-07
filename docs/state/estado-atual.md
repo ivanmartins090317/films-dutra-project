@@ -2,7 +2,16 @@
 
 Documento de referência do que já foi implementado até aqui (ambiente, Supabase e código de integração). Atualizar quando avançar fases ou mudar infraestrutura.
 
-**Última revisão:** maio de 2026 — inclui **Fase 12** (privacidade pública, E2E smoke, headers de segurança, testes `loginSchema`); [§12.1](#121-fase-12--entregue-no-código). A secção “Fase 3 na prática” está em **§16**.
+**Última revisão:** maio de 2026 — **MVP v1 (escopo PRD/plano): fechado no código** (fases 0–12); go-live continua dependente de itens operacionais abaixo em [Status do MVP v1](#status-do-mvp-v1). Inclui **Fase 12** (privacidade pública, E2E smoke, headers de segurança, testes `loginSchema`); [§12.1](#121-fase-12--entregue-no-código). A secção “Fase 3 na prática” está em **§16**.
+
+---
+
+## Status do MVP v1
+
+| Marco | Situação |
+|-------|----------|
+| **Escopo MVP** (PRD §10 / [plano de implementação](../implementation/plano-de-implementacao.md): onboarding, perfis, admin completo, área do aluno, tema, evolução sem upload de mídia na v1) | **Entregue no código** — fases **0 a 12** implementadas; detalhes na tabela [Visão rápida](#visão-rápida) e nas secções numeradas deste documento. |
+| **Produção / aceite** | **Pendente de operação:** [validação manual RLS](./relatorio-fase-4-e-pendencia-rls-fase-2.md#3-fase-2--o-que-já-existe-vs-o-que-falta-rls) (admin + aluno); [checklist Fase 12](./implementado/checklist-validacao-producao-fase-12.md); revisão jurídica do texto de `/privacidade`; deploy (ex.: Vercel), variáveis e Redirect URLs; validação com usuários reais — ver [implementação Fase 12](./implementado/implementacao-fase-12-hardening-lgpd-testes-deploy.md). |
 
 ---
 
@@ -10,6 +19,7 @@ Documento de referência do que já foi implementado até aqui (ambiente, Supaba
 
 | Área | Situação |
 |------|----------|
+| **MVP v1 (síntese)** | **Código:** concluído conforme plano. **Go-live:** checklist operacional acima. |
 | Next.js 14 (App Router) | Repositório ativo; build e testes passando |
 | Variáveis Supabase | `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` em `.env.local` |
 | Projeto Supabase | **films_dutra_bd** no ambiente **main / PRODUCTION** |
@@ -23,6 +33,7 @@ Documento de referência do que já foi implementado até aqui (ambiente, Supaba
 | **Fase 8 (financeiro)** | **Concluída no código** (maio/2026): `/admin/financeiro` — CRUD **`financials`** por aluno, cards (receita no mês, inadimplência, a receber, total histórico), gráfico **Recharts** dos últimos 12 meses, navegação `year`/`month`, entrada na sidebar e atalho na home. Detalhes em [§8](#8-fase-8--financeiro-admin). **Critério RLS:** tabela só para admin; validar manualmente que aluno não lê linhas (`/student` não lista financeiro). |
 | **Fase 9 (surf trips)** | **Concluída no código** (maio/2026): `/admin/surf-trips` — CRUD **`surf_trips`**, inscrições **`trip_registrations`** (interessado / confirmado / cancelado), **`spots_taken`** alinhado aos confirmados com regras de vagas, upload de capa no Storage **`trip-covers`** ou URL manual (migração pública `20260506120000_storage_trip_covers_public.sql`). Listagem por ano civil com agrupamento mensal; sidebar, atalhos na home e card “Trips com vagas” no painel. Detalhes em [§9](#9-fase-9--surf-trips-admin). |
 | **Fase 10 (configurações)** | **Concluída no código** (maio/2026): tabela **`school_settings`** (singleton), **`/admin/configuracoes`** (nome, contato, URL do logo, interruptor **portal dos alunos**), branding em **`/login`** e cabeçalho admin; **`student_portal_enabled`** + middleware/login/layout bloqueiam **`/student`** quando desligado; **conta inativa** continua por **`profiles.is_active`** (módulo Alunos). Migração **`20260507100000_school_settings.sql`**. Detalhes em [§10](#10-fase-10--configurações-da-escola). |
+| **Fase 11 (área do aluno)** | **Concluída no código** (maio/2026): rotas **`/student/*`** — início, perfil (sem **`student_details`** por RLS), aulas, evolução (leitura), surf trips com inscrição; **`StudentCommsStrip`** com contato de **`school_settings`**. Detalhes em [§11](#11-fase-11--área-do-aluno-student). |
 | **Fase 12 (hardening / LGPD / testes / handoff)** | **Concluída no código** (maio/2026): **`/privacidade`** (modelo de política + branding opcional), **`PublicLegalFooter`** em home/login/onboarding, onboarding com link para política e melhorias de **a11y** no aceite LGPD, **headers** de segurança em `next.config.mjs`, Vitest **`lib/validations/auth.test.ts`**, **Playwright** `e2e/smoke.spec.ts` (porta **3310** por padrão) + job no CI; checklist manual em [checklist-validacao-producao-fase-12.md](./implementado/checklist-validacao-producao-fase-12.md). **Operação:** revisão jurídica do texto, deploy Vercel, validação com usuários reais — ver [implementação Fase 12](./implementado/implementacao-fase-12-hardening-lgpd-testes-deploy.md). |
 
 ---

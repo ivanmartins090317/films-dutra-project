@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 
 import { LogoutButton } from "@/components/auth/logout-button";
+import { StudentMobileDock } from "@/components/student/student-mobile-dock";
 import { StudentSidebar } from "@/components/student/student-sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { fallbackSchoolDisplayName, fetchSchoolSettings } from "@/lib/school-settings";
@@ -34,9 +35,12 @@ export default async function StudentLayout({
         </div>
       </header>
       <div className="flex flex-col md:flex-row md:items-stretch">
-        <StudentSidebar />
-        <main className="min-w-0 flex-1 p-4 md:p-6">{children}</main>
+        <div className="max-[768px]:hidden w-full md:w-52 md:shrink-0">
+          <StudentSidebar />
+        </div>
+        <main className="min-w-0 flex-1 p-4 max-[768px]:pb-24 md:p-6">{children}</main>
       </div>
+      <StudentMobileDock />
     </div>
   );
 }

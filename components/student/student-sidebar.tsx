@@ -2,17 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChartLineUp, House, Person, SuitcaseRolling, Waves } from "@phosphor-icons/react";
 
+import { STUDENT_NAV_ITEMS } from "@/lib/nav/student-nav-items";
 import { cn } from "@/lib/utils";
-
-const navItems = [
-  { href: "/student", label: "Início", icon: House },
-  { href: "/student/perfil", label: "Perfil", icon: Person },
-  { href: "/student/aulas", label: "Aulas", icon: Waves },
-  { href: "/student/evolucao", label: "Evolução", icon: ChartLineUp },
-  { href: "/student/trips", label: "Surf trips", icon: SuitcaseRolling },
-] as const;
 
 export function StudentSidebar() {
   const pathname = usePathname();
@@ -23,7 +15,7 @@ export function StudentSidebar() {
         Portal
       </p>
       <nav className="flex flex-col gap-0.5" aria-label="Área do aluno">
-        {navItems.map(({ href, label, icon: Icon }) => {
+        {STUDENT_NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const active =
             pathname === href ||
             (href !== "/student" && (pathname.startsWith(`${href}/`) || pathname.startsWith(`${href}?`)));
