@@ -123,7 +123,7 @@ export function DashboardMobileDock({
         className
       )}
     >
-      <div className="pointer-events-auto flex justify-center px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] pt-2">
+      <div className="pointer-events-auto flex justify-center pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] pt-2">
         <nav
           aria-label={ariaLabel}
           className={cn(

@@ -10,7 +10,7 @@ export function StudentSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex w-full flex-col gap-1 border-border bg-card/80 px-3 py-4 backdrop-blur-sm md:w-52 md:min-h-[calc(100vh-4rem)] md:shrink-0 md:border-r">
+    <aside className="flex w-full flex-col gap-1 border-border bg-card/80 px-3 py-4 backdrop-blur-sm md:w-52 md:min-h-0 md:flex-1 md:shrink-0 md:border-r">
       <p className="mb-2 px-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
         Portal
       </p>
