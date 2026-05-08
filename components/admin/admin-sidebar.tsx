@@ -10,7 +10,7 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex w-full flex-col gap-1 border-r border-border bg-card/80 px-3 py-4 backdrop-blur-sm md:w-56 md:min-h-0 md:flex-1 md:shrink-0">
+    <aside className="flex w-full flex-col gap-1 border-r border-border bg-card/80 px-3 py-4 backdrop-blur-sm md:h-full md:min-h-full md:w-full md:shrink-0">
       <p className="mb-2 px-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
         Menu
       </p>

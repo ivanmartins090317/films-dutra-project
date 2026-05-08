@@ -18,8 +18,8 @@ export default async function AdminLayout({
   const schoolLabel = fallbackSchoolDisplayName(schoolRow);
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-background">
-      <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border bg-background/95 py-3 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] backdrop-blur supports-[backdrop-filter]:bg-background/80 md:gap-4 md:px-6">
+    <div className="flex min-h-screen w-full max-w-full flex-col overflow-x-hidden bg-background">
+      <header className="sticky top-0 z-10 shrink-0 flex items-center justify-between gap-3 border-b border-border bg-background/95 py-3 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] backdrop-blur supports-[backdrop-filter]:bg-background/80 md:gap-4 md:px-6">
         <div className="min-w-0 flex-1">
           <Link
             className="block truncate text-sm font-semibold tracking-tight text-foreground md:hidden"
@@ -44,8 +44,8 @@ export default async function AdminLayout({
           <LogoutButton />
         </div>
       </header>
-      <div className="flex flex-col md:flex-row md:items-stretch">
-        <div className="max-[768px]:hidden md:flex md:min-h-0 md:w-56 md:shrink-0 md:flex-col">
+      <div className="flex grow flex-col md:grid md:min-h-0 md:grid-cols-[14rem_minmax(0,1fr)] md:gap-0">
+        <div className="max-[768px]:hidden md:flex md:h-full md:min-h-0 md:flex-col">
           <AdminSidebar />
         </div>
         <main className="min-w-0 flex-1 py-4 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] max-[768px]:pb-24 md:px-6 md:py-6">
