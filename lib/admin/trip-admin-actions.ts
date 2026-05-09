@@ -8,6 +8,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 import {
   mimeToAvatarExtension,
+  parseFormDataImageBlob,
   validateAvatarUploadFile,
 } from "@/lib/admin/student-avatar-upload";
 import { requireAdminSession } from "@/lib/admin/session";
@@ -234,8 +235,8 @@ export async function uploadTripCoverAdminAction(
     return { ok: false, error: "Trip inválida." };
   }
 
-  const file = formData.get("file");
-  if (!(file instanceof File)) {
+  const file = parseFormDataImageBlob(formData, "file");
+  if (!file) {
     return { ok: false, error: "Selecione uma imagem." };
   }
 

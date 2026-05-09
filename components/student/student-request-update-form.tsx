@@ -33,8 +33,8 @@ export function StudentRequestUpdateForm({
         Solicitar atualização
       </h2>
       <p className="mt-2 text-sm text-muted-foreground">
-        Dados médicos ou de equipamento ficam apenas com o time na administração (LGPD). Use o formulário abaixo
-        para gerar um e‑mail pré-preenchido para a escola atualizar suas informações.
+        Para atualizar dados de saúde, equipamento ou outros pontos que não estão no formulário acima (LGPD), envie
+        uma mensagem à equipe com o e‑mail pré-preenchido abaixo.
       </p>
       {!to ? (
         <p className="mt-3 text-sm font-medium text-destructive">

@@ -169,14 +169,15 @@ export function AdminSurfTripsClient({
 
   function onUploadCover(e: FormEvent<HTMLFormElement>, tripId: string) {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const fd = new FormData(form);
     startUploadTransition(async () => {
       const res = await uploadTripCoverAdminAction(tripId, fd);
       if (!res.ok) {
         alert(res.error);
         return;
       }
-      e.currentTarget.reset();
+      form.reset();
       refresh();
     });
   }

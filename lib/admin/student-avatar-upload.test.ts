@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   AVATAR_UPLOAD_MAX_BYTES,
   mimeToAvatarExtension,
+  parseFormDataImageBlob,
   validateAvatarUploadFile,
 } from "@/lib/admin/student-avatar-upload";
 
@@ -40,5 +41,25 @@ describe("mimeToAvatarExtension", () => {
     expect(mimeToAvatarExtension("image/png")).toBe("png");
     expect(mimeToAvatarExtension("image/webp")).toBe("webp");
     expect(mimeToAvatarExtension("image/gif")).toBeNull();
+  });
+});
+
+describe("parseFormDataImageBlob", () => {
+  it("retorna o blob do campo", () => {
+    const fd = new FormData();
+    const f = new File([new Uint8Array([1])], "a.png", { type: "image/png" });
+    fd.set("file", f);
+    expect(parseFormDataImageBlob(fd, "file")).toBe(f);
+  });
+
+  it("retorna null sem arquivo", () => {
+    const fd = new FormData();
+    expect(parseFormDataImageBlob(fd, "file")).toBeNull();
+  });
+
+  it("ignora string (campo vazio em alguns runtimes)", () => {
+    const fd = new FormData();
+    fd.set("file", "");
+    expect(parseFormDataImageBlob(fd, "file")).toBeNull();
   });
 });

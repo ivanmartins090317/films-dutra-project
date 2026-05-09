@@ -15,7 +15,23 @@ export function mimeToAvatarExtension(mime: string): "jpg" | "png" | "webp" | nu
   return null;
 }
 
-export function validateAvatarUploadFile(file: File): { ok: true } | { ok: false; error: string } {
+/**
+ * Em Server Actions do Next.js, `formData.get("file")` pode não passar em `instanceof File`
+ * no runtime do Node — usar checagem por forma (Blob) é mais confiável.
+ */
+export function parseFormDataImageBlob(formData: FormData, key: string): Blob | null {
+  const v = formData.get(key);
+  if (v === null || v === undefined) return null;
+  if (typeof v === "string") return null;
+  if (typeof v !== "object") return null;
+  const candidate = v as Blob;
+  if (typeof candidate.size !== "number" || typeof candidate.arrayBuffer !== "function") {
+    return null;
+  }
+  return candidate;
+}
+
+export function validateAvatarUploadFile(file: Blob): { ok: true } | { ok: false; error: string } {
   if (!file || file.size === 0) {
     return { ok: false, error: "Selecione uma imagem." };
   }
