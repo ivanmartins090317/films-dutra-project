@@ -20,7 +20,9 @@ export const metadata: Metadata = {
   title: "Films Dutra — Dashboard",
   description: "Plataforma de gestão de alunos — Films Dutra Audiovisual Co.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon_films_dutra.ico",
+    shortcut: "/icon_films_dutra.ico",
+    apple: "/icon_films_dutra.png",
   },
 };
 
