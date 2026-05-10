@@ -14,6 +14,7 @@
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "icons:build": "node scripts/generate-brand-icons.mjs",
     "db:types": "npx supabase gen types typescript --schema public --linked > types/database.ts",
     "db:push": "npx supabase db push"
   },
@@ -56,7 +57,9 @@
     "jsdom": "^28.1.0",
     "postcss": "^8",
     "prettier": "^3.8.3",
+    "sharp": "^0.34.5",
     "tailwindcss": "^3.4.1",
+    "to-ico": "^1.1.5",
     "typescript": "^5",
     "vitest": "^4.1.5"
   }

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/icon_films_dutra.ico",
     shortcut: "/icon_films_dutra.ico",
-    apple: "/icon_films_dutra.png",
+    apple: "/apple-touch-icon.png",
   },
 };
 

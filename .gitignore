@@ -40,3 +40,6 @@ yarn-error.log*
 # Supabase CLI (estado local do `supabase link`)
 .supabase/
 
+# geração local de ícones da marca
+scripts/generate-brand-icons.mjs
+
