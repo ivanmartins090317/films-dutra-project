@@ -228,7 +228,7 @@ export function OnboardingWizard({ token }: OnboardingWizardProps) {
         <div className="flex flex-col items-center gap-4 text-center">
           <BrandLogo className="h-12 w-auto" priority />
           <div>
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#C8A882]">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
               Films Dutra · Cadastro de aluno
             </p>
             <h1 className="mt-2 text-2xl font-semibold tracking-tight text-foreground">
